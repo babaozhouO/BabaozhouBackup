@@ -1,0 +1,80 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <MyType>WindowsForms</MyType>
+    <ApplicationIcon>八宝粥.ico</ApplicationIcon>
+    <Version>V0.1.0-alphav1.0-beta.3</Version>
+    <PackageId>八宝粥备份</PackageId>
+    <Title>一个多功能的备份程序</Title>
+    <Authors>八宝粥</Authors>
+    <Company>八宝粥</Company>
+    <Product>八宝粥备份</Product>
+    <Description>一个多功能的备份程序</Description>
+    <Copyright>属于八宝粥，未经许可不能篡改程序中的作者标识</Copyright>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/babaozhouO/BabaozhouBackup</RepositoryUrl>
+    <RepositoryType>Github</RepositoryType>
+    <AssemblyVersion>V0.1.0-alphav1.0-beta.3</AssemblyVersion>
+    <FileVersion>V0.1.0-alphav1.0-beta.3</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="MainConfig.ini" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="八宝粥.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="7z.exe" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Windows.Forms" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\Desktop\八宝粥.jpg">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="My Project\Application.Designer.vb">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Update="配置文件\7-ZipConfig.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="配置文件\MainConfig.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="配置文件\RCONConfig.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="配置文件\SFTPConfig.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
