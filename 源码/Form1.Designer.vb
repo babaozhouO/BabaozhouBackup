@@ -24,7 +24,6 @@ Partial Class 主窗口
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(主窗口))
-        LogsTextBox = New TextBox()
         IntroductionLabel = New Label()
         LogsLabel = New Label()
         ExitButton = New Button()
@@ -35,27 +34,17 @@ Partial Class 主窗口
         SftpButton = New Button()
         ClearlogButton = New Button()
         NowTimer = New Timer(components)
+        LogsRichTextBox = New RichTextBox()
         SuspendLayout()
-        ' 
-        ' LogsTextBox
-        ' 
-        LogsTextBox.Cursor = Cursors.IBeam
-        LogsTextBox.Location = New Point(30, 30)
-        LogsTextBox.MaxLength = 1000000000
-        LogsTextBox.Multiline = True
-        LogsTextBox.Name = "LogsTextBox"
-        LogsTextBox.ScrollBars = ScrollBars.Vertical
-        LogsTextBox.Size = New Size(650, 410)
-        LogsTextBox.TabIndex = 0
         ' 
         ' IntroductionLabel
         ' 
         IntroductionLabel.AutoSize = True
         IntroductionLabel.Location = New Point(30, 446)
         IntroductionLabel.Name = "IntroductionLabel"
-        IntroductionLabel.Size = New Size(577, 57)
+        IntroductionLabel.Size = New Size(557, 57)
         IntroductionLabel.TabIndex = 1
-        IntroductionLabel.Text = "程序名称:八宝粥备份        作者:八宝粥" & vbCrLf & "程序功能:可定时自动(关闭MC服务端)增量备份文件并发送至远程sftp服务端(并开启MC服务端)" & vbCrLf & "Github项目链接:------------------------------------------------------------------------------"
+        IntroductionLabel.Text = "程序名称:八宝粥备份        作者:八宝粥" & vbCrLf & "程序功能:可定时自动(关闭MC服务端)增量备份文件并发送至远程sftp服务端(并开启MC服务端)" & vbCrLf & "Github仓库链接:https://github.com/babaozhouO/BabaozhouBackup"
         ' 
         ' LogsLabel
         ' 
@@ -134,12 +123,22 @@ Partial Class 主窗口
         NowTimer.Enabled = True
         NowTimer.Interval = 1000
         ' 
+        ' LogsRichTextBox
+        ' 
+        LogsRichTextBox.Location = New Point(30, 30)
+        LogsRichTextBox.Name = "LogsRichTextBox"
+        LogsRichTextBox.ScrollBars = RichTextBoxScrollBars.Vertical
+        LogsRichTextBox.Size = New Size(650, 410)
+        LogsRichTextBox.TabIndex = 10
+        LogsRichTextBox.Text = ""
+        ' 
         ' 主窗口
         ' 
         AutoScaleMode = AutoScaleMode.None
         AutoScroll = True
         AutoSize = True
         ClientSize = New Size(834, 511)
+        Controls.Add(LogsRichTextBox)
         Controls.Add(ClearlogButton)
         Controls.Add(SftpButton)
         Controls.Add(Button7z)
@@ -149,7 +148,6 @@ Partial Class 主窗口
         Controls.Add(ExitButton)
         Controls.Add(LogsLabel)
         Controls.Add(IntroductionLabel)
-        Controls.Add(LogsTextBox)
         Font = New Font("微软雅黑", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(134))
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MaximizeBox = False
@@ -161,8 +159,6 @@ Partial Class 主窗口
         ResumeLayout(False)
         PerformLayout()
     End Sub
-
-    Friend WithEvents LogsTextBox As TextBox
     Friend WithEvents IntroductionLabel As Label
     Friend WithEvents LogsLabel As Label
     Friend WithEvents ExitButton As Button
@@ -173,4 +169,5 @@ Partial Class 主窗口
     Friend WithEvents SftpButton As Button
     Friend WithEvents ClearlogButton As Button
     Friend WithEvents NowTimer As Timer
+    Friend WithEvents LogsRichTextBox As RichTextBox
 End Class
