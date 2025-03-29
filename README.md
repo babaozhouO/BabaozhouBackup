@@ -16,5 +16,5 @@
 修改enable-rcon=true  
 修改rcon.password=你喜欢的密码  
 修改rcon.port=你喜欢的端口（其实默认即可）  
-在BBZBackup程序中的主程序设置窗口填写你刚刚设置的密码和端口并保存  
+在BBZBackup程序中的RCON(cli)设置窗口填写你刚刚设置的密码和端口并保存  
 配置好所有可配置的（除非你不用）即可
