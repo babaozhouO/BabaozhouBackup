@@ -4,14 +4,32 @@
     <_LastSelectedProfileId>C:\Users\wy_13\Desktop\支持增量备份、sftp和Minecraft服务端启停的备份程序\八宝粥备份\My Project\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Update="7-ZipSettingsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="LogsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="MainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ServiceSettingsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UselessToolsForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="MainSettingsForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="ServiceSettingsForm.vb">
+    <Compile Update="RCONSettingsForm.vb">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="SftpSettingsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="开关控件.vb">
+      <SubType>Component</SubType>
     </Compile>
   </ItemGroup>
 </Project>

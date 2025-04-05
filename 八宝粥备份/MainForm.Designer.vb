@@ -1,7 +1,7 @@
 ﻿' Copyright 2025 八宝粥(Email:1749861851@qq.com)
 ' Licensed under the Apache License, Version 2.0 (see LICENSE file).
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class 主窗口
+Partial Class MainForm
     Inherits System.Windows.Forms.Form
 
     'Form 重写 Dispose，以清理组件列表。
@@ -25,7 +25,7 @@ Partial Class 主窗口
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(主窗口))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         NowTimer = New Timer(components)
         IntroductionLabel = New Label()
         LogsLabel = New Label()
@@ -45,7 +45,6 @@ Partial Class 主窗口
         ReturnButton = New Button()
         ChanegeImageTimer = New Timer(components)
         PictureBox = New PictureBox()
-        LogsRichTextBox = New RichTextBox()
         倒计时进度条 = New ProgressBar()
         倒计时数字显示 = New Label()
         CType(PictureBox, ComponentModel.ISupportInitialize).BeginInit()
@@ -228,15 +227,6 @@ Partial Class 主窗口
         PictureBox.TabIndex = 19
         PictureBox.TabStop = False
         ' 
-        ' LogsRichTextBox
-        ' 
-        LogsRichTextBox.BackColor = SystemColors.Window
-        LogsRichTextBox.Location = New Point(30, 30)
-        LogsRichTextBox.Name = "LogsRichTextBox"
-        LogsRichTextBox.Size = New Size(650, 410)
-        LogsRichTextBox.TabIndex = 20
-        LogsRichTextBox.Text = ""
-        ' 
         ' 倒计时进度条
         ' 
         倒计时进度条.Location = New Point(736, 486)
@@ -255,7 +245,7 @@ Partial Class 主窗口
         倒计时数字显示.TabIndex = 22
         倒计时数字显示.Text = "N/A秒后切换下一张"
         ' 
-        ' 主窗口
+        ' MainForm
         ' 
         AutoScaleMode = AutoScaleMode.None
         AutoScroll = True
@@ -264,7 +254,6 @@ Partial Class 主窗口
         ClientSize = New Size(964, 511)
         Controls.Add(倒计时数字显示)
         Controls.Add(倒计时进度条)
-        Controls.Add(LogsRichTextBox)
         Controls.Add(IntroductionLabel)
         Controls.Add(ReturnButton)
         Controls.Add(ButtonSightseeing)
@@ -287,8 +276,8 @@ Partial Class 主窗口
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MaximizeBox = False
         MaximumSize = New Size(980, 550)
-        MinimumSize = New Size(100, 100)
-        Name = "主窗口"
+        MinimumSize = New Size(980, 550)
+        Name = "MainForm"
         StartPosition = FormStartPosition.CenterScreen
         Text = "八宝粥备份"
         CType(PictureBox, ComponentModel.ISupportInitialize).EndInit()
@@ -314,7 +303,6 @@ Partial Class 主窗口
     Friend WithEvents ReturnButton As Button
     Friend WithEvents ChanegeImageTimer As Timer
     Friend WithEvents PictureBox As PictureBox
-    Friend WithEvents LogsRichTextBox As RichTextBox
     Friend WithEvents 倒计时进度条 As ProgressBar
     Friend WithEvents 倒计时数字显示 As Label
 

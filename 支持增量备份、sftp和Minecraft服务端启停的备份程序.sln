@@ -5,6 +5,8 @@ VisualStudioVersion = 17.13.35919.96
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "八宝粥备份", "八宝粥备份\八宝粥备份.vbproj", "{95241605-987B-419A-B9FA-0E42BA2FE20D}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "八宝粥备份安装程序", "八宝粥备份安装程序\八宝粥备份安装程序.vdproj", "{7CF5C570-813C-D8ED-3C05-F0436ED9BF4A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,8 @@ Global
 		{95241605-987B-419A-B9FA-0E42BA2FE20D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95241605-987B-419A-B9FA-0E42BA2FE20D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95241605-987B-419A-B9FA-0E42BA2FE20D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CF5C570-813C-D8ED-3C05-F0436ED9BF4A}.Debug|Any CPU.ActiveCfg = Debug
+		{7CF5C570-813C-D8ED-3C05-F0436ED9BF4A}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

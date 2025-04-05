@@ -6,18 +6,18 @@
     <UseWindowsForms>true</UseWindowsForms>
     <MyType>WindowsForms</MyType>
     <ApplicationIcon>八宝粥.ico</ApplicationIcon>
+    <AssemblyVersion>1.0.1.9</AssemblyVersion>
+    <FileVersion>1.0.1.9</FileVersion>
+    <Version>1.0.1.9</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="MainConfig.ini" />
+    <None Remove="rsxkdoj5.3gq~" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="八宝粥.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="7z.exe" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,11 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
+    <PackageReference Include="SSH.NET" Version="2024.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -57,6 +53,9 @@
 
   <ItemGroup>
     <None Update="LICENSE">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="资源\7z.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="My Project\Application.myapp">
@@ -121,6 +120,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="背景图片\MCBackground.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="资源\7z2409-x64.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="配置文件\7-ZipConfig.ini">

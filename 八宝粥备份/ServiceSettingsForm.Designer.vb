@@ -1,7 +1,7 @@
 ﻿' Copyright 2025 八宝粥(Email:1749861851@qq.com)
 ' Licensed under the Apache License, Version 2.0 (see LICENSE file).
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class FormService
+Partial Class ServiceSettingsForm
     Inherits System.Windows.Forms.Form
 
     'Form 重写 Dispose，以清理组件列表。
@@ -24,7 +24,7 @@ Partial Class FormService
     '不要使用代码编辑器修改它。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormService))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(ServiceSettingsForm))
         Label1 = New Label()
         SetupButton = New Button()
         ButtonUninstall = New Button()
@@ -67,7 +67,7 @@ Partial Class FormService
         Buttondone.Text = "完成"
         Buttondone.UseVisualStyleBackColor = True
         ' 
-        ' FormService
+        ' ServiceSettingsForm
         ' 
         AcceptButton = Buttondone
         AutoScaleDimensions = New SizeF(8F, 19F)
@@ -82,10 +82,11 @@ Partial Class FormService
         ForeColor = SystemColors.ControlText
         FormBorderStyle = FormBorderStyle.FixedSingle
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
+        Location = New Point(1050, 400)
         MaximizeBox = False
         MinimizeBox = False
-        Name = "FormService"
-        StartPosition = FormStartPosition.CenterScreen
+        Name = "ServiceSettingsForm"
+        StartPosition = FormStartPosition.Manual
         Text = "安装/卸载系统服务"
         TopMost = True
         ResumeLayout(False)
