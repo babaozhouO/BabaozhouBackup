@@ -2,7 +2,7 @@
 ' Licensed under the Apache License, Version 2.0 (see LICENSE file).
 Public Class ServiceSettingsForm
     Private Sub 添加日志(信息 As String, 颜色 As Color) ' 添加日志
-        MainForm.日志窗口.添加日志(信息, 颜色)
+        日志窗口.添加日志(信息, 颜色)
     End Sub
     Private Sub Buttondone_Click(sender As Object, e As EventArgs) Handles Buttondone.Click
         Dim 用户选择 As Integer = MessageBox.Show("确认退出?", "提示", MessageBoxButtons.YesNo)
@@ -20,13 +20,13 @@ Public Class ServiceSettingsForm
     ' 窗口激活时更新日志位置
     Private Sub ServiceSettingsForm_Activated(sender As Object, e As EventArgs) Handles MyBase.Activated
         If Owner IsNot Nothing AndAlso TypeOf Owner Is MainForm Then
-            DirectCast(Owner, MainForm).日志窗口.更新停靠位置(Me)
+            日志窗口.更新停靠位置(Me)
         End If
     End Sub
     ' 窗口移动时更新日志位置
     Private Sub ServiceSettingsForm_Move(sender As Object, e As EventArgs) Handles MyBase.Move
         If Owner IsNot Nothing AndAlso TypeOf Owner Is MainForm Then
-            DirectCast(Owner, MainForm).日志窗口.更新停靠位置(Me)
+            日志窗口.更新停靠位置(Me)
         End If
     End Sub
 End Class

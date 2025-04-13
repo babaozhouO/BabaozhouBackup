@@ -1,299 +1,398 @@
 ﻿' Copyright 2025 八宝粥(Email:1749861851@qq.com)
 ' Licensed under the Apache License, Version 2.0 (see LICENSE file).
+Imports System.IO
 Imports System.Runtime.InteropServices
 Imports System.Text
-Imports System.Drawing
-Imports System.Windows.Forms
 
 Module 配置文件操作模块
     '----------------------------------------全局变量----------------------------------------
     '-----------------------主程序设置-----------------------
-    Public 运行时间 As String
+    Public Property 运行时间 As String
+    Public Property 间隔天数 As String
+    Public Property 日志窗口隐藏状态 As Boolean = False
     '-----------------------RCON1设置-----------------------
-    Public RCON1开关 As String
-    Public RCON1名称 As String
-    Public RCON1地址 As String
-    Public RCON1端口 As String
-    Public RCON1密码 As String
+    Public Property 是否控制MC服务端1 As Boolean
+    Public Property MC服务端1名称 As String
+    Public Property RCON1地址 As String
+    Public Property RCON1端口 As String
+    Public Property RCON1密码 As String
+    Public Property MC服务端1路径 As String
+    Public Property MC服务端1启动脚本名称 As String
+    Public Property 备份MC服务端1排除文件参数 As String
     '-----------------------RCON2设置-----------------------
-    Public RCON2开关 As String
-    Public RCON2名称 As String
-    Public RCON2地址 As String
-    Public RCON2端口 As String
-    Public RCON2密码 As String
+    Public Property 是否控制MC服务端2 As Boolean
+    Public Property MC服务端2名称 As String
+    Public Property RCON2地址 As String
+    Public Property RCON2端口 As String
+    Public Property RCON2密码 As String
+    Public Property MC服务端2路径 As String
+    Public Property MC服务端2启动脚本名称 As String
+    Public Property 备份MC服务端2排除文件参数 As String
     '-----------------------RCON3设置-----------------------
-    Public RCON3开关 As String
-    Public RCON3名称 As String
-    Public RCON3地址 As String
-    Public RCON3端口 As String
-    Public RCON3密码 As String
+    Public Property 是否控制MC服务端3 As Boolean
+    Public Property MC服务端3名称 As String
+    Public Property RCON3地址 As String
+    Public Property RCON3端口 As String
+    Public Property RCON3密码 As String
+    Public Property MC服务端3路径 As String
+    Public Property MC服务端3启动脚本名称 As String
+    Public Property 备份MC服务端3排除文件参数 As String
     '-----------------------RCON4设置-----------------------
-    Public RCON4开关 As String
-    Public RCON4名称 As String
-    Public RCON4地址 As String
-    Public RCON4端口 As String
-    Public RCON4密码 As String
+    Public Property 是否控制MC服务端4 As Boolean
+    Public Property MC服务端4名称 As String
+    Public Property RCON4地址 As String
+    Public Property RCON4端口 As String
+    Public Property RCON4密码 As String
+    Public Property MC服务端4路径 As String
+    Public Property MC服务端4启动脚本名称 As String
+    Public Property 备份MC服务端4排除文件参数 As String
     '-----------------------RCON5设置-----------------------
-    Public RCON5开关 As String
-    Public RCON5名称 As String
-    Public RCON5地址 As String
-    Public RCON5端口 As String
-    Public RCON5密码 As String
+    Public Property 是否控制MC服务端5 As Boolean
+    Public Property MC服务端5名称 As String
+    Public Property RCON5地址 As String
+    Public Property RCON5端口 As String
+    Public Property RCON5密码 As String
+    Public Property MC服务端5路径 As String
+    Public Property MC服务端5启动脚本名称 As String
+    Public Property 备份MC服务端5排除文件参数 As String
     '-----------------------RCON6设置-----------------------
-    Public RCON6开关 As String
-    Public RCON6名称 As String
-    Public RCON6地址 As String
-    Public RCON6端口 As String
-    Public RCON6密码 As String
+    Public Property 是否控制MC服务端6 As Boolean
+    Public Property MC服务端6名称 As String
+    Public Property RCON6地址 As String
+    Public Property RCON6端口 As String
+    Public Property RCON6密码 As String
+    Public Property MC服务端6路径 As String
+    Public Property MC服务端6启动脚本名称 As String
+    Public Property 备份MC服务端6排除文件参数 As String
     '-----------------------RCON7设置-----------------------
-    Public RCON7开关 As String
-    Public RCON7名称 As String
-    Public RCON7地址 As String
-    Public RCON7端口 As String
-    Public RCON7密码 As String
+    Public Property 是否控制MC服务端7 As Boolean
+    Public Property MC服务端7名称 As String
+    Public Property RCON7地址 As String
+    Public Property RCON7端口 As String
+    Public Property RCON7密码 As String
+    Public Property MC服务端7路径 As String
+    Public Property MC服务端7启动脚本名称 As String
+    Public Property 备份MC服务端7排除文件参数 As String
     '-----------------------RCON8设置-----------------------
-    Public RCON8开关 As String
-    Public RCON8名称 As String
-    Public RCON8地址 As String
-    Public RCON8端口 As String
-    Public RCON8密码 As String
+    Public Property 是否控制MC服务端8 As Boolean
+    Public Property MC服务端8名称 As String
+    Public Property RCON8地址 As String
+    Public Property RCON8端口 As String
+    Public Property RCON8密码 As String
+    Public Property MC服务端8路径 As String
+    Public Property MC服务端8启动脚本名称 As String
+    Public Property 备份MC服务端8排除文件参数 As String
     '-----------------------RCON9设置-----------------------
-    Public RCON9开关 As String
-    Public RCON9名称 As String
-    Public RCON9地址 As String
-    Public RCON9端口 As String
-    Public RCON9密码 As String
+    Public Property 是否控制MC服务端9 As Boolean
+    Public Property MC服务端9名称 As String
+    Public Property RCON9地址 As String
+    Public Property RCON9端口 As String
+    Public Property RCON9密码 As String
+    Public Property MC服务端9路径 As String
+    Public Property MC服务端9启动脚本名称 As String
+    Public Property 备份MC服务端9排除文件参数 As String
     '-----------------------RCON10设置-----------------------
-    Public RCON10开关 As String
-    Public RCON10名称 As String
-    Public RCON10地址 As String
-    Public RCON10端口 As String
-    Public RCON10密码 As String
+    Public Property 是否控制MC服务端10 As Boolean
+    Public Property MC服务端10名称 As String
+    Public Property RCON10地址 As String
+    Public Property RCON10端口 As String
+    Public Property RCON10密码 As String
+    Public Property MC服务端10路径 As String
+    Public Property MC服务端10启动脚本名称 As String
+    Public Property 备份MC服务端10排除文件参数 As String
     '-----------------------7zip设置-----------------------
     ' 基本参数
-    Public Property 压缩格式 As String = "7z"
-    Public Property 覆盖模式 As String = "a" ' a=覆盖, s=跳过, t=重命名, u=更新
-    ' 压缩级别
-    Public Property 压缩级别 As String = "9" ' 0-9
-    ' 压缩算法
-    Public Property 压缩算法 As String = "LZMA2"
-    Public Property 字典大小 As String = "64m" ' 如: 32m, 64m, 128m
-    Public Property 单词大小 As Integer = 273
-    Public Property 固实模式 As Boolean = True
-    Public Property 多线程 As Boolean = True
-    ' 密码保护
-    Public Property 压缩密码 As String = ""
-    Public Property 加密文件名 As Boolean = False
-    ' 分卷压缩
-    Public Property 分卷大小 As String = "" ' 如: "500m", "1g"
-    ' 文件管理
-    Public Property 排除文件 As New List(Of String) ' 要排除的文件掩码列表
-    ' 高级设置
-    Public Property 快速字节数 As Integer = 273 ' LZMA算法专用
-    Public Property 快速排序模式 As Boolean = False
-    Public Property 保留创建时间 As Boolean = True
+    Public Property 压缩格式 As String
+    Public Property 压缩级别 As String
+    Public Property 线程数 As String
+    Public Property 备份输出目录 As String
+    Public Property 自定义备份目录 As String
+    Public Property 是否增量备份 As Boolean
+    Public Property 是否备份自定义目录 As Boolean
     '-----------------------Sftp1设置-----------------------
-    Public Sftp1开关 As String
-    Public Sftp1名称 As String
-    Public Sftp1地址 As String
-    Public Sftp1端口 As String
-    Public Sftp1用户名 As String
-    Public Sftp1密码 As String
+    Public Property Sftp1开关 As Boolean
+    Public Property Sftp1名称 As String
+    Public Property Sftp1地址 As String
+    Public Property Sftp1端口 As String
+    Public Property Sftp1用户名 As String
+    Public Property Sftp1密码 As String
     '-----------------------Sftp2设置-----------------------
-    Public Sftp2开关 As String
-    Public Sftp2名称 As String
-    Public Sftp2地址 As String
-    Public Sftp2端口 As String
-    Public Sftp2用户名 As String
-    Public Sftp2密码 As String
+    Public Property Sftp2开关 As Boolean
+    Public Property Sftp2名称 As String
+    Public Property Sftp2地址 As String
+    Public Property Sftp2端口 As String
+    Public Property Sftp2用户名 As String
+    Public Property Sftp2密码 As String
     '-----------------------Sftp3设置-----------------------
-    Public Sftp3开关 As String
-    Public Sftp3名称 As String
-    Public Sftp3地址 As String
-    Public Sftp3端口 As String
-    Public Sftp3用户名 As String
-    Public Sftp3密码 As String
-    '-----------------------配置文件操作函数-----------------------
-    <DllImport("kernel32", CharSet:=CharSet.Unicode)>
-    Private Function GetPrivateProfileString(section As String, key As String, def As String, retVal As StringBuilder, Size As Integer, filePath As String) As Integer '调用ini读取的系统函数
-    End Function '函数声明结束
-    <DllImport("kernel32", CharSet:=CharSet.Unicode)>
-    Public Function WritePrivateProfileString(section As String, key As String, val As String, filePath As String) As Integer '调用ini写入的系统函数
-    End Function
-    Public Function 读取配置(section As String, key As String, def As String, filePath As String) As String '读取配置文件功能
-        Dim result As New StringBuilder(1024)
-        GetPrivateProfileString(section, key, def, result, 1024, filePath) '读取配置项
-        Return result.ToString() '返回配置项值
-    End Function
-    Public Function 写入配置(section As String, key As String, val As String, filePath As String) As Integer '写入配置文件功能
-        Return WritePrivateProfileString(section, key, val, filePath) '写入配置项
-    End Function
+    Public Property Sftp3开关 As Boolean
+    Public Property Sftp3名称 As String
+    Public Property Sftp3地址 As String
+    Public Property Sftp3端口 As String
+    Public Property Sftp3用户名 As String
+    Public Property Sftp3密码 As String
+    ''-----------------------配置文件操作函数-----------------------
+    '<DllImport("kernel32", CharSet:=CharSet.Unicode)>
+    'Private Function GetPrivateProfileString(section As String, key As String, def As String, retVal As StringBuilder, Size As Integer, filePath As String) As Integer '调用ini读取的系统函数
+    'End Function '函数声明结束
+    '<DllImport("kernel32", CharSet:=CharSet.Unicode)>
+    'Public Function WritePrivateProfileString(section As String, key As String, val As String, filePath As String) As Integer '调用ini写入的系统函数
+    'End Function
+    'Public Function 读取配置(section As String, key As String, def As String, filePath As String) As String '读取配置文件功能
+    '    Dim result As New StringBuilder(1024)
+    '    GetPrivateProfileString(section, key, def, result, 1024, filePath) '读取配置项
+    '    Return result.ToString() '返回配置项值
+    'End Function
+    'Public Function 写入配置(section As String, key As String, val As String, filePath As String) As Integer '写入配置文件功能
+    '    Return WritePrivateProfileString(section, key, val, filePath) '写入配置项
+    'End Function
     '-----------------------读取主程序配置功能-----------------------
     Public Sub 读取主程序配置()
-        运行时间 = 读取配置("MainSettings", "Runtime", "03:00:00", "配置文件/MainConfig.ini")
+        Dim 主程序配置文件 As New Ini文件(Path.Combine("配置文件", "MainConfig.ini"))
+        间隔天数 = 主程序配置文件.获取值("MainSettings", "Days", "1")
+        运行时间 = 主程序配置文件.获取值("MainSettings", "Runtime", "03:00:00")
     End Sub
-    '-----------------------读取RCON配置功能-----------------------
-    Public Sub 读取RCON配置()
-        读取RCON1配置()
-        读取RCON2配置()
-        读取RCON3配置()
-        读取RCON4配置()
-        读取RCON5配置()
-        读取RCON6配置()
-        读取RCON7配置()
-        读取RCON8配置()
-        读取RCON9配置()
-        读取RCON10配置()
+    '-----------------------读取MC服务端配置功能-----------------------
+    Public Sub 读取MC服务端配置()
+        Dim MC服务器配置文件 As New Ini文件(Path.Combine("配置文件", "MCServerConfig.ini"))
+        '-----------------------读取MC服务端1配置-----------------------
+        是否控制MC服务端1 = MC服务器配置文件.获取值("MCServer1Config", "Enable", "False")
+        MC服务端1名称 = MC服务器配置文件.获取值("MCServer1Config", "Name", "MC服务器1")
+        RCON1地址 = MC服务器配置文件.获取值("MCServer1Config", "RCONIP", "25575")
+        RCON1端口 = MC服务器配置文件.获取值("MCServer1Config", "RCONPort", "127.0.0.1")
+        RCON1密码 = MC服务器配置文件.获取值("MCServer1Config", "RCONPassword", "")
+        MC服务端1路径 = MC服务器配置文件.获取值("MCServer1Config", "ServerPath", "")
+        MC服务端1启动脚本名称 = MC服务器配置文件.获取值("MCServer1Config", "StartBatPath", "")
+        备份MC服务端1排除文件参数 = MC服务器配置文件.获取值("MCServer1Config", "BackupServerExcludedFile", "")
+        '-----------------------读取MC服务端2配置-----------------------
+        是否控制MC服务端2 = MC服务器配置文件.获取值("MCServer2Config", "Enable", "False")
+        MC服务端2名称 = MC服务器配置文件.获取值("MCServer2Config", "Name", "MC服务器2")
+        RCON2地址 = MC服务器配置文件.获取值("MCServer2Config", "RCONIP", "25576")
+        RCON2端口 = MC服务器配置文件.获取值("MCServer2Config", "RCONPort", "127.0.0.1")
+        RCON2密码 = MC服务器配置文件.获取值("MCServer2Config", "RCONPassword", "")
+        MC服务端2路径 = MC服务器配置文件.获取值("MCServer2Config", "ServerPath", "")
+        MC服务端2启动脚本名称 = MC服务器配置文件.获取值("MCServer2Config", "StartBatPath", "")
+        备份MC服务端2排除文件参数 = MC服务器配置文件.获取值("MCServer2Config", "BackupServerExcludedFile", "")
+        '-----------------------读取MC服务端3配置-----------------------
+        是否控制MC服务端3 = MC服务器配置文件.获取值("MCServer3Config", "Enable", "False")
+        MC服务端3名称 = MC服务器配置文件.获取值("MCServer3Config", "Name", "MC服务器3")
+        RCON3地址 = MC服务器配置文件.获取值("MCServer3Config", "RCONIP", "25577")
+        RCON3端口 = MC服务器配置文件.获取值("MCServer3Config", "RCONPort", "127.0.0.1")
+        RCON3密码 = MC服务器配置文件.获取值("MCServer3Config", "RCONPassword", "")
+        MC服务端3路径 = MC服务器配置文件.获取值("MCServer3Config", "ServerPath", "")
+        MC服务端3启动脚本名称 = MC服务器配置文件.获取值("MCServer3Config", "StartBatPath", "")
+        备份MC服务端3排除文件参数 = MC服务器配置文件.获取值("MCServer3Config", "BackupServerExcludedFile", "")
+        '-----------------------读取MC服务端4配置-----------------------
+        是否控制MC服务端4 = MC服务器配置文件.获取值("MCServer4Config", "Enable", "False")
+        MC服务端4名称 = MC服务器配置文件.获取值("MCServer4Config", "Name", "MC服务器4")
+        RCON4地址 = MC服务器配置文件.获取值("MCServer4Config", "RCONIP", "25578")
+        RCON4端口 = MC服务器配置文件.获取值("MCServer4Config", "RCONPort", "127.0.0.1")
+        RCON4密码 = MC服务器配置文件.获取值("MCServer4Config", "RCONPassword", "")
+        MC服务端4路径 = MC服务器配置文件.获取值("MCServer4Config", "ServerPath", "")
+        MC服务端4启动脚本名称 = MC服务器配置文件.获取值("MCServer4Config", "StartBatPath", "")
+        备份MC服务端4排除文件参数 = MC服务器配置文件.获取值("MCServer4Config", "BackupServerExcludedFile", "")
+        '-----------------------读取MC服务端5配置-----------------------
+        是否控制MC服务端5 = MC服务器配置文件.获取值("MCServer5Config", "Enable", "False")
+        MC服务端5名称 = MC服务器配置文件.获取值("MCServer5Config", "Name", "MC服务器5")
+        RCON5地址 = MC服务器配置文件.获取值("MCServer5Config", "RCONIP", "25579")
+        RCON5端口 = MC服务器配置文件.获取值("MCServer5Config", "RCONPort", "127.0.0.1")
+        RCON5密码 = MC服务器配置文件.获取值("MCServer5Config", "RCONPassword", "")
+        MC服务端5路径 = MC服务器配置文件.获取值("MCServer5Config", "ServerPath", "")
+        MC服务端5启动脚本名称 = MC服务器配置文件.获取值("MCServer5Config", "StartBatPath", "")
+        备份MC服务端5排除文件参数 = MC服务器配置文件.获取值("MCServer5Config", "BackupServerExcludedFile", "")
+        '-----------------------读取MC服务端6配置-----------------------
+        是否控制MC服务端6 = MC服务器配置文件.获取值("MCServer6Config", "Enable", "False")
+        MC服务端6名称 = MC服务器配置文件.获取值("MCServer6Config", "Name", "MC服务器6")
+        RCON6地址 = MC服务器配置文件.获取值("MCServer6Config", "RCONIP", "25580")
+        RCON6端口 = MC服务器配置文件.获取值("MCServer6Config", "RCONPort", "127.0.0.1")
+        RCON6密码 = MC服务器配置文件.获取值("MCServer6Config", "RCONPassword", "")
+        MC服务端6路径 = MC服务器配置文件.获取值("MCServer6Config", "ServerPath", "")
+        MC服务端6启动脚本名称 = MC服务器配置文件.获取值("MCServer6Config", "StartBatPath", "")
+        备份MC服务端6排除文件参数 = MC服务器配置文件.获取值("MCServer6Config", "BackupServerExcludedFile", "")
+        '-----------------------读取MC服务端7配置-----------------------
+        是否控制MC服务端7 = MC服务器配置文件.获取值("MCServer7Config", "Enable", "False")
+        MC服务端7名称 = MC服务器配置文件.获取值("MCServer7Config", "Name", "MC服务器7")
+        RCON7地址 = MC服务器配置文件.获取值("MCServer7Config", "RCONIP", "25581")
+        RCON7端口 = MC服务器配置文件.获取值("MCServer7Config", "RCONPort", "127.0.0.1")
+        RCON7密码 = MC服务器配置文件.获取值("MCServer7Config", "RCONPassword", "")
+        MC服务端7路径 = MC服务器配置文件.获取值("MCServer7Config", "ServerPath", "")
+        MC服务端7启动脚本名称 = MC服务器配置文件.获取值("MCServer7Config", "StartBatPath", "")
+        备份MC服务端7排除文件参数 = MC服务器配置文件.获取值("MCServer7Config", "BackupServerExcludedFile", "")
+        '-----------------------读取MC服务端8配置-----------------------
+        是否控制MC服务端8 = MC服务器配置文件.获取值("MCServer8Config", "Enable", "False")
+        MC服务端8名称 = MC服务器配置文件.获取值("MCServer8Config", "Name", "MC服务器8")
+        RCON8地址 = MC服务器配置文件.获取值("MCServer8Config", "RCONIP", "25582")
+        RCON8端口 = MC服务器配置文件.获取值("MCServer8Config", "RCONPort", "127.0.0.1")
+        RCON8密码 = MC服务器配置文件.获取值("MCServer8Config", "RCONPassword", "")
+        MC服务端8路径 = MC服务器配置文件.获取值("MCServer8Config", "ServerPath", "")
+        MC服务端8启动脚本名称 = MC服务器配置文件.获取值("MCServer8Config", "StartBatPath", "")
+        备份MC服务端8排除文件参数 = MC服务器配置文件.获取值("MCServer8Config", "BackupServerExcludedFile", "")
+        '-----------------------读取MC服务端9配置-----------------------
+        是否控制MC服务端9 = MC服务器配置文件.获取值("MCServer9Config", "Enable", "False")
+        MC服务端9名称 = MC服务器配置文件.获取值("MCServer9Config", "Name", "MC服务器9")
+        RCON9地址 = MC服务器配置文件.获取值("MCServer9Config", "RCONIP", "25583")
+        RCON9端口 = MC服务器配置文件.获取值("MCServer9Config", "RCONPort", "127.0.0.1")
+        RCON9密码 = MC服务器配置文件.获取值("MCServer9Config", "RCONPassword", "")
+        MC服务端9路径 = MC服务器配置文件.获取值("MCServer9Config", "ServerPath", "")
+        MC服务端9启动脚本名称 = MC服务器配置文件.获取值("MCServer9Config", "StartBatPath", "")
+        备份MC服务端9排除文件参数 = MC服务器配置文件.获取值("MCServer9Config", "BackupServerExcludedFile", "")
+        '-----------------------读取MC服务端10配置-----------------------
+        是否控制MC服务端10 = MC服务器配置文件.获取值("MCServer10Config", "Enable", "False")
+        MC服务端10名称 = MC服务器配置文件.获取值("MCServer10Config", "Name", "MC服务器10")
+        RCON10地址 = MC服务器配置文件.获取值("MCServer10Config", "RCONIP", "25584")
+        RCON10端口 = MC服务器配置文件.获取值("MCServer10Config", "RCONPort", "127.0.0.1")
+        RCON10密码 = MC服务器配置文件.获取值("MCServer10Config", "RCONPassword", "")
+        MC服务端10路径 = MC服务器配置文件.获取值("MCServer10Config", "ServerPath", "")
+        MC服务端10启动脚本名称 = MC服务器配置文件.获取值("MCServer10Config", "StartBatPath", "")
+        备份MC服务端10排除文件参数 = MC服务器配置文件.获取值("MCServer10Config", "BackupServerExcludedFile", "")
     End Sub
-    '-----------------------读取RCON1配置功能-----------------------
-    Public Sub 读取RCON1配置()
-        RCON1开关 = 读取配置("RCONConfig", "Server1", "ON", "配置文件/RCONConfig.ini")
-        RCON1名称 = 读取配置("RCONConfig", "Server1Name", "Server1", "配置文件/RCONConfig.ini")
-        RCON1地址 = 读取配置("RCONConfig", "Server1IP", "127.0.0.1", "配置文件/RCONConfig.ini")
-        RCON1端口 = 读取配置("RCONConfig", "Server1Port", "25575", "配置文件/RCONConfig.ini")
-        RCON1密码 = 读取配置("RCONConfig", "Server1Password", "空", "配置文件/RCONConfig.ini")
-    End Sub
-    '-----------------------读取RCON2配置功能-----------------------
-    Public Sub 读取RCON2配置()
-        RCON2开关 = 读取配置("RCONConfig", "Server2", "OFF", "配置文件/RCONConfig.ini")
-        RCON2名称 = 读取配置("RCONConfig", "Server2Name", "Server3", "配置文件/RCONConfig.ini")
-        RCON2地址 = 读取配置("RCONConfig", "Server2IP", "127.0.0.1", "配置文件/RCONConfig.ini")
-        RCON2端口 = 读取配置("RCONConfig", "Server2Port", "25576", "配置文件/RCONConfig.ini")
-        RCON2密码 = 读取配置("RCONConfig", "Server2Password", "空", "配置文件/RCONConfig.ini")
-    End Sub
-    '-----------------------读取RCON3配置功能-----------------------
-    Public Sub 读取RCON3配置()
-        RCON3开关 = 读取配置("RCONConfig", "Server3", "OFF", "配置文件/RCONConfig.ini")
-        RCON3名称 = 读取配置("RCONConfig", "Server3Name", "Server3", "配置文件/RCONConfig.ini")
-        RCON3地址 = 读取配置("RCONConfig", "Server3IP", "127.0.0.1", "配置文件/RCONConfig.ini")
-        RCON3端口 = 读取配置("RCONConfig", "Server3Port", "25577", "配置文件/RCONConfig.ini")
-        RCON3密码 = 读取配置("RCONConfig", "Server3Password", "空", "配置文件/RCONConfig.ini")
-    End Sub
-    '-----------------------读取RCON4配置功能-----------------------
-    Public Sub 读取RCON4配置()
-        RCON4开关 = 读取配置("RCONConfig", "Server4", "OFF", "配置文件/RCONConfig.ini")
-        RCON4名称 = 读取配置("RCONConfig", "Server4Name", "Server4", "配置文件/RCONConfig.ini")
-        RCON4地址 = 读取配置("RCONConfig", "Server4IP", "127.0.0.1", "配置文件/RCONConfig.ini")
-        RCON4端口 = 读取配置("RCONConfig", "Server4Port", "25578", "配置文件/RCONConfig.ini")
-        RCON4密码 = 读取配置("RCONConfig", "Server4Password", "空", "配置文件/RCONConfig.ini")
-    End Sub
-    '-----------------------读取RCON5配置功能-----------------------
-    Public Sub 读取RCON5配置()
-        RCON5开关 = 读取配置("RCONConfig", "Server5", "OFF", "配置文件/RCONConfig.ini")
-        RCON5名称 = 读取配置("RCONConfig", "Server5Name", "Server4", "配置文件/RCONConfig.ini")
-        RCON5地址 = 读取配置("RCONConfig", "Server5IP", "127.0.0.1", "配置文件/RCONConfig.ini")
-        RCON5端口 = 读取配置("RCONConfig", "Server5Port", "25579", "配置文件/RCONConfig.ini")
-        RCON5密码 = 读取配置("RCONConfig", "Server5Password", "空", "配置文件/RCONConfig.ini")
-    End Sub
-    '-----------------------读取RCON6配置功能-----------------------
-    Public Sub 读取RCON6配置()
-        RCON6开关 = 读取配置("RCONConfig", "Server6", "OFF", "配置文件/RCONConfig.ini")
-        RCON6名称 = 读取配置("RCONConfig", "Server6Name", "Server4", "配置文件/RCONConfig.ini")
-        RCON6地址 = 读取配置("RCONConfig", "Server6IP", "127.0.0.1", "配置文件/RCONConfig.ini")
-        RCON6端口 = 读取配置("RCONConfig", "Server6Port", "25580", "配置文件/RCONConfig.ini")
-        RCON6密码 = 读取配置("RCONConfig", "Server6Password", "空", "配置文件/RCONConfig.ini")
-    End Sub
-    '-----------------------读取RCON7配置功能-----------------------
-    Public Sub 读取RCON7配置()
-        RCON7开关 = 读取配置("RCONConfig", "Server7", "OFF", "配置文件/RCONConfig.ini")
-        RCON7名称 = 读取配置("RCONConfig", "Server7Name", "Server3", "配置文件/RCONConfig.ini")
-        RCON7地址 = 读取配置("RCONConfig", "Server7IP", "127.0.0.1", "配置文件/RCONConfig.ini")
-        RCON7端口 = 读取配置("RCONConfig", "Server7Port", "25581", "配置文件/RCONConfig.ini")
-        RCON7密码 = 读取配置("RCONConfig", "Server7Password", "空", "配置文件/RCONConfig.ini")
-    End Sub
-    '-----------------------读取RCON8配置功能-----------------------
-    Public Sub 读取RCON8配置()
-        RCON8开关 = 读取配置("RCONConfig", "Server8", "OFF", "配置文件/RCONConfig.ini")
-        RCON8名称 = 读取配置("RCONConfig", "Server8Name", "Server4", "配置文件/RCONConfig.ini")
-        RCON8地址 = 读取配置("RCONConfig", "Server8IP", "127.0.0.1", "配置文件/RCONConfig.ini")
-        RCON8端口 = 读取配置("RCONConfig", "Server8Port", "25582", "配置文件/RCONConfig.ini")
-        RCON8密码 = 读取配置("RCONConfig", "Server8Password", "空", "配置文件/RCONConfig.ini")
-    End Sub
-    '-----------------------读取RCON9配置功能-----------------------
-    Public Sub 读取RCON9配置()
-        RCON9开关 = 读取配置("RCONConfig", "Server9", "OFF", "配置文件/RCONConfig.ini")
-        RCON9名称 = 读取配置("RCONConfig", "Server9Name", "Server4", "配置文件/RCONConfig.ini")
-        RCON9地址 = 读取配置("RCONConfig", "Server9IP", "127.0.0.1", "配置文件/RCONConfig.ini")
-        RCON9端口 = 读取配置("RCONConfig", "Server9Port", "25583", "配置文件/RCONConfig.ini")
-        RCON9密码 = 读取配置("RCONConfig", "Server9Password", "空", "配置文件/RCONConfig.ini")
-    End Sub
-    '-----------------------读取RCON10配置功能-----------------------
-    Public Sub 读取RCON10配置()
-        RCON10开关 = 读取配置("RCONConfig", "Server10", "OFF", "配置文件/RCONConfig.ini")
-        RCON10名称 = 读取配置("RCONConfig", "Server10Name", "Server4", "配置文件/RCONConfig.ini")
-        RCON10地址 = 读取配置("RCONConfig", "Server10IP", "127.0.0.1", "配置文件/RCONConfig.ini")
-        RCON10端口 = 读取配置("RCONConfig", "Server10Port", "25584", "配置文件/RCONConfig.ini")
-        RCON10密码 = 读取配置("RCONConfig", "Server10Password", "空", "配置文件/RCONConfig.ini")
-    End Sub
-
     '-----------------------读取7zip配置功能-----------------------
     Public Sub 读取7zip配置()
-        压缩格式 = 读取配置("7zipConfig", "ArchiveType", "7z", "配置文件/7-ZipConfig.ini")
-        压缩级别 = 读取配置("7zipConfig", "CompressionLevel", "9", "配置文件/7-ZipConfig.ini")
+        Dim 七zip配置文件 As New Ini文件(Path.Combine("配置文件", "7-ZipConfig.ini"))
+        压缩格式 = 七zip配置文件.获取值("7zipConfig", "ArchiveType", "7z")
+        压缩级别 = 七zip配置文件.获取值("7zipConfig", "CompressionLevel", "9")
+        线程数 = 七zip配置文件.获取值("7zipConfig", "ThreadsCounts", "1")
+        备份输出目录 = 七zip配置文件.获取值("7zipConfig", "BackupOutputDir", "")
+        是否备份自定义目录 = 七zip配置文件.获取值("7zipConfig", "Enable", "False")
+        自定义备份目录 = 七zip配置文件.获取值("7zipConfig", "BackupDir", "")
+        是否增量备份 = 七zip配置文件.获取值("7zipConfig", "IncrementalBackup", True)
     End Sub
     '-----------------------读取Sftp配置功能-----------------------
     Public Sub 读取Sftp配置()
-        读取Sftp1配置()
-        读取Sftp2配置()
-        读取Sftp3配置()
-    End Sub
-    '-----------------------读取Sftp1配置功能-----------------------
-    Public Sub 读取Sftp1配置()
-        Sftp1开关 = 读取配置("SFTPConfig", "Sftp1", "ON", "配置文件/SFTPConfig.ini")
-        Sftp1名称 = 读取配置("SFTPConfig", "Sftp1Name", "SFTP1", "配置文件/SFTPConfig.ini")
-        Sftp1地址 = 读取配置("SFTPConfig", "Sftp1IP", "127.0.0.1", "配置文件/SFTPConfig.ini")
-        Sftp1端口 = 读取配置("SFTPConfig", "Sftp1Port", "22", "配置文件/SFTPConfig.ini")
-        Sftp1用户名 = 读取配置("SFTPConfig", "Sftp1User", "default", "配置文件/SFTPConfig.ini")
-        Sftp1密码 = 读取配置("SFTPConfig", "Sftp1Password", "default", "配置文件/SFTPConfig.ini")
-    End Sub
-    '-----------------------读取Sftp2配置功能-----------------------
-    Public Sub 读取Sftp2配置()
-        Sftp2开关 = 读取配置("SFTPConfig", "Sftp2", "OFF", "配置文件/SFTPConfig.ini")
-        Sftp2名称 = 读取配置("SFTPConfig", "Sftp2Name", "SFTP2", "配置文件/SFTPConfig.ini")
-        Sftp2地址 = 读取配置("SFTPConfig", "Sftp2IP", "127.0.0.1", "配置文件/SFTPConfig.ini")
-        Sftp2端口 = 读取配置("SFTPConfig", "Sftp2Port", "22", "配置文件/SFTPConfig.ini")
-        Sftp2用户名 = 读取配置("SFTPConfig", "Sftp2User", "default", "配置文件/SFTPConfig.ini")
-        Sftp2密码 = 读取配置("SFTPConfig", "Sftp2Password", "default", "配置文件/SFTPConfig.ini")
-    End Sub
-    '-----------------------读取Sftp3配置功能-----------------------
-    Public Sub 读取Sftp3配置()
-        Sftp3开关 = 读取配置("SFTPConfig", "Sftp3", "OFF", "配置文件/SFTPConfig.ini")
-        Sftp3名称 = 读取配置("SFTPConfig", "Sftp3Name", "SFTP3", "配置文件/SFTPConfig.ini")
-        Sftp3地址 = 读取配置("SFTPConfig", "Sftp3IP", "127.0.0.1", "配置文件/SFTPConfig.ini")
-        Sftp3端口 = 读取配置("SFTPConfig", "Sftp3Port", "22", "配置文件/SFTPConfig.ini")
-        Sftp3用户名 = 读取配置("SFTPConfig", "Sftp3User", "default", "配置文件/SFTPConfig.ini")
-        Sftp3密码 = 读取配置("SFTPConfig", "Sftp3Password", "default", "配置文件/SFTPConfig.ini")
+        Dim Sftp配置文件 As New Ini文件(Path.Combine("配置文件", "SFTPConfig.ini"))
+        '-----------------------读取Sftp1配置功能-----------------------
+        Sftp1开关 = Sftp配置文件.获取值("SFTP1Config", "Enable", True)
+        Sftp1名称 = Sftp配置文件.获取值("SFTP1Config", "Name", "SFTP1")
+        Sftp1地址 = Sftp配置文件.获取值("SFTP1Config", "IP", "127.0.0.1")
+        Sftp1端口 = Sftp配置文件.获取值("SFTP1Config", "Port", "22")
+        Sftp1用户名 = Sftp配置文件.获取值("SFTP1Config", "User", "admin")
+        Sftp1密码 = Sftp配置文件.获取值("SFTP1Config", "Password", "")
+        '-----------------------读取Sftp2配置功能-----------------------
+        Sftp2开关 = Sftp配置文件.获取值("SFTP2Config", "Enable", "False")
+        Sftp2名称 = Sftp配置文件.获取值("SFTP2Config", "Name", "SFTP2")
+        Sftp2地址 = Sftp配置文件.获取值("SFTP2Config", "IP", "127.0.0.1")
+        Sftp2端口 = Sftp配置文件.获取值("SFTP2Config", "Port", "22")
+        Sftp2用户名 = Sftp配置文件.获取值("SFTP2Config", "User", "admin")
+        Sftp2密码 = Sftp配置文件.获取值("SFTP2Config", "Password", "")
+        '-----------------------读取Sftp3配置功能-----------------------
+        Sftp3开关 = Sftp配置文件.获取值("SFTP3Config", "Enable", "False")
+        Sftp3名称 = Sftp配置文件.获取值("SFTP3Config", "Name", "SFTP3")
+        Sftp3地址 = Sftp配置文件.获取值("SFTP3Config", "IP", "127.0.0.1")
+        Sftp3端口 = Sftp配置文件.获取值("SFTP3Config", "Port", "22")
+        Sftp3用户名 = Sftp配置文件.获取值("SFTP3Config", "User", "admin")
+        Sftp3密码 = Sftp配置文件.获取值("SFTP3Config", "Password", "")
     End Sub
     '-----------------------写入主程序配置功能-----------------------
-    Public Sub 写入主程序配置(运行时间 As String)
-        写入配置（"MainSettings", "Runtime", 运行时间, "配置文件/MainConfig.ini")
-        If 运行时间 = 读取配置("MainSettings", "Runtime", "03:00:00", "配置文件/MainConfig.ini") Then
-            MainForm.日志窗口.添加日志("[Succeess]主程序配置写入成功", Color.Green)
-            MainForm.日志窗口.添加日志("新运行时间=" + 运行时间, Color.Blue)
+    Public Sub 写入主程序配置(间隔天数 As String, 运行时间 As String)
+        Dim 主程序配置文件 As New Ini文件(Path.Combine("配置文件", "MainConfig.ini"))
+        主程序配置文件.设置值("MainSettings", "Runtime", 运行时间)
+        主程序配置文件.保存()
+        主程序配置文件.设置值("MainSettings", "Days", 间隔天数)
+        主程序配置文件.保存()
+        If 间隔天数 = 主程序配置文件.获取值("MainSettings", "Days", "1") AndAlso 运行时间 = 主程序配置文件.获取值("MainSettings", "Runtime", "03:00:00") Then
+            日志窗口.添加日志("[Succeess]主程序配置写入成功", Color.Green)
+            日志窗口.添加日志("新间隔天数=" + 间隔天数, Color.Blue)
+            日志窗口.添加日志("新运行时间=" + 运行时间, Color.Blue)
         Else
-            MainForm.日志窗口.添加日志("[Failure]主程序配置写入失败", Color.Red)
+            日志窗口.添加日志("[Failure]主程序配置写入失败", Color.Red)
         End If
     End Sub
     '-----------------------写入RCON配置功能-----------------------
-    Public Sub 写入RCON配置(RCON服务器序号 As String, 开关状态 As String, 服务器名称 As String, 地址 As String, 端口 As String, 密码 As String)
-        写入配置("RCONConfig", "Server" + RCON服务器序号, 开关状态, "配置文件/RCONConfig.ini")
-        写入配置("RCONConfig", "Server" + RCON服务器序号 + "Name", 服务器名称, "配置文件/RCONConfig.ini")
-        写入配置("RCONConfig", "Server" + RCON服务器序号 + "IP", 地址, "配置文件/RCONConfig.ini")
-        写入配置("RCONConfig", "Server" + RCON服务器序号 + "Port", 端口, "配置文件/RCONConfig.ini")
-        写入配置("RCONConfig", "Server" + RCON服务器序号 + "Password", 密码, "配置文件/RCONConfig.ini")
+    Public Sub 写入MC服务端配置(MC服务器序号 As String, 开关状态 As String, 服务器名称 As String, 地址 As String, 端口 As String, 密码 As String, 路径 As String, 启动脚本 As String, 排除文件参数 As String)
+        Dim MC服务器配置文件 As New Ini文件(Path.Combine("配置文件", "MCServerConfig.ini"))
+        MC服务器配置文件 _
+            .设置值($"MCServer{MC服务器序号}Config", "Enable", 开关状态) _
+            .设置值($"MCServer{MC服务器序号}Config", "Name", 服务器名称) _
+            .设置值($"MCServer{MC服务器序号}Config", "IP", 地址) _
+            .设置值($"MCServer{MC服务器序号}Config", "RCONPort", 端口) _
+            .设置值($"MCServer{MC服务器序号}Config", "RCONPassword", 密码) _
+            .设置值($"MCServer{MC服务器序号}Config", "ServerPath", 路径) _
+            .设置值($"MCServer{MC服务器序号}Config", "StartBatPath", 启动脚本) _
+            .设置值($"MCServer{MC服务器序号}Config", "ExcludedFile", 排除文件参数) _
+            .保存()
     End Sub
     '-----------------------写入7zip配置功能-----------------------
-    Public Sub 写入7zip配置(压缩格式 As String, 压缩级别 As String)
-        写入配置("7zipConfig", "ArchiveType", 压缩格式, "配置文件/7-ZipConfig.ini")
-        写入配置("7zipConfig", "CompressionLevel", 压缩级别, "配置文件/7-ZipConfig.ini")
+    Public Sub 写入7zip配置(压缩格式 As String, 压缩级别 As String, 自定义备份目录 As String, 备份目录 As String, 是否增量备份 As Boolean, 是否备份自定义目录 As String, 线程数 As String)
+        Dim 七Zip配置文件 As New Ini文件(Path.Combine("配置文件", "7-ZipConfig.ini"))
+        七Zip配置文件 _
+            .设置值("7zipConfig", "ArchiveType", 压缩格式) _
+            .设置值("7zipConfig", "CompressionLevel", 压缩级别) _
+            .设置值("7zipConfig", "ThreadsCounts", 线程数) _
+            .设置值("7zipConfig", "BackupDir", 自定义备份目录) _
+            .设置值("7zipConfig", "BackupOutputDir", 备份目录) _
+            .设置值("7zipConfig", "IncrementalBackup", 是否增量备份) _
+            .设置值("7zipConfig", "Enable", 是否备份自定义目录) _
+            .保存()
     End Sub
     '-----------------------写入Sftp配置功能-----------------------
     Public Sub 写入Sftp配置(Sftp服务器序号 As String, 开关状态 As String, 服务器名称 As String, 地址 As String, 端口 As String, 用户名 As String, 密码 As String)
-        写入配置("SFTPConfig", "Sftp" + Sftp服务器序号, 开关状态, "配置文件/SFTPConfig.ini")
-        写入配置("SFTPConfig", "Sftp" + Sftp服务器序号 + "Name", 服务器名称, "配置文件/SFTPConfig.ini")
-        写入配置("SFTPConfig", "Sftp" + Sftp服务器序号 + "IP", 地址, "配置文件/SFTPConfig.ini")
-        写入配置("SFTPConfig", "Sftp" + Sftp服务器序号 + "Port", 端口, "配置文件/SFTPConfig.ini")
-        写入配置("SFTPConfig", "Sftp" + Sftp服务器序号 + "User", 用户名, "配置文件/SFTPConfig.ini")
-        写入配置("SFTPConfig", "Sftp" + Sftp服务器序号 + "Password", 密码, "配置文件/SFTPConfig.ini")
+        Dim Sftp配置文件 As New Ini文件(Path.Combine("配置文件", "SFTPConfig.ini"))
+        Sftp配置文件 _
+            .设置值($"SFTP{Sftp服务器序号}Config", "Enable", 开关状态) _
+            .设置值($"SFTP{Sftp服务器序号}Config", "Name", 服务器名称) _
+            .设置值($"SFTP{Sftp服务器序号}Config", "IP", 地址) _
+            .设置值($"SFTP{Sftp服务器序号}Config", "Port", 端口) _
+            .设置值($"SFTP{Sftp服务器序号}Config", "User", 用户名) _
+            .设置值($"SFTP{Sftp服务器序号}Config", "Password", 密码) _
+            .保存()
     End Sub
+    Public Class Ini文件
+        ' 配置文件的完整路径
+        Private ReadOnly 文件路径 As String
+        ' 存储节区与键值对的字典结构
+        Private ReadOnly 节区字典 As New Dictionary(Of String, Dictionary(Of String, String))()
+        Public Sub New(路径 As String)
+            文件路径 = 路径
+            If File.Exists(文件路径) Then
+                加载()
+            End If
+        End Sub
+        ' 从文件加载配置到内存
+        Private Sub 加载()
+            Dim 当前节区 As String = ""
+            For Each 原始行 In File.ReadAllLines(文件路径, Encoding.UTF8)
+                Dim 处理后行 = 原始行.Trim()
+                If 处理后行.StartsWith("[") AndAlso 处理后行.EndsWith("]") Then
+                    ' 提取节区名称（去除方括号）
+                    当前节区 = 处理后行.Substring(1, 处理后行.Length - 2)
+                    节区字典(当前节区) = New Dictionary(Of String, String)()
+                ElseIf Not String.IsNullOrEmpty(处理后行) AndAlso Not 处理后行.StartsWith(";") Then
+                    ' 分割键值对（允许值中包含等号）
+                    Dim 键值对 = 处理后行.Split("="c, 2)
+                    If 键值对.Length = 2 Then
+                        节区字典(当前节区)(键值对(0).Trim()) = 键值对(1).Trim()
+                    End If
+                End If
+            Next
+        End Sub
+        ' 将内存中的配置保存回文件
+        Public Sub 保存()
+            Using 写入器 As New StreamWriter(文件路径)
+                For Each 节区 In 节区字典
+                    写入器.WriteLine($"[{节区.Key}]", Encoding.UTF8)
+                    For Each 键值 In 节区.Value
+                        写入器.WriteLine($"{键值.Key}={键值.Value}", Encoding.UTF8)
+                    Next
+                    写入器.WriteLine() ' 添加空行分隔不同节区
+                Next
+            End Using
+        End Sub
+
+        ' 获取指定节区的键值（不存在时返回默认值）
+        Public Function 获取值(节区 As String, 键 As String, Optional 默认值 As String = "") As String
+            If 节区字典.ContainsKey(节区) AndAlso 节区字典(节区).ContainsKey(键) Then
+                Return 节区字典(节区)(键)
+            End If
+            Return 默认值
+        End Function
+
+        ' 设置指定节区的键值（自动创建不存在的节区）
+        ' 修改类方法，返回自身实例以支持链式调用
+        Public Function 设置值(节区 As String, 键 As String, 值 As String) As Ini文件
+            If Not 节区字典.ContainsKey(节区) Then
+                节区字典(节区) = New Dictionary(Of String, String)()
+            End If
+            节区字典(节区)(键) = 值
+            Return Me
+        End Function
+    End Class
 End Module

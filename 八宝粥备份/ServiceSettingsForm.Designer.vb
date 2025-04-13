@@ -74,6 +74,7 @@ Partial Class ServiceSettingsForm
         AutoScaleMode = AutoScaleMode.Font
         CancelButton = Buttondone
         ClientSize = New Size(384, 261)
+        ControlBox = False
         Controls.Add(Buttondone)
         Controls.Add(ButtonUninstall)
         Controls.Add(SetupButton)

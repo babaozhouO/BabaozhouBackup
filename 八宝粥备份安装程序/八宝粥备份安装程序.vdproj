@@ -43,6 +43,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -59,6 +75,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -95,7 +127,7 @@
             "SourcePath" = "8:..\\八宝粥备份\\八宝粥.ico"
             "TargetName" = "8:八宝粥.ico"
             "Tag" = "8:"
-            "Folder" = "8:_F4FEF152B7C54D2FB48C8ECEE3A238C1"
+            "Folder" = "8:_5219DE2ED12A423CBE03D59879C259BE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -138,6 +170,39 @@
                 {
                 }
             }
+            "{1525181F-901A-416C-8A58-119130FE478E}:_EBB48385065A4F71944F36851040D436"
+            {
+            "Name" = "8:#1915"
+            "AlwaysCreate" = "11:FALSE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Property" = "8:AppDataFolder"
+                "Folders"
+                {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_703E3CBF7E1D40E3BC944029FE21A07B"
+                    {
+                    "Name" = "8:八宝粥的单人团队"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_BEF2486D44024C6C87F4EA912C65C399"
+                        "Folders"
+                        {
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_5219DE2ED12A423CBE03D59879C259BE"
+                            {
+                            "Name" = "8:八宝粥备份"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_D8BAFE9A097D40F6AF2201CF82DDF13F"
+                                "Folders"
+                                {
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_F4FEF152B7C54D2FB48C8ECEE3A238C1"
             {
             "DefaultLocation" = "8:[ProgramFiles64Folder][Manufacturer]\\[ProductName]"
@@ -166,15 +231,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:八宝粥备份"
-        "ProductCode" = "8:{2E40786A-CEAC-4851-B458-A25C301D43F4}"
-        "PackageCode" = "8:{D611CD79-2B15-4FE5-8311-E89DA8BF147A}"
+        "ProductCode" = "8:{71A79458-28DA-4CF5-A3A9-04695FC385A7}"
+        "PackageCode" = "8:{9E70F267-8C07-4655-95BE-CD73AFB118B9}"
         "UpgradeCode" = "8:{7AD84177-B43F-471E-B678-C02F4B044C7B}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:1.0.2"
         "Manufacturer" = "8:八宝粥的单人团队"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -656,7 +721,7 @@
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
                             "Setting" = "3:2"
-                            "Value" = "8:安装程序将指导您完成在计算机上安装[八宝粥备份]所需的步骤"
+                            "Value" = "8:安装程序将指导您完成在计算机上安装[八宝粥备份]所需的步骤,将安装在用户文件夹下的AppData\\Local文件夹(无法更改，八宝粥还没处理好外置配置文件逻辑)"
                             "DefaultValue" = "8:#1203"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -719,7 +784,7 @@
             "SourcePath" = "8:..\\八宝粥备份\\obj\\Release\\net8.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
-            "Folder" = "8:_F4FEF152B7C54D2FB48C8ECEE3A238C1"
+            "Folder" = "8:_5219DE2ED12A423CBE03D59879C259BE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"

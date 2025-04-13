@@ -34,6 +34,9 @@ Partial Class MainSettingsForm
         TextBoxminute = New TextBox()
         Labelsecond = New Label()
         TextBoxsecond = New TextBox()
+        Label1 = New Label()
+        Label2 = New Label()
+        Days = New TextBox()
         SuspendLayout()
         ' 
         ' ButtonSaveAndExit
@@ -57,15 +60,15 @@ Partial Class MainSettingsForm
         ' LabelRuntime
         ' 
         LabelRuntime.AutoSize = True
-        LabelRuntime.Location = New Point(43, 37)
+        LabelRuntime.Location = New Point(43, 77)
         LabelRuntime.Name = "LabelRuntime"
         LabelRuntime.Size = New Size(97, 19)
         LabelRuntime.TabIndex = 2
-        LabelRuntime.Text = "运行时间(每日)"
+        LabelRuntime.Text = "运行时间(当天)"
         ' 
         ' TextBoxhour
         ' 
-        TextBoxhour.Location = New Point(146, 34)
+        TextBoxhour.Location = New Point(146, 74)
         TextBoxhour.Name = "TextBoxhour"
         TextBoxhour.Size = New Size(21, 24)
         TextBoxhour.TabIndex = 3
@@ -74,7 +77,7 @@ Partial Class MainSettingsForm
         ' Labelhour
         ' 
         Labelhour.AutoSize = True
-        Labelhour.Location = New Point(173, 37)
+        Labelhour.Location = New Point(173, 77)
         Labelhour.Name = "Labelhour"
         Labelhour.Size = New Size(22, 19)
         Labelhour.TabIndex = 4
@@ -83,7 +86,7 @@ Partial Class MainSettingsForm
         ' Labelminute
         ' 
         Labelminute.AutoSize = True
-        Labelminute.Location = New Point(228, 37)
+        Labelminute.Location = New Point(228, 77)
         Labelminute.Name = "Labelminute"
         Labelminute.Size = New Size(22, 19)
         Labelminute.TabIndex = 6
@@ -91,7 +94,7 @@ Partial Class MainSettingsForm
         ' 
         ' TextBoxminute
         ' 
-        TextBoxminute.Location = New Point(201, 34)
+        TextBoxminute.Location = New Point(201, 74)
         TextBoxminute.Name = "TextBoxminute"
         TextBoxminute.Size = New Size(21, 24)
         TextBoxminute.TabIndex = 5
@@ -100,7 +103,7 @@ Partial Class MainSettingsForm
         ' Labelsecond
         ' 
         Labelsecond.AutoSize = True
-        Labelsecond.Location = New Point(283, 37)
+        Labelsecond.Location = New Point(283, 77)
         Labelsecond.Name = "Labelsecond"
         Labelsecond.Size = New Size(22, 19)
         Labelsecond.TabIndex = 8
@@ -108,11 +111,36 @@ Partial Class MainSettingsForm
         ' 
         ' TextBoxsecond
         ' 
-        TextBoxsecond.Location = New Point(256, 34)
+        TextBoxsecond.Location = New Point(256, 74)
         TextBoxsecond.Name = "TextBoxsecond"
         TextBoxsecond.Size = New Size(21, 24)
         TextBoxsecond.TabIndex = 7
         TextBoxsecond.Text = "00"
+        ' 
+        ' Label1
+        ' 
+        Label1.AutoSize = True
+        Label1.Location = New Point(43, 49)
+        Label1.Name = "Label1"
+        Label1.Size = New Size(22, 19)
+        Label1.TabIndex = 9
+        Label1.Text = "每"
+        ' 
+        ' Label2
+        ' 
+        Label2.AutoSize = True
+        Label2.Location = New Point(110, 49)
+        Label2.Name = "Label2"
+        Label2.Size = New Size(74, 19)
+        Label2.TabIndex = 10
+        Label2.Text = "天运行一次"
+        ' 
+        ' Days
+        ' 
+        Days.Location = New Point(71, 46)
+        Days.Name = "Days"
+        Days.Size = New Size(33, 24)
+        Days.TabIndex = 11
         ' 
         ' MainSettingsForm
         ' 
@@ -122,6 +150,9 @@ Partial Class MainSettingsForm
         CancelButton = ButtonCancle
         ClientSize = New Size(934, 521)
         ControlBox = False
+        Controls.Add(Days)
+        Controls.Add(Label2)
+        Controls.Add(Label1)
         Controls.Add(Labelsecond)
         Controls.Add(TextBoxsecond)
         Controls.Add(Labelminute)
@@ -152,4 +183,7 @@ Partial Class MainSettingsForm
     Friend WithEvents TextBoxminute As TextBox
     Friend WithEvents Labelsecond As Label
     Friend WithEvents TextBoxsecond As TextBox
+    Friend WithEvents Label1 As Label
+    Friend WithEvents Label2 As Label
+    Friend WithEvents Days As TextBox
 End Class

@@ -6,9 +6,9 @@
     <UseWindowsForms>true</UseWindowsForms>
     <MyType>WindowsForms</MyType>
     <ApplicationIcon>八宝粥.ico</ApplicationIcon>
-    <AssemblyVersion>1.0.1.9</AssemblyVersion>
-    <FileVersion>1.0.1.9</FileVersion>
-    <Version>1.0.1.9</Version>
+    <AssemblyVersion>1.0.2</AssemblyVersion>
+    <FileVersion>1.0.2</FileVersion>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="八宝粥.ico" />
+    <Content Include="八宝粥.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -53,6 +55,9 @@
 
   <ItemGroup>
     <None Update="LICENSE">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="资源\7z.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="资源\7z.exe">
@@ -131,7 +136,7 @@
     <None Update="配置文件\MainConfig.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="配置文件\RCONConfig.ini">
+    <None Update="配置文件\MCServerConfig.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="配置文件\SFTPConfig.ini">
