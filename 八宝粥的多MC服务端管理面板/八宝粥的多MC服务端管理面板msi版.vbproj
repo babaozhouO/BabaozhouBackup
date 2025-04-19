@@ -1,0 +1,162 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <MyType>WindowsForms</MyType>
+    <ApplicationIcon>八宝粥.ico</ApplicationIcon>
+    <AssemblyVersion>1.0.21</AssemblyVersion>
+    <FileVersion>1.0.21</FileVersion>
+    <Version>1.0.21</Version>
+    <Company>八宝粥的单人团队</Company>
+    <Authors>八宝粥</Authors>
+    <Product>八宝粥的多MC服务端管理面板</Product>
+    <RootNamespace>BBZ_MCServers_Manager</RootNamespace>
+    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="LICENSE.txt" />
+    <None Remove="MainConfig.ini" />
+    <None Remove="rsxkdoj5.3gq~" />
+    <None Remove="背景图片\IMG_20250330_130023.jpg" />
+    <None Remove="背景图片\IMG_20250330_130520.jpg" />
+    <None Remove="背景图片\IMG_20250330_130540.jpg" />
+    <None Remove="背景图片\IMG_20250330_130559.jpg" />
+    <None Remove="背景图片\IMG_20250330_130617.jpg" />
+    <None Remove="背景图片\IMG_20250330_130638.jpg" />
+    <None Remove="背景图片\IMG_20250330_130704.jpg" />
+    <None Remove="背景图片\IMG_20250330_130711.jpg" />
+    <None Remove="背景图片\IMG_20250330_130719.jpg" />
+    <None Remove="背景图片\IMG_20250330_130727.jpg" />
+    <None Remove="背景图片\IMG_20250330_130748.jpg" />
+    <None Remove="背景图片\IMG_20250330_130756.jpg" />
+    <None Remove="背景图片\IMG_20250330_130802.jpg" />
+    <None Remove="背景图片\IMG_20250330_130808.jpg" />
+    <None Remove="背景图片\IMG_20250330_130824.jpg" />
+    <None Remove="背景图片\IMG_20250330_130833.jpg" />
+    <None Remove="背景图片\IMG_20250330_130840.jpg" />
+    <None Remove="背景图片\IMG_20250330_130847.jpg" />
+    <None Remove="背景图片\IMG_20250330_130853.jpg" />
+    <None Remove="背景图片\IMG_20250330_130900.jpg" />
+    <None Remove="背景图片\IMG_20250330_130909.jpg" />
+    <None Remove="背景图片\IMG_20250330_130916.jpg" />
+    <None Remove="背景图片\IMG_20250330_130922.jpg" />
+    <None Remove="背景图片\IMG_20250330_130929.jpg" />
+    <None Remove="背景图片\IMG_20250330_130934.jpg" />
+    <None Remove="背景图片\MCBackground.jpg" />
+    <None Remove="配置文件\7-ZipConfig.ini" />
+    <None Remove="配置文件\MainConfig.ini" />
+    <None Remove="配置文件\MCServerConfig.ini" />
+    <None Remove="配置文件\SFTPConfig.ini" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="八宝粥.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Include="背景图片\IMG_20250330_130023.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Include="背景图片\IMG_20250330_130520.jpg" />
+    <Content Include="背景图片\IMG_20250330_130540.jpg" />
+    <Content Include="背景图片\IMG_20250330_130559.jpg" />
+    <Content Include="背景图片\IMG_20250330_130617.jpg" />
+    <Content Include="背景图片\IMG_20250330_130638.jpg" />
+    <Content Include="背景图片\IMG_20250330_130704.jpg" />
+    <Content Include="背景图片\IMG_20250330_130711.jpg" />
+    <Content Include="背景图片\IMG_20250330_130719.jpg" />
+    <Content Include="背景图片\IMG_20250330_130727.jpg" />
+    <Content Include="背景图片\IMG_20250330_130748.jpg" />
+    <Content Include="背景图片\IMG_20250330_130756.jpg" />
+    <Content Include="背景图片\IMG_20250330_130802.jpg" />
+    <Content Include="背景图片\IMG_20250330_130808.jpg" />
+    <Content Include="背景图片\IMG_20250330_130824.jpg" />
+    <Content Include="背景图片\IMG_20250330_130833.jpg" />
+    <Content Include="背景图片\IMG_20250330_130840.jpg" />
+    <Content Include="背景图片\IMG_20250330_130847.jpg" />
+    <Content Include="背景图片\IMG_20250330_130853.jpg" />
+    <Content Include="背景图片\IMG_20250330_130900.jpg" />
+    <Content Include="背景图片\IMG_20250330_130909.jpg" />
+    <Content Include="背景图片\IMG_20250330_130916.jpg" />
+    <Content Include="背景图片\IMG_20250330_130922.jpg" />
+    <Content Include="背景图片\IMG_20250330_130929.jpg" />
+    <Content Include="背景图片\IMG_20250330_130934.jpg" />
+    <Content Include="背景图片\MCBackground.jpg" />
+    <Content Include="配置文件\7-ZipConfig.ini">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Include="配置文件\MainConfig.ini">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Include="配置文件\MCServerConfig.ini">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Include="配置文件\SFTPConfig.ini">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Windows.Forms" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SSH.NET" Version="2025.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="My Project\Application.Designer.vb">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Update="My Project\Resources.Designer.vb">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="My Project\Resources.resx">
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Update="资源\7z.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="资源\7z.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="资源\7z2409-x64.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

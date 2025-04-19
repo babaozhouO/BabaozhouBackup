@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <Compile Update="7-ZipSettingsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="LogsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="MainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="MainSettingsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="MCServerSettingsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ServiceSettingsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="SftpSettingsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UselessToolsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="开关控件.vb">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>
