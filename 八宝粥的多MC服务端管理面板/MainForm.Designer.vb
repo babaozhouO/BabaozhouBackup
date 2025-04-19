@@ -48,6 +48,9 @@ Partial Class MainForm
 		倒计时进度条 = New ProgressBar()
 		倒计时数字显示 = New Label()
 		RunImmediately = New Button()
+		LogsFolder = New Button()
+		PicturesFolder = New Button()
+		ConfigFolder = New Button()
 		CType(PictureBox, ComponentModel.ISupportInitialize).BeginInit()
 		SuspendLayout()
 		' 
@@ -65,7 +68,7 @@ Partial Class MainForm
 		IntroductionLabel.Name = "IntroductionLabel"
 		IntroductionLabel.Size = New Size(557, 57)
 		IntroductionLabel.TabIndex = 1
-		IntroductionLabel.Text = "程序名称:八宝粥备份        作者:八宝粥" & vbCrLf & "程序功能:可定时自动(关闭MC服务端)增量备份文件并发送至远程sftp服务端(并开启MC服务端)" & vbCrLf & "Github仓库链接:https://github.com/babaozhouO/BabaozhouBackup"
+		IntroductionLabel.Text = "程序名称:八宝粥的多MC服务端管理面板             作者:八宝粥" & vbCrLf & "程序功能:可定时自动(关闭MC服务端)增量备份文件并发送至远程sftp服务端(并开启MC服务端)" & vbCrLf & "Github仓库链接:https://github.com/babaozhouO/BBZ-MCServers-Manager"
 		' 
 		' LogsLabel
 		' 
@@ -255,6 +258,33 @@ Partial Class MainForm
 		RunImmediately.Text = "运行一次"
 		RunImmediately.UseVisualStyleBackColor = True
 		' 
+		' LogsFolder
+		' 
+		LogsFolder.Location = New Point(936, 30)
+		LogsFolder.Name = "LogsFolder"
+		LogsFolder.Size = New Size(28, 110)
+		LogsFolder.TabIndex = 29
+		LogsFolder.Text = "日志文件夹"
+		LogsFolder.UseVisualStyleBackColor = True
+		' 
+		' PicturesFolder
+		' 
+		PicturesFolder.Location = New Point(936, 298)
+		PicturesFolder.Name = "PicturesFolder"
+		PicturesFolder.Size = New Size(28, 145)
+		PicturesFolder.TabIndex = 28
+		PicturesFolder.Text = "背景图片文件夹"
+		PicturesFolder.UseVisualStyleBackColor = True
+		' 
+		' ConfigFolder
+		' 
+		ConfigFolder.Location = New Point(936, 146)
+		ConfigFolder.Name = "ConfigFolder"
+		ConfigFolder.Size = New Size(28, 146)
+		ConfigFolder.TabIndex = 27
+		ConfigFolder.Text = "配置文件文件夹"
+		ConfigFolder.UseVisualStyleBackColor = True
+		' 
 		' MainForm
 		' 
 		AutoScaleMode = AutoScaleMode.None
@@ -262,6 +292,9 @@ Partial Class MainForm
 		AutoSize = True
 		BackgroundImageLayout = ImageLayout.Stretch
 		ClientSize = New Size(964, 511)
+		Controls.Add(LogsFolder)
+		Controls.Add(PicturesFolder)
+		Controls.Add(ConfigFolder)
 		Controls.Add(RunImmediately)
 		Controls.Add(倒计时数字显示)
 		Controls.Add(倒计时进度条)
@@ -290,7 +323,7 @@ Partial Class MainForm
 		MinimumSize = New Size(980, 550)
 		Name = "MainForm"
 		StartPosition = FormStartPosition.CenterScreen
-		Text = "八宝粥备份"
+		Text = "八宝粥的多MC服务端管理面板"
 		CType(PictureBox, ComponentModel.ISupportInitialize).EndInit()
 		ResumeLayout(False)
 		PerformLayout()
@@ -317,5 +350,8 @@ Partial Class MainForm
     Friend WithEvents 倒计时进度条 As ProgressBar
     Friend WithEvents 倒计时数字显示 As Label
     Friend WithEvents RunImmediately As Button
+	Friend WithEvents LogsFolder As Button
+	Friend WithEvents PicturesFolder As Button
+	Friend WithEvents ConfigFolder As Button
 
 End Class

@@ -44,6 +44,9 @@ Partial Class SevenZipSettingsForm
 		Label4 = New Label()
 		Label5 = New Label()
 		选择压缩方法 = New ComboBox()
+		TextBox3 = New TextBox()
+		Label6 = New Label()
+		Label7 = New Label()
 		SuspendLayout()
 		' 
 		' label压缩格式
@@ -104,7 +107,7 @@ Partial Class SevenZipSettingsForm
 		' Label1
 		' 
 		Label1.AutoSize = True
-		Label1.Location = New Point(46, 196)
+		Label1.Location = New Point(46, 226)
 		Label1.Name = "Label1"
 		Label1.Size = New Size(87, 19)
 		Label1.TabIndex = 8
@@ -112,7 +115,7 @@ Partial Class SevenZipSettingsForm
 		' 
 		' Button1
 		' 
-		Button1.Location = New Point(274, 193)
+		Button1.Location = New Point(274, 223)
 		Button1.Name = "Button1"
 		Button1.Size = New Size(24, 24)
 		Button1.TabIndex = 119
@@ -120,7 +123,7 @@ Partial Class SevenZipSettingsForm
 		' 
 		' TextBox2
 		' 
-		TextBox2.Location = New Point(139, 193)
+		TextBox2.Location = New Point(139, 223)
 		TextBox2.Name = "TextBox2"
 		TextBox2.Size = New Size(129, 24)
 		TextBox2.TabIndex = 118
@@ -128,7 +131,7 @@ Partial Class SevenZipSettingsForm
 		' CheckBox1
 		' 
 		CheckBox1.AutoSize = True
-		CheckBox1.Location = New Point(46, 223)
+		CheckBox1.Location = New Point(46, 253)
 		CheckBox1.Name = "CheckBox1"
 		CheckBox1.Size = New Size(106, 23)
 		CheckBox1.TabIndex = 120
@@ -137,7 +140,7 @@ Partial Class SevenZipSettingsForm
 		' 
 		' Button2
 		' 
-		Button2.Location = New Point(274, 163)
+		Button2.Location = New Point(274, 193)
 		Button2.Name = "Button2"
 		Button2.Size = New Size(24, 24)
 		Button2.TabIndex = 123
@@ -145,7 +148,7 @@ Partial Class SevenZipSettingsForm
 		' 
 		' TextBox1
 		' 
-		TextBox1.Location = New Point(152, 163)
+		TextBox1.Location = New Point(152, 193)
 		TextBox1.Name = "TextBox1"
 		TextBox1.Size = New Size(116, 24)
 		TextBox1.TabIndex = 122
@@ -153,7 +156,7 @@ Partial Class SevenZipSettingsForm
 		' Label2
 		' 
 		Label2.AutoSize = True
-		Label2.Location = New Point(46, 166)
+		Label2.Location = New Point(46, 196)
 		Label2.Name = "Label2"
 		Label2.Size = New Size(100, 19)
 		Label2.TabIndex = 121
@@ -162,7 +165,7 @@ Partial Class SevenZipSettingsForm
 		' CheckBox2
 		' 
 		CheckBox2.AutoSize = True
-		CheckBox2.Location = New Point(162, 223)
+		CheckBox2.Location = New Point(158, 253)
 		CheckBox2.Name = "CheckBox2"
 		CheckBox2.Size = New Size(119, 23)
 		CheckBox2.TabIndex = 124
@@ -212,12 +215,40 @@ Partial Class SevenZipSettingsForm
 		选择压缩方法.Size = New Size(185, 27)
 		选择压缩方法.TabIndex = 129
 		' 
+		' TextBox3
+		' 
+		TextBox3.Location = New Point(143, 163)
+		TextBox3.Name = "TextBox3"
+		TextBox3.Size = New Size(127, 24)
+		TextBox3.TabIndex = 131
+		' 
+		' Label6
+		' 
+		Label6.AutoSize = True
+		Label6.Location = New Point(46, 166)
+		Label6.Name = "Label6"
+		Label6.Size = New Size(91, 19)
+		Label6.TabIndex = 130
+		Label6.Text = "压缩超时时长:"
+		' 
+		' Label7
+		' 
+		Label7.AutoSize = True
+		Label7.Location = New Point(276, 166)
+		Label7.Name = "Label7"
+		Label7.Size = New Size(22, 19)
+		Label7.TabIndex = 132
+		Label7.Text = "秒"
+		' 
 		' SevenZipSettingsForm
 		' 
 		AutoScaleDimensions = New SizeF(8F, 19F)
 		AutoScaleMode = AutoScaleMode.Font
 		ClientSize = New Size(884, 561)
 		ControlBox = False
+		Controls.Add(Label7)
+		Controls.Add(TextBox3)
+		Controls.Add(Label6)
 		Controls.Add(选择压缩方法)
 		Controls.Add(Label5)
 		Controls.Add(Label4)
@@ -265,4 +296,7 @@ Partial Class SevenZipSettingsForm
 	Friend WithEvents Label4 As Label
 	Friend WithEvents Label5 As Label
 	Friend WithEvents 选择压缩方法 As ComboBox
+	Friend WithEvents TextBox3 As TextBox
+	Friend WithEvents Label6 As Label
+	Friend WithEvents Label7 As Label
 End Class

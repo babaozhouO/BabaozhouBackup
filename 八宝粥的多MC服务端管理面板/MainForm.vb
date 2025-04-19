@@ -15,7 +15,6 @@ Imports System.ComponentModel
 Imports System.IO
 
 Public Class MainForm
-    Private 图片目录 As String = Path.Combine(程序数据目录, "背景图片")
     Private 支持的文件格式 As String() = {".jpg", ".png", ".bmp"}
     Private 图片列表 As New List(Of String)()
     Private 图片序号 As Integer = 0
@@ -41,8 +40,8 @@ Public Class MainForm
     End Sub
     '-----------------------------------图片轮播-------------------------------------------
     Private Sub 加载图片列表() ' 加载图片文件列表
-        If Directory.Exists(图片目录) Then
-            图片列表 = Directory.GetFiles(图片目录).
+        If Directory.Exists("背景图片") Then
+            图片列表 = Directory.GetFiles("背景图片").
                 Where(Function(file) 支持的文件格式.Contains(Path.GetExtension(file).ToLower())).ToList()
         End If
     End Sub
@@ -87,9 +86,9 @@ Public Class MainForm
         日志窗口.更新停靠位置(Me)
         日志窗口.日志输出软件信息()
         日志窗口.日志输出主程序配置()
-        日志窗口.日志输出RCON配置()
-        日志窗口.日志输出7zip配置()
+        日志窗口.日志输出MC服务端配置()
         日志窗口.日志输出SFTP配置()
+        日志窗口.日志输出7zip配置()
         添加日志("-------------------------------------------------------------------------------------", Color.Black)
         'MessageBox.Show("因为提取网络操作到后台线程执行需要修改大量代码，所以暂且搁置，进行涉及网络的操作时会导致UI卡顿，请耐心等待", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
@@ -167,12 +166,13 @@ Public Class MainForm
         添加日志("[Action]正在启动服务", Color.Black)
         添加日志("[Info]正在读取配置文件", Color.Black)
         日志窗口.日志输出主程序配置()
-        日志窗口.日志输出RCON配置()
+        日志窗口.日志输出MC服务端配置()
         日志窗口.日志输出7zip配置()
         日志窗口.日志输出SFTP配置()
         添加日志("-------------------------------------------------------------------------------------", Color.Black)
         添加日志("[Warning]尚未经过严格测试，谨慎使用", Color.Red)
-        服务 = New 间隔任务调度器(1, 运行时间)
+        If 间隔天数 = "" Then 间隔天数 = "1"
+        服务 = New 间隔任务调度器(CInt(间隔天数), 运行时间)
         添加日志("[Action]服务已启动", Color.Black)
         添加日志("[提示]:在等待执行时可更改配置", Color.Orange)
         Me.RunButton.Enabled = False
@@ -226,6 +226,9 @@ Public Class MainForm
         Me.ButtonRCON.Visible = False
         Me.ReturnButton.Visible = True
         Me.RunImmediately.Visible = False
+        Me.LogsFolder.Visible = False
+        Me.ConfigFolder.Visible = False
+        Me.PicturesFolder.Visible = False
     End Sub
     Private Sub ReturnButton_Click(sender As Object, e As EventArgs) Handles ReturnButton.Click
         日志窗口隐藏状态 = False
@@ -249,8 +252,12 @@ Public Class MainForm
         Me.ButtonRCON.Visible = True
         Me.ReturnButton.Visible = False
         Me.RunImmediately.Visible = True
+        Me.LogsFolder.Visible = True
+        Me.ConfigFolder.Visible = True
+        Me.PicturesFolder.Visible = True
     End Sub
     Private Sub ToolsButton_Click(sender As Object, e As EventArgs) Handles ToolsButton.Click
+        添加日志("[Action]打开没用的小工具界面", Color.Black)
         UselessToolsForm.Show()
         日志窗口.更新停靠位置(UselessToolsForm)
     End Sub
@@ -309,17 +316,17 @@ Public Class MainForm
         Dim 任务列表_上传 As New List(Of Integer)
         If Sftp1开关 Then
             任务列表_上传.Add(1)
-            处理单个Sftp服务端_上传文件(Sftp1地址, Sftp1端口, Sftp1用户名, Sftp1密码, "1", Path.Combine(程序数据目录, "八宝粥.ico"), "/")
+            处理单个Sftp服务端_上传文件(Sftp1地址, Sftp1端口, Sftp1用户名, Sftp1密码, "1", Path.Combine(Application.StartupPath, "八宝粥.ico"), "/")
             添加日志("[INFO]正在测试SFTP1服务器", Color.Orange)
         End If
         If Sftp2开关 Then
             任务列表_上传.Add(2)
-            处理单个Sftp服务端_上传文件(Sftp2地址, Sftp2端口, Sftp2用户名, Sftp2密码, "2", Path.Combine(程序数据目录, "八宝粥.ico"), "/")
+            处理单个Sftp服务端_上传文件(Sftp2地址, Sftp2端口, Sftp2用户名, Sftp2密码, "2", Path.Combine(Application.StartupPath, "八宝粥.ico"), "/")
             添加日志("[INFO]正在测试SFTP2服务器", Color.Orange)
         End If
         If Sftp3开关 Then
             任务列表_上传.Add(3)
-            处理单个Sftp服务端_上传文件(Sftp3地址, Sftp3端口, Sftp3用户名, Sftp3密码, "3", Path.Combine(程序数据目录, "八宝粥.ico"), "/")
+            处理单个Sftp服务端_上传文件(Sftp3地址, Sftp3端口, Sftp3用户名, Sftp3密码, "3", Path.Combine(Application.StartupPath, "八宝粥.ico"), "/")
             添加日志("[INFO]正在测试SFTP3服务器", Color.Orange)
         End If
         If 任务列表_上传.Count = 0 Then 添加日志("[ERROR]没有可用的SFTP服务器", Color.Red) : Return
@@ -346,5 +353,15 @@ Public Class MainForm
         添加日志("[Action]已停止服务", Color.Black)
         Me.RunButton.Enabled = True
         Me.StopButton.Enabled = False
+    End Sub
+    Private Sub ConfigFolder_Click(sender As Object, e As EventArgs) Handles ConfigFolder.Click
+        Process.Start("explorer.exe", Path.Combine(Application.StartupPath, "配置文件"))
+    End Sub
+    Private Sub PicturesFolder_Click(sender As Object, e As EventArgs) Handles PicturesFolder.Click
+        Process.Start("explorer.exe", Path.Combine(Application.StartupPath, "背景图片"))
+    End Sub
+
+    Private Sub LogsPath_Click(sender As Object, e As EventArgs) Handles LogsFolder.Click
+        Process.Start("explorer.exe", Path.Combine(Application.StartupPath, "日志"))
     End Sub
 End Class

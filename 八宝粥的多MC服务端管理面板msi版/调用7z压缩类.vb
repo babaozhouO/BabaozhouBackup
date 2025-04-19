@@ -90,7 +90,7 @@ Public Module SevenZip
                     进程.StartInfo = New ProcessStartInfo With {.FileName = 程序路径, .Arguments = 参数, .UseShellExecute = False, .CreateNoWindow = True, .RedirectStandardOutput = True, .RedirectStandardError = True}
                     添加日志($"[Info]7z正在启动，启动命令：{程序路径} {参数}", Color.Orange)
                     进程.Start()
-                    Dim 完成 = 进程.WaitForExit(600000) ' 10分钟
+                    Dim 完成 = 进程.WaitForExit(超时时长 * 1000)
                     If Not 完成 Then
                         If Not 进程.HasExited Then
                             进程.Kill()

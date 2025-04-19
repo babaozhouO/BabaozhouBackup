@@ -15,7 +15,7 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_65BDB69B86B7466381DD1E1EC246C8DD"
+        "MsmKey" = "8:_19D6841C0ADA473C8C4AB61C8E2A584C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -59,11 +59,11 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:..\\..\\生成\\八宝粥备份安装程序.msi"
+        "OutputFilename" = "8:..\\..\\生成\\MSI版\\八宝粥的多MC服务端管理面板安装程序.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
-        "Compression" = "3:2"
+        "Compression" = "3:3"
         "SignOutput" = "11:FALSE"
         "CertificateFile" = "8:"
         "PrivateKeyFile" = "8:"
@@ -234,7 +234,7 @@
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:"
-        "ARPPRODUCTICON" = "8:_65BDB69B86B7466381DD1E1EC246C8DD"
+        "ARPPRODUCTICON" = "8:"
         "ARPIconIndex" = "3:32512"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
@@ -337,7 +337,7 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_A495CFB085334766B527B3D4F27D7CBB"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_00F0ED8032F74121A72D23506B4A15A1"
             {
             "Name" = "8:八宝粥的多MC服务端管理面板"
             "Arguments" = "8:"
@@ -345,13 +345,13 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:32512"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_65BDB69B86B7466381DD1E1EC246C8DD"
+            "Target" = "8:_19D6841C0ADA473C8C4AB61C8E2A584C"
             "Folder" = "8:_57FB1FA16BE643AFA81E6CB88E0E2FA0"
             "WorkingFolder" = "8:_F4FEF152B7C54D2FB48C8ECEE3A238C1"
-            "Icon" = "8:_65BDB69B86B7466381DD1E1EC246C8DD"
+            "Icon" = "8:_19D6841C0ADA473C8C4AB61C8E2A584C"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_F498BE8085D444D8802A936EDD16EDB5"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_03E45603FA254232A45BC0C0D268308B"
             {
             "Name" = "8:八宝粥的多MC服务端管理面板"
             "Arguments" = "8:"
@@ -359,10 +359,10 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:32512"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_65BDB69B86B7466381DD1E1EC246C8DD"
+            "Target" = "8:_19D6841C0ADA473C8C4AB61C8E2A584C"
             "Folder" = "8:_583B357E7C9640758BA939AF1DC073E6"
             "WorkingFolder" = "8:_F4FEF152B7C54D2FB48C8ECEE3A238C1"
-            "Icon" = "8:_65BDB69B86B7466381DD1E1EC246C8DD"
+            "Icon" = "8:_19D6841C0ADA473C8C4AB61C8E2A584C"
             "Feature" = "8:"
             }
         }
@@ -764,7 +764,7 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_0970741056254EA0856A8B95EF292D67"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_17AC361102194E7DA5CBDC93BCD0A40E"
             {
             "SourcePath" = "8:"
             "TargetName" = "8:"
@@ -786,15 +786,15 @@
             "ProjectOutputGroupRegister" = "3:1"
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:ContentFiles"
-            "OutputProjectGuid" = "8:{2313AB22-EA78-D672-3C87-8190EA13B1F5}"
+            "OutputProjectGuid" = "8:{94348105-2FC9-2232-2AA7-E0EC27263008}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_65BDB69B86B7466381DD1E1EC246C8DD"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_19D6841C0ADA473C8C4AB61C8E2A584C"
             {
-            "SourcePath" = "8:..\\八宝粥的多MC服务端管理面板\\obj\\Release\\net8.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\八宝粥的多MC服务端管理面板msi版\\obj\\Debug\\net8.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F4FEF152B7C54D2FB48C8ECEE3A238C1"
@@ -814,7 +814,7 @@
             "ProjectOutputGroupRegister" = "3:1"
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:PublishItems"
-            "OutputProjectGuid" = "8:{2313AB22-EA78-D672-3C87-8190EA13B1F5}"
+            "OutputProjectGuid" = "8:{94348105-2FC9-2232-2AA7-E0EC27263008}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {

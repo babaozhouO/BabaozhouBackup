@@ -33,7 +33,7 @@ Namespace My
         
         <Global.System.Diagnostics.DebuggerStepThroughAttribute()>  _
         Protected Overrides Sub OnCreateMainForm()
-            Me.MainForm = Global.BBZ_MCServers_Manager.MainForm
+            Me.MainForm = Global.BBZ_MCServers_Manager_MSI.MainForm
         End Sub
 
         <Global.System.Diagnostics.DebuggerStepThroughAttribute()>  _

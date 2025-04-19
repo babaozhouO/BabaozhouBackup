@@ -34,7 +34,7 @@ Public Class 日志窗口
     Public Sub 日志输出主程序配置()
         日志处理器实例.日志输出主程序配置()
     End Sub
-    Public Sub 日志输出RCON配置()
+    Public Sub 日志输出MC服务端配置()
         日志处理器实例.日志输出MC服务端配置()
     End Sub
     Public Sub 日志输出SFTP配置()

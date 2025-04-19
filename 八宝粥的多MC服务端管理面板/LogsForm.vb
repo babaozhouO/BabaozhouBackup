@@ -18,14 +18,10 @@ Public Class 日志窗口
         日志处理器实例 = New 日志处理功能
         日志处理器实例.绑定文本框(Me.LogsRichTextBox)
     End Sub
-    Private Sub 日志窗口_Shown(sender As Object, e As EventArgs) Handles Me.Shown
-
-    End Sub
     Public Sub 添加日志(信息 As String, 颜色 As Color)
         Try
             日志处理器实例.添加日志(信息, 颜色)
-        Catch ex As Exception
-
+        Catch
         End Try
     End Sub
     Public Sub 日志输出软件信息()
@@ -34,7 +30,7 @@ Public Class 日志窗口
     Public Sub 日志输出主程序配置()
         日志处理器实例.日志输出主程序配置()
     End Sub
-    Public Sub 日志输出RCON配置()
+    Public Sub 日志输出MC服务端配置()
         日志处理器实例.日志输出MC服务端配置()
     End Sub
     Public Sub 日志输出SFTP配置()

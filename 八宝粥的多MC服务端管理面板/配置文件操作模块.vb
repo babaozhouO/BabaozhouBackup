@@ -13,16 +13,13 @@
 'limitations under the License.
 Imports System.IO
 Imports System.Text
-Imports System.Environment
 
 Module 配置文件操作模块
-    Public ReadOnly Property 程序数据目录 As String = Path.Combine(GetFolderPath(SpecialFolder.ApplicationData), "八宝粥的单人团队", "八宝粥的多MC服务端管理面板")
-    Private ReadOnly Property 配置文件目录 As String = Path.Combine(程序数据目录, "配置文件")
-
     '----------------------------------------全局变量----------------------------------------
     '-----------------------主程序设置-----------------------
     Public Property 运行时间 As String
     Public Property 间隔天数 As String
+    Public Property 是否关服备份 As Boolean
     Public Property 日志窗口隐藏状态 As Boolean = False
     '-----------------------RCON1设置-----------------------
     Public Property 是否控制MC服务端1 As Boolean
@@ -120,6 +117,7 @@ Module 配置文件操作模块
     Public Property 压缩级别 As Integer
     Public Property 压缩方法 As String
     Public Property 线程数 As String
+    Public Property 超时时长 As Integer
     Public Property 备份输出目录 As String
     Public Property 自定义备份目录 As String
     Public Property 是否增量备份 As Boolean
@@ -162,13 +160,14 @@ Module 配置文件操作模块
     'End Function
     '-----------------------读取主程序配置功能-----------------------
     Public Sub 读取主程序配置()
-        Dim 主程序配置文件 As New Ini文件(Path.Combine(配置文件目录, "MainConfig.ini"))
+        Dim 主程序配置文件 As New Ini文件(Path.Combine("配置文件", "MainConfig.ini"))
         间隔天数 = 主程序配置文件.获取值("MainSettings", "Days", "1")
         运行时间 = 主程序配置文件.获取值("MainSettings", "Runtime", "03:00:00")
+        是否关服备份 = 主程序配置文件.获取值("MainSettings", "StopMCServer", "True")
     End Sub
     '-----------------------读取MC服务端配置功能-----------------------
     Public Sub 读取MC服务端配置()
-        Dim MC服务器配置文件 As New Ini文件(Path.Combine(配置文件目录, "MCServerConfig.ini"))
+        Dim MC服务器配置文件 As New Ini文件(Path.Combine(Application.StartupPath, "配置文件", "MCServerConfig.ini"))
         '-----------------------读取MC服务端1配置-----------------------
         是否控制MC服务端1 = MC服务器配置文件.获取值("MCServer1Config", "Enable", "False")
         MC服务端1名称 = MC服务器配置文件.获取值("MCServer1Config", "Name", "MC服务器1")
@@ -262,11 +261,12 @@ Module 配置文件操作模块
     End Sub
     '-----------------------读取7zip配置功能-----------------------
     Public Sub 读取7zip配置()
-        Dim 七zip配置文件 As New Ini文件(Path.Combine(配置文件目录, "7-ZipConfig.ini"))
+        Dim 七zip配置文件 As New Ini文件(Path.Combine(Application.StartupPath, "配置文件", "7-ZipConfig.ini"))
         压缩格式 = 七zip配置文件.获取值("7zipConfig", "CompressionFormat", "7z")
         压缩级别 = CInt(七zip配置文件.获取值("7zipConfig", "CompressionLevel", "9"))
         压缩方法 = 七zip配置文件.获取值("7zipConfig", "CompressionMethod", "LMZA2")
         线程数 = 七zip配置文件.获取值("7zipConfig", "ThreadsCounts", "1")
+        超时时长 = CInt(七zip配置文件.获取值("7zipConfig", "TimeOut", "600"))
         备份输出目录 = 七zip配置文件.获取值("7zipConfig", "BackupOutputDir", "")
         是否备份自定义目录 = 七zip配置文件.获取值("7zipConfig", "BackupCustomizedDir", "False")
         自定义备份目录 = 七zip配置文件.获取值("7zipConfig", "BackupDir", "")
@@ -274,7 +274,7 @@ Module 配置文件操作模块
     End Sub
     '-----------------------读取Sftp配置功能-----------------------
     Public Sub 读取Sftp配置()
-        Dim Sftp配置文件 As New Ini文件(Path.Combine(配置文件目录, "SFTPConfig.ini"))
+        Dim Sftp配置文件 As New Ini文件(Path.Combine(Application.StartupPath, "配置文件", "SFTPConfig.ini"))
         '-----------------------读取Sftp1配置功能-----------------------
         Sftp1开关 = Sftp配置文件.获取值("SFTP1Config", "Enable", True)
         Sftp1名称 = Sftp配置文件.获取值("SFTP1Config", "Name", "SFTP1")
@@ -298,23 +298,25 @@ Module 配置文件操作模块
         Sftp3密码 = Sftp配置文件.获取值("SFTP3Config", "Password", "")
     End Sub
     '-----------------------写入主程序配置功能-----------------------
-    Public Sub 写入主程序配置(间隔天数 As String, 运行时间 As String)
-        Dim 主程序配置文件 As New Ini文件(Path.Combine(配置文件目录, "MainConfig.ini"))
-        主程序配置文件.设置值("MainSettings", "Runtime", 运行时间)
-        主程序配置文件.保存()
-        主程序配置文件.设置值("MainSettings", "Days", 间隔天数)
+    Public Sub 写入主程序配置(间隔天数 As String, 运行时间 As String, 是否关服备份 As Boolean)
+        Dim 主程序配置文件 As New Ini文件(Path.Combine(Application.StartupPath, "配置文件", "MainConfig.ini"))
+        主程序配置文件.设置值("MainSettings", "Runtime", 运行时间) _
+        .设置值("MainSettings", "Days", 间隔天数) _
+        .设置值("MainSettings", "StopMCServer", 是否关服备份) _
+        .保存()
         主程序配置文件.保存()
         If 间隔天数 = 主程序配置文件.获取值("MainSettings", "Days", "1") AndAlso 运行时间 = 主程序配置文件.获取值("MainSettings", "Runtime", "03:00:00") Then
             日志窗口.添加日志("[Succeess]主程序配置写入成功", Color.Green)
             日志窗口.添加日志("新间隔天数=" + 间隔天数, Color.Blue)
             日志窗口.添加日志("新运行时间=" + 运行时间, Color.Blue)
+            日志窗口.添加日志("关服备份=" + 是否关服备份.ToString, Color.Blue)
         Else
             日志窗口.添加日志("[Failure]主程序配置写入失败", Color.Red)
         End If
     End Sub
     '-----------------------写入RCON配置功能-----------------------
     Public Sub 写入MC服务端配置(MC服务器序号 As String, 开关状态 As String, 服务器名称 As String, 地址 As String, 端口 As String, 密码 As String, 路径 As String, 启动脚本 As String, 排除文件参数 As String)
-        Dim MC服务器配置文件 As New Ini文件(Path.Combine(配置文件目录, "MCServerConfig.ini"))
+        Dim MC服务器配置文件 As New Ini文件(Path.Combine(Application.StartupPath, "配置文件", "MCServerConfig.ini"))
         MC服务器配置文件 _
             .设置值($"MCServer{MC服务器序号}Config", "Enable", 开关状态) _
             .设置值($"MCServer{MC服务器序号}Config", "Name", 服务器名称) _
@@ -327,13 +329,14 @@ Module 配置文件操作模块
             .保存()
     End Sub
     '-----------------------写入7zip配置功能-----------------------
-    Public Sub 写入7zip配置(压缩格式 As String, 压缩级别 As Integer, 压缩方法 As String, 自定义备份目录 As String, 备份目录 As String, 是否增量备份 As Boolean, 是否备份自定义目录 As String, 线程数 As String)
-        Dim 七Zip配置文件 As New Ini文件(Path.Combine(配置文件目录, "7-ZipConfig.ini"))
+    Public Sub 写入7zip配置(压缩格式 As String, 压缩级别 As Integer, 压缩方法 As String, 超时时长 As Integer, 自定义备份目录 As String, 备份目录 As String, 是否增量备份 As Boolean, 是否备份自定义目录 As String, 线程数 As String)
+        Dim 七Zip配置文件 As New Ini文件(Path.Combine(Application.StartupPath, "配置文件", "7-ZipConfig.ini"))
         七Zip配置文件 _
             .设置值("7zipConfig", "CompressionFormat", 压缩格式) _
             .设置值("7zipConfig", "CompressionLevel", 压缩级别.ToString) _
             .设置值("7zipConfig", "CompressionMethod", 压缩方法) _
             .设置值("7zipConfig", "ThreadsCounts", 线程数) _
+            .设置值("7zipConfig", "TimeOut", 超时时长.ToString) _
             .设置值("7zipConfig", "BackupDir", 自定义备份目录) _
             .设置值("7zipConfig", "BackupOutputDir", 备份目录) _
             .设置值("7zipConfig", "IncrementalBackup", 是否增量备份) _
@@ -342,7 +345,7 @@ Module 配置文件操作模块
     End Sub
     '-----------------------写入Sftp配置功能-----------------------
     Public Sub 写入Sftp配置(Sftp服务器序号 As String, 开关状态 As String, 服务器名称 As String, 地址 As String, 端口 As String, 用户名 As String, 密码 As String)
-        Dim Sftp配置文件 As New Ini文件(Path.Combine(配置文件目录, "SFTPConfig.ini"))
+        Dim Sftp配置文件 As New Ini文件(Path.Combine(Application.StartupPath, "配置文件", "SFTPConfig.ini"))
         Sftp配置文件 _
             .设置值($"SFTP{Sftp服务器序号}Config", "Enable", 开关状态) _
             .设置值($"SFTP{Sftp服务器序号}Config", "Name", 服务器名称) _

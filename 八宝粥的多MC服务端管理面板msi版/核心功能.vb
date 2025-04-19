@@ -13,7 +13,6 @@
 'limitations under the License.
 Imports System.Threading
 Imports System.IO
-Imports System.Diagnostics.Eventing.Reader
 Public Module 核心功能实例
     Private Sub 添加日志(信息 As String, 颜色 As Color)
         If 日志窗口.InvokeRequired Then
@@ -93,15 +92,23 @@ Public Module 核心功能实例
             MainForm.Invoke(Sub() MainForm.服务运行时更改控件状态(True))
         End If
         Try
-            If RCON关闭MC服务器() Then
-                添加日志("[Info]阻塞线程1分钟，等待MC服务端彻底关闭", Color.Orange)
-                Thread.Sleep(60000)
-                备份MC服务端()
-                启动MC服务器()
-                向Sftp服务器上传MC服务端备份文件()
-            End If
-            If 备份自定义目录() Then
-                Sftp上传自定义备份文件()
+            If 是否关服备份 Then
+                If RCON关闭MC服务器() Then
+                    添加日志("[Info]阻塞线程1分钟，等待MC服务端彻底关闭", Color.Orange)
+                    Thread.Sleep(60000)
+                    备份MC服务端()
+                    启动MC服务器()
+                    向Sftp服务器上传MC服务端备份文件()
+                End If
+            Else
+                If RCON停止服务端自动保存() Then
+                    备份MC服务端()
+                    启动MC服务器()
+                    向Sftp服务器上传MC服务端备份文件()
+                End If
+                If 备份自定义目录() Then
+                    Sftp上传自定义备份文件()
+                End If
             End If
         Catch ex As Exception
             添加日志($"[ERROR]执行任务时发生错误:{ex.Message}", Color.Red)
@@ -112,34 +119,6 @@ Public Module 核心功能实例
         Else
             MainForm.Invoke(Sub() MainForm.服务运行时更改控件状态(False))
             MainForm.Invoke(Sub() MainForm.StopButton.Enabled = False)
-        End If
-    End Sub
-    Private Sub Sftp上传自定义备份文件()
-        Dim 任务列表 As New List(Of Integer)
-        If Sftp1开关 Then 任务列表.Add(1)
-        If Sftp2开关 Then 任务列表.Add(2)
-        If Sftp3开关 Then 任务列表.Add(3)
-        If 任务列表.Count = 0 Then
-            添加日志("[Warning]无可用Sftp服务器", Color.DarkOrange)
-            Return
-        End If
-        Dim 备份模式 As String
-        If 是否备份自定义目录 Then
-            备份模式 = "增量备份"
-        Else
-            备份模式 = "完整备份"
-        End If
-        Dim 本地文件目录 = Path.Combine(备份输出目录, $"{备份模式}", "自定义备份目录")
-        Dim 本地文件路径 = Path.Combine(本地文件目录, $"{备份模式}_{读取上次备份时间(本地文件目录):yyyyMMdd-HHmmss}.7z")
-        Dim 远程文件目录 = Path.Combine("\备份", $"{备份模式}", $"自定义备份目录")
-        If Sftp1开关 Then
-            处理单个Sftp服务端_上传文件(Sftp1地址, Sftp1端口, Sftp1用户名, Sftp1密码, "1", 本地文件路径, 远程文件目录)
-        End If
-        If Sftp2开关 Then
-            处理单个Sftp服务端_上传文件(Sftp2地址, Sftp2端口, Sftp2用户名, Sftp2密码, "2", 本地文件路径, 远程文件目录)
-        End If
-        If Sftp3开关 Then
-            处理单个Sftp服务端_上传文件(Sftp3地址, Sftp3端口, Sftp3用户名, Sftp3密码, "3", 本地文件路径, 远程文件目录)
         End If
     End Sub
     Private Function RCON关闭MC服务器() As Boolean
@@ -185,7 +164,66 @@ Public Module 核心功能实例
             处理单个服务器(RCON10地址, RCON10端口, RCON10密码, "stop", "10")
         End If
         If 任务列表.Count = 0 Then
-            添加日志("[Info]没有可用的RCON服务器,已自动跳过", Color.DarkGreen)
+            添加日志("[Info]没有控制中的MC服务器,已自动跳过", Color.DarkGreen)
+            Return False
+        Else
+            Return True
+        End If
+    End Function
+    Private Function RCON停止服务端自动保存() As Boolean
+        Dim 任务列表 As New List(Of Integer)
+        If 是否控制MC服务端1 Then
+            任务列表.Add(1)
+            处理单个服务器(RCON1地址, RCON1端口, RCON1密码, "save off", "1")
+            处理单个服务器(RCON1地址, RCON1端口, RCON1密码, "save all", "1")
+        End If
+        If 是否控制MC服务端2 Then
+            任务列表.Add(2)
+            处理单个服务器(RCON2地址, RCON2端口, RCON2密码, "save off", "2")
+            处理单个服务器(RCON2地址, RCON2端口, RCON2密码, "save all", "2")
+        End If
+        If 是否控制MC服务端3 Then
+            任务列表.Add(3)
+            处理单个服务器(RCON3地址, RCON3端口, RCON3密码, "save off", "3")
+            处理单个服务器(RCON3地址, RCON3端口, RCON3密码, "save all", "3")
+        End If
+        If 是否控制MC服务端4 Then
+            任务列表.Add(4)
+            处理单个服务器(RCON4地址, RCON4端口, RCON4密码, "save off", "4")
+            处理单个服务器(RCON4地址, RCON4端口, RCON4密码, "save all", "4")
+        End If
+        If 是否控制MC服务端5 Then
+            任务列表.Add(5)
+            处理单个服务器(RCON5地址, RCON5端口, RCON5密码, "save off", "5")
+            处理单个服务器(RCON5地址, RCON5端口, RCON5密码, "save all", "5")
+        End If
+        If 是否控制MC服务端6 Then
+            任务列表.Add(6)
+            处理单个服务器(RCON6地址, RCON6端口, RCON6密码, "save off", "6")
+            处理单个服务器(RCON6地址, RCON6端口, RCON6密码, "save all", "6")
+        End If
+        If 是否控制MC服务端7 Then
+            任务列表.Add(7)
+            处理单个服务器(RCON7地址, RCON7端口, RCON7密码, "save off", "7")
+            处理单个服务器(RCON7地址, RCON7端口, RCON7密码, "save all", "7")
+        End If
+        If 是否控制MC服务端8 Then
+            任务列表.Add(8)
+            处理单个服务器(RCON8地址, RCON8端口, RCON8密码, "save off", "8")
+            处理单个服务器(RCON8地址, RCON8端口, RCON8密码, "save all", "8")
+        End If
+        If 是否控制MC服务端9 Then
+            任务列表.Add(9)
+            处理单个服务器(RCON9地址, RCON9端口, RCON9密码, "save off", "9")
+            处理单个服务器(RCON9地址, RCON9端口, RCON9密码, "save all", "9")
+        End If
+        If 是否控制MC服务端10 Then
+            任务列表.Add(10)
+            处理单个服务器(RCON10地址, RCON10端口, RCON10密码, "save off", "10")
+            处理单个服务器(RCON10地址, RCON10端口, RCON10密码, "save all", "10")
+        End If
+        If 任务列表.Count = 0 Then
+            添加日志("[Info]没有控制中的MC服务器,已自动跳过", Color.DarkGreen)
             Return False
         Else
             Return True
@@ -226,47 +264,6 @@ Public Module 核心功能实例
             If 是否控制MC服务端10 Then 完整备份实例.执行完整备份(MC服务端10路径, Path.Combine(备份路径, "RCON10备份"), "RCON10完整备份", 备份MC服务端10排除文件参数)
         End If
     End Sub
-    Private Function 备份自定义目录() As Boolean
-        If 是否备份自定义目录 Then
-            If Not String.IsNullOrEmpty(自定义备份目录) Then
-                If Directory.Exists(自定义备份目录) Then
-                    If Not String.IsNullOrEmpty(备份输出目录) Then
-                        If 是否增量备份 Then
-                            ' 执行增量备份
-                            Dim 备份路径 = Path.Combine(备份输出目录, "增量备份")
-                            If Not Directory.Exists(备份路径) Then
-                                Directory.CreateDirectory(备份路径)
-                            End If
-                            Dim 增量备份实例 As New 增量备份管理器()
-                            增量备份实例.执行增量备份(自定义备份目录, Path.Combine(备份路径, "自定义备份目录"), "增量备份")
-                            Return True
-                        Else
-                            ' 执行完整备份
-                            Dim 备份路径 = Path.Combine(备份输出目录, "完整备份")
-                            If Not Directory.Exists(备份路径) Then
-                                Directory.CreateDirectory(备份路径)
-                            End If
-                            Dim 完整备份实例 As New 完整备份管理器()
-                            完整备份实例.执行完整备份(自定义备份目录, Path.Combine(备份路径, "自定义备份目录"), "完整备份")
-                            Return True
-                        End If
-                    Else
-                        添加日志("[ERROR]备份输出目录不能为空", Color.Red)
-                        Return False
-                    End If
-                Else
-                    添加日志("[ERROR]自定义备份目录不存在", Color.Red)
-                    Return False
-                End If
-            Else
-                添加日志("[ERROR]启用自定义备份时,备份目录不能为空", Color.Red)
-                Return False
-            End If
-        Else
-            添加日志("[Info]未启用备份自定义目录，已跳过", Color.Orange)
-            Return False
-        End If
-    End Function
     Public Sub 启动MC服务器()
         If 是否控制MC服务端1 Then 启动单个MC服务器(MC服务端1启动脚本名称, "1")
         If 是否控制MC服务端2 Then 启动单个MC服务器(MC服务端2启动脚本名称, "2")
@@ -367,6 +364,75 @@ Public Module 核心功能实例
             Return
         End If
         添加日志("[Warning]无可用Sftp服务器", Color.DarkOrange)
+    End Sub
+    Private Function 备份自定义目录() As Boolean
+        If 是否备份自定义目录 Then
+            If Not String.IsNullOrEmpty(自定义备份目录) Then
+                If Directory.Exists(自定义备份目录) Then
+                    If Not String.IsNullOrEmpty(备份输出目录) Then
+                        If 是否增量备份 Then
+                            ' 执行增量备份
+                            Dim 备份路径 = Path.Combine(备份输出目录, "增量备份")
+                            If Not Directory.Exists(备份路径) Then
+                                Directory.CreateDirectory(备份路径)
+                            End If
+                            Dim 增量备份实例 As New 增量备份管理器()
+                            增量备份实例.执行增量备份(自定义备份目录, Path.Combine(备份路径, "自定义备份目录"), "增量备份")
+                            Return True
+                        Else
+                            ' 执行完整备份
+                            Dim 备份路径 = Path.Combine(备份输出目录, "完整备份")
+                            If Not Directory.Exists(备份路径) Then
+                                Directory.CreateDirectory(备份路径)
+                            End If
+                            Dim 完整备份实例 As New 完整备份管理器()
+                            完整备份实例.执行完整备份(自定义备份目录, Path.Combine(备份路径, "自定义备份目录"), "完整备份")
+                            Return True
+                        End If
+                    Else
+                        添加日志("[ERROR]备份输出目录不能为空", Color.Red)
+                        Return False
+                    End If
+                Else
+                    添加日志("[ERROR]自定义备份目录不存在", Color.Red)
+                    Return False
+                End If
+            Else
+                添加日志("[ERROR]启用自定义备份时,备份目录不能为空", Color.Red)
+                Return False
+            End If
+        Else
+            添加日志("[Info]未启用备份自定义目录，已跳过", Color.Orange)
+            Return False
+        End If
+    End Function
+    Private Sub Sftp上传自定义备份文件()
+        Dim 任务列表 As New List(Of Integer)
+        If Sftp1开关 Then 任务列表.Add(1)
+        If Sftp2开关 Then 任务列表.Add(2)
+        If Sftp3开关 Then 任务列表.Add(3)
+        If 任务列表.Count = 0 Then
+            添加日志("[Warning]无可用Sftp服务器", Color.DarkOrange)
+            Return
+        End If
+        Dim 备份模式 As String
+        If 是否备份自定义目录 Then
+            备份模式 = "增量备份"
+        Else
+            备份模式 = "完整备份"
+        End If
+        Dim 本地文件目录 = Path.Combine(备份输出目录, $"{备份模式}", "自定义备份目录")
+        Dim 本地文件路径 = Path.Combine(本地文件目录, $"{备份模式}_{读取上次备份时间(本地文件目录):yyyyMMdd-HHmmss}.7z")
+        Dim 远程文件目录 = Path.Combine("\备份", $"{备份模式}", $"自定义备份目录")
+        If Sftp1开关 Then
+            处理单个Sftp服务端_上传文件(Sftp1地址, Sftp1端口, Sftp1用户名, Sftp1密码, "1", 本地文件路径, 远程文件目录)
+        End If
+        If Sftp2开关 Then
+            处理单个Sftp服务端_上传文件(Sftp2地址, Sftp2端口, Sftp2用户名, Sftp2密码, "2", 本地文件路径, 远程文件目录)
+        End If
+        If Sftp3开关 Then
+            处理单个Sftp服务端_上传文件(Sftp3地址, Sftp3端口, Sftp3用户名, Sftp3密码, "3", 本地文件路径, 远程文件目录)
+        End If
     End Sub
     Private Function 读取上次备份时间(输出目录 As String)
         Dim 上次备份时间 As DateTime = DateTime.MinValue

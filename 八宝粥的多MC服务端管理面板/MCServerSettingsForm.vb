@@ -28,7 +28,7 @@ Public Class MCServerSettingsForm
 			保存RCON配置()
 			添加日志("[Success]成功保存RCON服务器设置", Color.Green)
 			添加日志("[Action]关闭RCON服务器设置窗口", Color.Black)
-			日志窗口.日志输出RCON配置()
+			日志窗口.日志输出MC服务端配置()
 			添加日志("-------------------------------------------------------------------------------------", Color.Black)
 			Me.Close()
 		End If

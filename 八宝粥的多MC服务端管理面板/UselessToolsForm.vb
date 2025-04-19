@@ -12,7 +12,6 @@
 'See the License For the specific language governing permissions And
 'limitations under the License.
 Imports System.IO
-Imports System.Threading
 Public Class UselessToolsForm
 	Private Sub 添加日志(信息 As String, 颜色 As Color)
 		日志窗口.添加日志(信息, 颜色)
@@ -191,7 +190,6 @@ Public Class UselessToolsForm
 				ComboBoxRCON.SelectedIndex = 0
 				Return
 		End Select
-		Thread.Sleep(3000) ' 等待数据包到达
 		Select Case 选中的RCON名称
 			Case MC服务端1名称
 				RCON实例.断开连接("1")
@@ -317,7 +315,7 @@ Public Class UselessToolsForm
 			添加日志("[Action]启动所有已启用的MC服务端", Color.Orange)
 			启动MC服务器()
 		Else
-			添加日志("没有可用的RCON,全给你关掉了(恼)", Color.Red)
+			添加日志("没有可用的MC服务端,全给你关掉了(恼)", Color.Red)
 		End If
 	End Sub
 End Class
