@@ -103,7 +103,6 @@ Public Module 核心功能实例
             Else
                 If RCON停止服务端自动保存() Then
                     备份MC服务端()
-                    启动MC服务器()
                     向Sftp服务器上传MC服务端备份文件()
                 End If
                 If 备份自定义目录() Then
