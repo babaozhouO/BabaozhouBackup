@@ -38,6 +38,7 @@ Partial Class MainSettingsForm
 		Label5 = New Label()
 		FPS = New TextBox()
 		Label2 = New Label()
+		CheckBox1 = New CheckBox()
 		SuspendLayout()
 		' 
 		' ButtonSaveAndExit
@@ -61,15 +62,15 @@ Partial Class MainSettingsForm
 		' LabelRuntime
 		' 
 		LabelRuntime.AutoSize = True
-		LabelRuntime.Location = New Point(43, 77)
+		LabelRuntime.Location = New Point(43, 60)
 		LabelRuntime.Name = "LabelRuntime"
-		LabelRuntime.Size = New Size(220, 19)
+		LabelRuntime.Size = New Size(386, 38)
 		LabelRuntime.TabIndex = 2
-		LabelRuntime.Text = "运行时间(当天)       时       分       秒"
+		LabelRuntime.Text = "[要运行当天的运行时间点(上方选择框选中)]   或" & vbCrLf & "[每次运行的间隔时长(上方选择框不选中)]：       时       分       秒"
 		' 
 		' TextBoxhour
 		' 
-		TextBoxhour.Location = New Point(138, 74)
+		TextBoxhour.Location = New Point(301, 78)
 		TextBoxhour.Name = "TextBoxhour"
 		TextBoxhour.Size = New Size(21, 24)
 		TextBoxhour.TabIndex = 3
@@ -77,7 +78,7 @@ Partial Class MainSettingsForm
 		' 
 		' TextBoxminute
 		' 
-		TextBoxminute.Location = New Point(180, 74)
+		TextBoxminute.Location = New Point(346, 78)
 		TextBoxminute.Name = "TextBoxminute"
 		TextBoxminute.Size = New Size(21, 24)
 		TextBoxminute.TabIndex = 5
@@ -85,7 +86,7 @@ Partial Class MainSettingsForm
 		' 
 		' TextBoxsecond
 		' 
-		TextBoxsecond.Location = New Point(220, 74)
+		TextBoxsecond.Location = New Point(387, 78)
 		TextBoxsecond.Name = "TextBoxsecond"
 		TextBoxsecond.Size = New Size(21, 24)
 		TextBoxsecond.TabIndex = 7
@@ -94,7 +95,7 @@ Partial Class MainSettingsForm
 		' Label1
 		' 
 		Label1.AutoSize = True
-		Label1.Location = New Point(43, 49)
+		Label1.Location = New Point(43, 35)
 		Label1.Name = "Label1"
 		Label1.Size = New Size(127, 19)
 		Label1.TabIndex = 9
@@ -102,7 +103,7 @@ Partial Class MainSettingsForm
 		' 
 		' Days
 		' 
-		Days.Location = New Point(63, 46)
+		Days.Location = New Point(63, 32)
 		Days.Name = "Days"
 		Days.Size = New Size(33, 24)
 		Days.TabIndex = 11
@@ -110,7 +111,7 @@ Partial Class MainSettingsForm
 		' CheckBox是否关服备份
 		' 
 		CheckBox是否关服备份.AutoSize = True
-		CheckBox是否关服备份.Location = New Point(43, 104)
+		CheckBox是否关服备份.Location = New Point(215, 103)
 		CheckBox是否关服备份.Name = "CheckBox是否关服备份"
 		CheckBox是否关服备份.Size = New Size(80, 23)
 		CheckBox是否关服备份.TabIndex = 12
@@ -119,7 +120,7 @@ Partial Class MainSettingsForm
 		' 
 		' WaitingSeconds
 		' 
-		WaitingSeconds.Location = New Point(242, 102)
+		WaitingSeconds.Location = New Point(157, 101)
 		WaitingSeconds.Name = "WaitingSeconds"
 		WaitingSeconds.Size = New Size(32, 24)
 		WaitingSeconds.TabIndex = 17
@@ -128,7 +129,7 @@ Partial Class MainSettingsForm
 		' Label5
 		' 
 		Label5.AutoSize = True
-		Label5.Location = New Point(129, 105)
+		Label5.Location = New Point(43, 104)
 		Label5.Name = "Label5"
 		Label5.Size = New Size(166, 19)
 		Label5.TabIndex = 16
@@ -136,7 +137,7 @@ Partial Class MainSettingsForm
 		' 
 		' FPS
 		' 
-		FPS.Location = New Point(225, 127)
+		FPS.Location = New Point(224, 126)
 		FPS.Name = "FPS"
 		FPS.Size = New Size(33, 24)
 		FPS.TabIndex = 19
@@ -144,11 +145,21 @@ Partial Class MainSettingsForm
 		' Label2
 		' 
 		Label2.AutoSize = True
-		Label2.Location = New Point(43, 130)
+		Label2.Location = New Point(43, 129)
 		Label2.Name = "Label2"
 		Label2.Size = New Size(291, 19)
 		Label2.TabIndex = 18
 		Label2.Text = "执行长耗时任务时的界面帧数：      （0~1000）"
+		' 
+		' CheckBox1
+		' 
+		CheckBox1.AutoSize = True
+		CheckBox1.Location = New Point(176, 34)
+		CheckBox1.Name = "CheckBox1"
+		CheckBox1.Size = New Size(132, 23)
+		CheckBox1.TabIndex = 20
+		CheckBox1.Text = "间隔时间计算方式"
+		CheckBox1.UseVisualStyleBackColor = True
 		' 
 		' MainSettingsForm
 		' 
@@ -158,6 +169,7 @@ Partial Class MainSettingsForm
 		CancelButton = ButtonCancle
 		ClientSize = New Size(934, 521)
 		ControlBox = False
+		Controls.Add(CheckBox1)
 		Controls.Add(FPS)
 		Controls.Add(Label2)
 		Controls.Add(WaitingSeconds)
@@ -196,4 +208,5 @@ Partial Class MainSettingsForm
 	Friend WithEvents Label5 As Label
 	Friend WithEvents FPS As TextBox
 	Friend WithEvents Label2 As Label
+	Friend WithEvents CheckBox1 As CheckBox
 End Class

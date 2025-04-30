@@ -25,12 +25,18 @@ Module 配置文件操作模块
     '-----------------------主程序设置-----------------------
     Public Property 运行时间 As String
     Public Property 间隔天数 As String
+    ''' <summary>
+    ''' true=每{间隔天数}天备份模式，false=每{间隔时长}备份模式
+    ''' </summary>
+    Public Property 运行模式 As Boolean
     Public Property 是否关服备份 As Boolean
     Public Property 等待服务端关闭时长 As Integer
     Public Property 日志窗口隐藏状态 As Boolean = False
     Public Property 帧数 As Integer
     Public Property 延时毫秒数 As Integer
     Public Property 是否循环更新界面 As Boolean
+    Public Property 服务运行状态 As Boolean
+    Public Property 备份操作进行状态 As Boolean
     '-----------------------RCON1设置-----------------------
     Public Property 是否控制MC服务端1 As Boolean
     Public Property MC服务端1名称 As String
@@ -176,7 +182,8 @@ Module 配置文件操作模块
         间隔天数 = 主程序配置文件.获取值("MainSettings", "Days", "1")
 		运行时间 = 主程序配置文件.获取值("MainSettings", "Runtime", "03:00:00")
 		是否关服备份 = 主程序配置文件.获取值("MainSettings", "StopMCServer", "True")
-		等待服务端关闭时长 = CInt(主程序配置文件.获取值("MainSettings", "WaitingSeconds", "60"))
+        等待服务端关闭时长 = CInt(主程序配置文件.获取值("MainSettings", "WaitingSeconds", "60"))
+        运行模式 = 主程序配置文件.获取值("MainSettings", "RunMode", "True")
         帧数 = CInt(主程序配置文件.获取值("MainSettings", "FPS", "25"))
         转换帧数为延时毫秒数()
     End Sub
@@ -185,11 +192,13 @@ Module 配置文件操作模块
         If 帧数 = 0 Then
             是否循环更新界面 = False
             Exit Sub
+        Else
+            If 帧数 > 1000 Then
+                帧数 = 1000
+            End If
+            延时毫秒数 = 1000 \ 帧数
+            是否循环更新界面 = True
         End If
-        If 帧数 > 1000 Then
-            帧数 = 1000
-        End If
-        延时毫秒数 = 1000 \ 帧数
     End Sub
     '-----------------------读取MC服务端配置功能-----------------------
     Public Sub 读取MC服务端配置()
@@ -298,7 +307,7 @@ Module 配置文件操作模块
         备份输出目录 = 七zip配置文件.获取值("7zipConfig", "BackupOutputDir", "")
         是否备份自定义目录 = 七zip配置文件.获取值("7zipConfig", "BackupCustomizedDir", "False")
         自定义备份目录 = 七zip配置文件.获取值("7zipConfig", "BackupDir", "")
-        是否增量备份 = 七zip配置文件.获取值("7zipConfig", "IncrementalBackup", True)
+        是否增量备份 = 七zip配置文件.获取值("7zipConfig", "IncrementalBackup", "True")
     End Sub
     '-----------------------读取Sftp配置功能-----------------------
     Public Sub 读取Sftp配置()
@@ -326,12 +335,13 @@ Module 配置文件操作模块
         Sftp3密码 = Sftp配置文件.获取值("SFTP3Config", "Password", "")
     End Sub
     '-----------------------写入主程序配置功能-----------------------
-    Public Sub 写入主程序配置(间隔天数 As String, 运行时间 As String, 是否关服备份 As Boolean, 关服等待时长 As Integer, 帧数 As Integer)
+    Public Sub 写入主程序配置(间隔天数 As String, 运行时间 As String, 是否关服备份 As Boolean, 关服等待时长 As Integer, 帧数 As Integer, 运行模式 As Boolean)
         Dim 主程序配置文件 As New Ini文件(Path.Combine(程序数据目录, "配置文件", "MainConfig.ini"))
         主程序配置文件.设置值("MainSettings", "Runtime", 运行时间) _
         .设置值("MainSettings", "Days", 间隔天数) _
         .设置值("MainSettings", "StopMCServer", 是否关服备份) _
         .设置值("MainSettings", "WaitingSeconds", 关服等待时长) _
+        .设置值("MainSettings", "RunMode", 运行模式) _
         .设置值("MainSettings", "FPS", 帧数.ToString) _
         .保存()
         主程序配置文件.保存()

@@ -373,7 +373,8 @@ Public Class UselessToolsForm
 		启动MC服务端.Text = "启动已启用的MC服务端(冷却中)"
 		If Not ComboBoxRCON.Text = "没有可用的RCON服务端,全给你关掉了(恼)" Then
 			添加日志("[Action]启动所有已启用的MC服务端", Color.Orange)
-			启动MC服务器()
+			Dim H As New 核心功能类
+			H.启动MC服务器()
 		Else
 			添加日志("没有可用的MC服务端,全给你关掉了(恼)", Color.Red)
 		End If

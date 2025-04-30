@@ -32,20 +32,22 @@ Public Class SFTP客户端 ' SFTP 客户端类，实现连接和文件上传功�
     End Sub
     Public Sub 建立Sftp连接(主机地址 As String, 端口号 As Integer, 用户名 As String, 密码 As String, _服务端序号 As String) ' 连接到 SFTP 服务器
         服务端序号 = _服务端序号
+        MainForm.执行中的分任务.Text = $"处理Sftp{服务端序号}服务器"
+        MainForm.分任务进度条.Value = 0
         添加日志($"[Action]正在尝试连接到Sftp{服务端序号}服务器", Color.Orange)
         Try
             If 客户端实例 Is Nothing OrElse Not 客户端实例.IsConnected Then '检测是否已连接
                 Dim 连接信息 = New PasswordConnectionInfo(主机地址, 端口号, 用户名, 密码) With {.Encoding = Encoding.UTF8}
                 客户端实例 = New SftpClient(连接信息)
-				If 是否循环更新界面 Then
-					Dim T = 客户端实例.ConnectAsync(CancellationToken.None)
-					While Not T.IsCompleted
-						Application.DoEvents()
-						Thread.Sleep(延时毫秒数)
-					End While
-				Else
-					客户端实例.Connect()
-				End If
+                If 是否循环更新界面 Then
+                    Dim T = 客户端实例.ConnectAsync(CancellationToken.None)
+                    While Not T.IsCompleted
+                        Application.DoEvents()
+                        Thread.Sleep(延时毫秒数)
+                    End While
+                Else
+                    客户端实例.Connect()
+                End If
             Else
                 添加日志($"[ERROR]Sftp{服务端序号}服务器已连接，请勿重复连接", Color.Red)
             End If
@@ -55,7 +57,15 @@ Public Class SFTP客户端 ' SFTP 客户端类，实现连接和文件上传功�
         If 客户端实例 IsNot Nothing AndAlso 客户端实例.IsConnected Then
             连接状态 = True
             添加日志($"[Success]成功连接Sftp{服务端序号}服务器", Color.Green)
+            MainForm.分任务进度条.Value = 10
         End If
+    End Sub
+    Private WithEvents 模拟文件上传耗时 As New Timers.Timer With {.AutoReset = True, .Interval = 1000}
+    Private ReadOnly uiContext As SynchronizationContext = SynchronizationContext.Current
+    Private Sub Tick() Handles 模拟文件上传耗时.Elapsed
+        uiContext.Post(Sub()
+                           MainForm.分任务进度条.Value += If(MainForm.分任务进度条.Value < 93, 1, 0)
+                       End Sub, Nothing)
     End Sub
     Public Sub 上传文件(本地文件路径 As String, 远程目录路径 As String) ' 上传本地文件到远程路径
         If 本地文件路径 = "" Then
@@ -70,7 +80,7 @@ Public Class SFTP客户端 ' SFTP 客户端类，实现连接和文件上传功�
             添加日志($"[ERROR]Sftp{服务端序号}客户端未连接", Color.Red)
             Return
         End If
-        If Not 远程目录路径.StartsWith("/") Then 远程目录路径 = $"/{远程目录路径}"
+        If Not 远程目录路径.StartsWith("/"c) Then 远程目录路径 = $"/{远程目录路径}"
         远程目录路径 = 远程目录路径.Replace(反斜杠, 正斜杠).TrimEnd(正斜杠) ' 处理远程目录路径
         If 远程目录路径 = "" Then 远程目录路径 = "/"
         If 客户端实例.Exists(远程目录路径) Then
@@ -103,6 +113,7 @@ Public Class SFTP客户端 ' SFTP 客户端类，实现连接和文件上传功�
                 End Try
             Next
         End If
+        MainForm.分任务进度条.Value = 30
         添加日志($"[Info]Sftp{服务端序号}客户端正在上传文件", Color.Orange)
         ' 获取文件名并拼接远程路径
         Dim 文件名 = Path.GetFileName(本地文件路径)
@@ -111,17 +122,21 @@ Public Class SFTP客户端 ' SFTP 客户端类，实现连接和文件上传功�
             ' 上传文件
             Using 文件流 As New FileStream(本地文件路径, FileMode.Open)
                 If 是否循环更新界面 Then
+                    模拟文件上传耗时.Enabled = True
                     Dim UpLoadResult As IAsyncResult = 客户端实例.BeginUploadFile(文件流, 远程文件路径)
                     While Not UpLoadResult.IsCompleted
                         Application.DoEvents()
                         Thread.Sleep(延时毫秒数)
                     End While
                     客户端实例.EndUploadFile(UpLoadResult)
+                    模拟文件上传耗时.Enabled = False
                 Else
                     客户端实例.UploadFile(文件流, 远程文件路径)
                 End If
+                MainForm.分任务进度条.Value = 95
             End Using
             添加日志($"[Success]Sftp{服务端序号}客户端文件上传成功", Color.Green)
+            MainForm.分任务进度条.Value = 100
         Catch ex As Exception
             添加日志($"[ERROR]Sftp{服务端序号}客户端文件上传失败:{ex.Message}", Color.Red)
             添加日志("[Tips]请检查sftp用户是否有写权限,是否已启用UTF-8编码", Color.Red)
@@ -130,6 +145,7 @@ Public Class SFTP客户端 ' SFTP 客户端类，实现连接和文件上传功�
     End Sub
     Public Sub 检测远程文件是否存在(远程文件路径 As String) ' 检测远程文件是否存在
         If 客户端实例 Is Nothing OrElse Not 客户端实例.IsConnected Then 添加日志($"[ERROR]Sftp{服务端序号}客户端未连接", Color.Red) : Return
+        MainForm.分任务进度条.Value = 30
         Try
             If 客户端实例.Exists(远程文件路径) Then
                 远程文件存在状态 = True
@@ -145,6 +161,7 @@ Public Class SFTP客户端 ' SFTP 客户端类，实现连接和文件上传功�
         If 客户端实例 Is Nothing OrElse Not 客户端实例.IsConnected Then 添加日志($"[ERROR]Sftp{服务端序号}客户端未连接", Color.Red)
         Try
             If 远程文件存在状态 Then
+                MainForm.分任务进度条.Value = 50
                 客户端实例.DeleteFile(远程文件路径)
                 添加日志($"[Success]Sftp{服务端序号}客户端成功删除远程文件", Color.Green)
             Else
@@ -152,11 +169,15 @@ Public Class SFTP客户端 ' SFTP 客户端类，实现连接和文件上传功�
             End If
         Catch
             添加日志($"[ERROR]Sftp{服务端序号}客户端删除远程文件失败", Color.Red)
+        Finally
+            MainForm.分任务进度条.Value = 100
         End Try
     End Sub
     Public Sub 断开连接() ' 断开连接并释放资源
         If 客户端实例 IsNot Nothing AndAlso 客户端实例.IsConnected Then
             客户端实例.Disconnect()
+            MainForm.分任务进度条.Value = 0
+            MainForm.执行中的分任务.Text = $"无"
         End If
     End Sub
     Public Sub Dispose() Implements IDisposable.Dispose ' 实现 IDisposable 接口

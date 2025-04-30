@@ -19,7 +19,7 @@ Public Class MainForm
     Private 图片列表 As New List(Of String)()
     Private 图片序号 As Integer = 0
     Private 下一次切换的时间点 As DateTime ' 下一次切换的时间点
-    Private 服务 As 间隔任务调度器
+    Private 服务 As 间隔任务执行器
     Private Sub 添加日志(信息 As String, 颜色 As Color) ' 添加日志
         日志窗口.添加日志(信息, 颜色)
     End Sub
@@ -35,20 +35,6 @@ Public Class MainForm
             执行中的分任务.Text = "压缩文件中"
         End If
     End Sub
-    ' 文件复制进度控制
-    Public Sub 更新复制进度(当前 As Integer, 总计 As Integer)
-        If 分任务进度条.InvokeRequired Then
-            分任务进度条.Invoke(Sub()
-                              执行中的分任务.Text = "复制文件到临时文件夹中"
-                              分任务进度条.Maximum = 总计
-                              分任务进度条.Value = 当前
-                          End Sub)
-        Else
-            执行中的分任务.Text = "复制文件到临时文件夹中"
-            分任务进度条.Maximum = 总计
-            分任务进度条.Value = 当前
-        End If
-    End Sub
     '--------------------------------初始化计时器--------------------------------
     Private Sub 更新倒计时显示() ' 更新倒计时显示
         Dim 剩余秒 As TimeSpan = 下一次切换的时间点 - DateTime.Now
@@ -58,9 +44,23 @@ Public Class MainForm
         ' 更新进度条（最大值60秒）
         倒计时进度条.Maximum = 60
         Try
-            倒计时进度条.Value = Math.Max(0, 60 - 剩余秒数)
+            倒计时进度条.Value = Math.Max(0, 剩余秒数)
         Catch
         End Try
+        If 服务运行状态 AndAlso Not 备份操作进行状态 Then
+            Dim S As Integer = 服务.获取剩余秒数().总秒数
+            Dim TS As Integer = 服务.获取剩余秒数().剩余秒数
+            Dim TD As Integer = TS \ 60 \ 60 \ 24
+            Dim TH As Integer = TS \ 60 \ 60
+            Dim LH As Integer = TH - TD * 24
+            Dim TM As Integer = TS \ 60
+            Dim LM As Integer = TM - TH * 60
+            Dim LS As Integer = TS - TM * 60
+            Dim k As Double = S / 100
+            主任务进度条.Maximum = 100
+            执行中的主任务.Text = $"等待备份运行时间的到来,倒计时:[{TD}:{LH}:{LM}:{LS}]"
+            主任务进度条.Value = TS / k
+        End If
     End Sub
     '-----------------------------------图片轮播-------------------------------------------
     Private Sub 加载图片列表() ' 加载图片文件列表
@@ -119,9 +119,12 @@ Public Class MainForm
         日志窗口.更新停靠位置(Me) ' 更新日志窗口位置
     End Sub
     Private Sub 主窗口_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+    End Sub
+    Private Sub MainForm_Closed(sender As Object, e As EventArgs) Handles Me.Closed
         NowTimer.Stop() ' 窗体关闭时释放资源
         ChanegeImageTimer.Stop()
         PictureBox.Image?.Dispose()
+        If 服务 IsNot Nothing Then 服务.停止任务()
     End Sub
     Private Sub 窗体关闭确认(sender As Object, e As FormClosingEventArgs)
         ' 判断关闭原因是否是用户操作（点击关闭按钮/Alt+F4）
@@ -195,7 +198,7 @@ Public Class MainForm
         添加日志("-------------------------------------------------------------------------------------", Color.Black)
         添加日志("[Warning]尚未经过严格测试，谨慎使用", Color.Red)
         If 间隔天数 = "" Then 间隔天数 = "1"
-        服务 = New 间隔任务调度器(CInt(间隔天数), 运行时间)
+        服务 = New 间隔任务执行器()
         添加日志("[Action]服务已启动", Color.Black)
         添加日志("[提示]:在等待执行时可更改配置", Color.Orange)
         Me.RunButton.Enabled = False
@@ -210,10 +213,15 @@ Public Class MainForm
             MainForm.SettingsButton.Enabled = False
             MainForm.Button7z.Enabled = False
             MainForm.SftpButton.Enabled = False
-            MainForm.StopButton.Enabled = False
+            If 服务运行状态 Then
+                MainForm.StopButton.Enabled = True
+            Else
+                MainForm.StopButton.Enabled = False
+            End If
             MainForm.ToolsButton.Enabled = False
             MainForm.ButtonRCON.Enabled = False
             MainForm.RunImmediately.Enabled = False
+            MainForm.执行中的主任务.Text = "备份"
         Else
             MainForm.ExitButton.Enabled = True
             MainForm.TestRCONButton.Enabled = True
@@ -222,10 +230,15 @@ Public Class MainForm
             MainForm.SettingsButton.Enabled = True
             MainForm.Button7z.Enabled = True
             MainForm.SftpButton.Enabled = True
-            MainForm.StopButton.Enabled = True
+            If 服务运行状态 Then
+                MainForm.StopButton.Enabled = True
+            Else
+                MainForm.StopButton.Enabled = False
+            End If
             MainForm.ToolsButton.Enabled = True
             MainForm.ButtonRCON.Enabled = True
             MainForm.RunImmediately.Enabled = True
+            MainForm.执行中的主任务.Text = "无"
         End If
     End Sub
     Private Sub ButtonSightseeing_Click(sender As Object, e As EventArgs) Handles ButtonSightseeing.Click
@@ -368,13 +381,17 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub RunImmediately_Click(sender As Object, e As EventArgs) Handles RunImmediately.Click
-        核心功能()
+	Private Sub RunImmediately_Click(sender As Object, e As EventArgs) Handles RunImmediately.Click
+        Dim H As New 核心功能类()
+        H.核心功能方法()
     End Sub
 
     Private Sub StopButton_Click(sender As Object, e As EventArgs) Handles StopButton.Click
         Me.服务.停止任务()
         添加日志("[Action]已停止服务", Color.Black)
+        主任务进度条.Maximum = 100
+        主任务进度条.Value = 0
+        执行中的主任务.Text = "无"
         Me.RunButton.Enabled = True
         Me.StopButton.Enabled = False
     End Sub

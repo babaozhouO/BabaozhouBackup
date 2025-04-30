@@ -29,6 +29,8 @@ Public Class RCON客户端
 	End Sub
 	Public Sub 连接RCON(地址 As String, 端口 As Integer, 密码 As String, 服务器序号 As String) ' 连接到 RCON 服务端
 		添加日志($"[Action]正在连接到RCON{服务器序号}服务端", Color.Orange)
+		MainForm.执行中的分任务.Text = $"发送指令并读取RCON{服务器序号}服务端的返回消息"
+		MainForm.分任务进度条.Value = 0
 		Try
 			If 是否循环更新界面 Then
 				Dim T = RCON客户端实例.ConnectAsync(地址, 端口)
@@ -42,7 +44,14 @@ Public Class RCON客户端
 		Catch ex As Exception
 			添加日志($"[ERROR]RCON{服务器序号}连接失败:{ex.Message}", Color.Red)
 			添加日志($"[ERROR]RCON{服务器序号}客户端无法连接到指定的服务器，请检查网络连接和配置文件。", Color.Red)
+			Exit Sub
 		End Try
+		If Not RCON客户端实例.Connected Then
+			添加日志($"[ERROR]RCON{服务器序号}连接失败", Color.Red)
+			添加日志($"[ERROR]RCON{服务器序号}客户端无法连接到指定的服务器，请检查网络连接和配置文件。", Color.Red)
+			Exit Sub
+		End If
+		MainForm.分任务进度条.Value = 10
 		添加日志($"[Success]RCON{服务器序号}连接成功", Color.Green)
 		数据流 = RCON客户端实例.GetStream()
 		添加日志($"[INFO]正在尝试登录至RCON{服务器序号}服务器", Color.Black)
@@ -51,17 +60,23 @@ Public Class RCON客户端
 	Private Sub 登录到RCON(密码 As String, 服务器序号 As String) ' 认证（发送密码）
 		添加日志($"[INFO]RCON{服务器序号}客户端正在构建登录信息数据包", Color.Black)
 		Dim 登录数据包 = 构建数据包(3, 密码)
+		MainForm.分任务进度条.Value = 15
 		添加日志($"[INFO]RCON{服务器序号}客户端正在发送登录信息数据包", Color.Black)
 		数据流.Write(登录数据包, 0, 登录数据包.Length)
 		添加日志($"[INFO]RCON{服务器序号}客户端正在读取返回数据包", Color.Black)
 		Dim Rid = 读取返回数据包(服务器序号).返回的数据包请求ID
-		If Rid = -1 Then
-			添加日志($"[ERROR]RCON{服务器序号}登录失败，密码错误", Color.Red)
-		ElseIf Rid = 0 Then
+		If Rid = 0 Then
 			连接状态 = True
 			添加日志($"[Success]RCON{服务器序号}登录成功", Color.Green)
+			MainForm.分任务进度条.Value = 20
+		ElseIf Rid = -1 Then
+			添加日志($"[ERROR]RCON{服务器序号}登录失败，密码错误", Color.Red)
+			MainForm.分任务进度条.Value = 0
+			MainForm.执行中的分任务.Text = ""
 		Else
 			添加日志($"[ERROR]RCON{服务器序号}登录失败，网络错误", Color.Red)
+			MainForm.分任务进度条.Value = 0
+			MainForm.执行中的分任务.Text = ""
 		End If
 	End Sub
 	Public Sub 发送指令并返回响应(指令 As String, 服务器序号 As String, Optional 等待时长 As Integer = 3) ' 发送命令并返回响应
@@ -75,33 +90,41 @@ Public Class RCON客户端
 		请求ID += 1
 		添加日志($"[Info]RCON{服务器序号}客户端正在构建指令数据包", Color.Black)
 		Dim 指令数据包 = 构建数据包(2, 指令)
+		MainForm.分任务进度条.Value = 30
 		添加日志($"[Info]RCON{服务器序号}客户端正在发送指令数据包", Color.Black)
 		数据流.Write(指令数据包, 0, 指令数据包.Length) ' 发送数据包
+		MainForm.分任务进度条.Value = 35
 		'读取返回响应
-		If 指令 = "list" Or 指令 = "stop" Or 指令 = "save off" Or 指令 = "save all" Then
+		If 指令 = "list" Or 指令 = "stop" Or 指令 = "save-off" Or 指令 = "save-on" Then
 			添加日志($"[Info]RCON{服务器序号}客户端正在接收并读取返回数据包,接收超时时长:0.5s", Color.Black)
 			If 是否循环更新界面 Then
-				Dim i As Integer = 0
-				While i <= 13
-					i += 1
+				Dim C As Integer = 0.5 * 帧数 '循环次数
+				Dim S As Double = 55 / C '每次循环增加量
+				For i = 1 To C
+					MainForm.分任务进度条.Value = If(35 + CInt(S * i) <= 90, 35 + CInt(S * i), 90)
 					Thread.Sleep(延时毫秒数)
 					Application.DoEvents()
-				End While
+				Next
+				MainForm.分任务进度条.Value = 90
 			Else
 				Thread.Sleep(500)
+				MainForm.分任务进度条.Value = 90
 			End If
 		Else
 			添加日志($"[Info]RCON{服务器序号}客户端正在接收并读取返回数据包,接收超时时长:{等待时长}s", Color.Black)
 			If 是否循环更新界面 Then
 				Dim i As Integer
-				Dim Count As Integer = 等待时长 * 25
+				Dim Count As Integer = 等待时长 * 帧数
+				Dim S = 55 / Count
 				While i <= Count
 					i += 1
 					Thread.Sleep(延时毫秒数)
+					MainForm.分任务进度条.Value = If(35 + CInt(S * i) <= 90, 35 + CInt(S * i), 90)
 					Application.DoEvents()
 				End While
 			Else
 				Thread.Sleep(等待时长 * 1000)
+				MainForm.分任务进度条.Value = 90
 			End If
 		End If
 		Dim 完整响应 As String = ""
@@ -115,6 +138,7 @@ Public Class RCON客户端
 		Catch ex As IOException
 			添加日志($"[ERROR]读取返回响应失败: {ex.Message}", Color.Red)
 		End Try
+		MainForm.分任务进度条.Value = 100
 		添加日志($"[Info]MC服务器{服务器序号}指令返回信息:", Color.Orange)
 		添加日志(完整响应, Color.Orange)
 	End Sub
@@ -201,6 +225,8 @@ Public Class RCON客户端
 	End Function
 	Public Sub 断开连接(服务器序号 As String)  ' 关闭连接
 		If Not 连接状态 Then Exit Sub
+		MainForm.执行中的分任务.Text = "无"
+		MainForm.分任务进度条.Value = 0
 		数据流.Dispose()
 		RCON客户端实例.Dispose()
 		添加日志($"[Info]已断开RCON{服务器序号}服务器连接", Color.Orange)

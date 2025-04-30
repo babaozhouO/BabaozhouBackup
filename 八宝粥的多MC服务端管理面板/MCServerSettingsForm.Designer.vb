@@ -1053,9 +1053,9 @@ Partial Class MCServerSettingsForm
 		Label17.AutoSize = True
 		Label17.Location = New Point(12, 565)
 		Label17.Name = "Label17"
-		Label17.Size = New Size(495, 38)
+		Label17.Size = New Size(501, 38)
 		Label17.TabIndex = 181
-		Label17.Text = "排除文件参数说明：-x!""文件名"" 排除单个文件；-x!""文件夹\* ""排除整个文件夹" & vbCrLf & "排除服务端根目录下error.txt和logs文件夹参数示例：-x!""error.txt"" -x!""logs\*"""
+		Label17.Text = "排除文件参数说明：-x!""文件名"" 排除单个文件；-xr!""文件夹\* ""排除整个文件夹" & vbCrLf & "排除服务端根目录下error.txt和logs文件夹参数示例：-x!""error.txt"" -xr!""logs\*"""
 		' 
 		' MCServerSettingsForm
 		' 

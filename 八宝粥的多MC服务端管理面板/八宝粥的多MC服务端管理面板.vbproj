@@ -17,13 +17,13 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>portable</DebugType>
     <DefineConstants>MSI_Version=False</DefineConstants>
+    <OutputPath>C:\Users\wy_13\Desktop\生成\bin</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>portable</DebugType>
     <DefineConstants>MSI_Version=False</DefineConstants>
+    <OutputPath>C:\Users\wy_13\Desktop\生成\bin</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

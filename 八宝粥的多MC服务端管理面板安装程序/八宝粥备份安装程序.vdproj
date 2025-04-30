@@ -11,6 +11,7 @@
 "SccLocalPath" = "8:"
 "SccAuxPath" = "8:"
 "SccProvider" = "8:"
+"BackwardsCompatibleGUIDGeneration" = "8:TRUE"
     "Hierarchy"
     {
         "Entry"
@@ -27,7 +28,7 @@
         "DisplayName" = "8:Debug"
         "IsDebugOnly" = "11:TRUE"
         "IsReleaseOnly" = "11:FALSE"
-        "OutputFilename" = "8:..\\八宝粥的多MC服务端管理面板安装程序.msi"
+        "OutputFilename" = "8:..\\..\\生成\\MSI版\\八宝粥的多MC服务端管理面板安装程序.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -78,10 +79,10 @@
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.NetCore.DesktopRuntime.8.0.x64"
                     {
-                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
-                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    "Name" = "8:.NET 桌面运行时 8.0.15 (x64)"
+                    "ProductCode" = "8:Microsoft.NetCore.DesktopRuntime.8.0.x64"
                     }
                 }
             }
@@ -217,11 +218,11 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:八宝粥的多MC服务端管理面板"
         "ProductCode" = "8:{9CD6B06B-18F7-4CC5-9F34-2BAC6958F820}"
-        "PackageCode" = "8:{B9B94096-CC84-44EA-AC9E-948BB5A1E676}"
+        "PackageCode" = "8:{63B1B06A-E42C-41BD-A228-8039BC51A1EF}"
         "UpgradeCode" = "8:{7AD84177-B43F-471E-B678-C02F4B044C7B}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
-        "RemovePreviousVersions" = "11:FALSE"
+        "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
         "ProductVersion" = "8:1.0.3"
@@ -231,9 +232,9 @@
         "Title" = "8:八宝粥的多MC服务端管理面板"
         "Subject" = "8:"
         "ARPCONTACT" = "8:八宝粥"
-        "Keywords" = "8:"
+        "Keywords" = "8:MC"
         "ARPCOMMENTS" = "8:"
-        "ARPURLINFOABOUT" = "8:"
+        "ARPURLINFOABOUT" = "8:https://github.com/babaozhouO/BBZ-MCServers-Manager"
         "ARPPRODUCTICON" = "8:_F4B50803F9E74C9ABFEDD3E3E8156788"
         "ARPIconIndex" = "3:32512"
         "SearchPath" = "8:"
@@ -794,14 +795,14 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F4B50803F9E74C9ABFEDD3E3E8156788"
             {
-            "SourcePath" = "8:..\\八宝粥的多MC服务端管理面板\\obj\\Release\\net8.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\..\\生成\\散文件版\\八宝粥的多MC服务端管理面板.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F4FEF152B7C54D2FB48C8ECEE3A238C1"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
+            "ReadOnly" = "11:TRUE"
             "Hidden" = "11:FALSE"
             "System" = "11:FALSE"
             "Permanent" = "11:FALSE"
@@ -816,6 +817,7 @@
             "OutputGroupCanonicalName" = "8:PublishItems"
             "OutputProjectGuid" = "8:{6F2D9799-2F0E-201D-223A-9F0A882F64D7}"
             "ShowKeyOutput" = "11:TRUE"
+            "PublishProfilePath" = "8:My Project\\PublishProfiles\\FolderProfile.pubxml"
                 "ExcludeFilters"
                 {
                 "ExcludeFilter" = "8:7z2409-x64.exe"

@@ -74,6 +74,7 @@ Module 日志处理模块
             添加日志("[Info]每次运行间隔天数: " + 间隔天数, Color.Blue)
             添加日志("[Info]关服备份: " + 是否关服备份.ToString, Color.Blue)
             添加日志("[Info]关服等待时长: " + 等待服务端关闭时长.ToString + "秒", Color.Blue)
+            添加日志("[Info]执行耗时操作时的界面帧数: " + 帧数.ToString, Color.Blue)
         End Sub
         Public Sub 日志输出MC服务端配置()
             读取MC服务端配置()

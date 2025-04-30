@@ -80,29 +80,35 @@ Public Module SevenZip
     Public Class SevenZIP
         Private ReadOnly 程序路径 As String = Path.Combine(程序数据目录, "资源", "7z.exe")
         ' 执行压缩操作
-        Public Function 调用7Zip(操作模式 As String, 附加参数 As String, 输出路径 As String, 输入目录 As String, Optional 要备份的MC服务端序号 As Integer = -1) As Boolean
+        Public Function 调用7Zip(操作模式 As String, 附加参数 As String, 输出路径 As String, 输入目录 As String, Optional 要备份的MC服务端序号 As Integer = -1) As Integer
             添加日志($"[Info]正在检查输出输入路径", Color.Black)
             If String.IsNullOrWhiteSpace(输入目录) Then 添加日志("[ERROR]输入目录为空", Color.Red) : Return False
             If String.IsNullOrWhiteSpace(输出路径) Then 添加日志("[ERROR]输出路径为空", Color.Red) : Return False
             If Not Directory.Exists(输入目录) Then 添加日志($"[ERROR]输入目录不存在：{输入目录}", Color.Red) : Return False
             If Not File.Exists(程序路径) Then 添加日志($"[ERROR]7z程序不存在：{程序路径}", Color.Red) : Return False
             添加日志($"[Success]输出输入路径有效", Color.DarkGreen)
+            Dim O As String = If(是否增量备份, "增量备份", "完整备份")
+            MainForm.执行中的分任务.Text = $"执行MC服务端{要备份的MC服务端序号}{O}操作"
+            MainForm.分任务进度条.Value = 10
             If 要备份的MC服务端序号 = -1 Then
                 If 是否增量备份 Then
-                    添加日志($"[Info]开始执行压缩操作", Color.Orange)
+                    添加日志($"[Info]开始执行自定义文件夹增量备份操作", Color.Orange)
                 Else
-                    添加日志($"[Info]开始执行增量备份操作", Color.Orange)
+                    添加日志($"[Info]开始执行自定义文件夹完整备份操作", Color.Orange)
                 End If
             Else
                 If 是否增量备份 Then
-                    添加日志($"[Info]开始执行MC服务端{要备份的MC服务端序号}完整备份操作", Color.Orange)
-                Else
                     添加日志($"[Info]开始执行MC服务端{要备份的MC服务端序号}增量备份操作", Color.Orange)
+                Else
+                    添加日志($"[Info]开始执行MC服务端{要备份的MC服务端序号}完整备份操作", Color.Orange)
                 End If
             End If
             Dim 参数 = 生成压缩参数(操作模式, 附加参数, 输出路径, 输入目录)
+            MainForm.分任务进度条.Value = 15
             If String.IsNullOrEmpty(参数) Then
                 添加日志($"[Warning]用户取消了操作", Color.Black)
+                MainForm.执行中的分任务.Text = $"无"
+                MainForm.分任务进度条.Value = 0
                 Return False
             End If
             Return 运行压缩进程(参数)
@@ -130,7 +136,7 @@ Public Module SevenZip
             添加日志($"[Debug]完整参数：{完整参数}", Color.Gray)
             Return 完整参数
         End Function
-        Private WithEvents KillCountDownTimer As New Timers.Timer
+        Private WithEvents KillCountDownTimer As New Timers.Timer With {.AutoReset = False, .Interval = 超时时长 * 1000}
         Private ReadOnly 进程 As New Process
         Private 进程是否被杀死 As Boolean = False
         Private Sub Kill() Handles KillCountDownTimer.Elapsed
@@ -143,21 +149,29 @@ Public Module SevenZip
                                KillCountDownTimer.Dispose()
                            End Sub, Nothing)
         End Sub
-        Public Function 运行压缩进程(参数 As String) As Boolean
+        'Private WithEvents 模拟压缩耗时 As New Timers.Timer With {.AutoReset = True, .Interval = 1000}
+        'Private Sub Tick() Handles 模拟压缩耗时.Elapsed
+        '    uiContext.Post(Sub()
+        '                       MainForm.分任务进度条.Value += If(MainForm.分任务进度条.Value < 93, 1, 0)
+        '                   End Sub, Nothing)
+        'End Sub
+        Public Function 运行压缩进程(参数 As String) As Integer
             Try
-                '' 异步读取绑定
-                AddHandler 进程.OutputDataReceived,
+                If 是否循环更新界面 Then
+                    '' 异步读取绑定
+                    AddHandler 进程.OutputDataReceived,
                     Sub(sender, 收到的输出)
                         If Not String.IsNullOrEmpty(收到的输出.Data) Then
                             解析输出数据(收到的输出.Data)
                         End If
                     End Sub
-                AddHandler 进程.ErrorDataReceived,
+                    AddHandler 进程.ErrorDataReceived,
                     Sub(sender, 收到的输出)
                         If Not String.IsNullOrEmpty(收到的输出.Data) Then
                             解析输出数据(收到的输出.Data)
                         End If
                     End Sub
+                End If
                 进程.StartInfo = New ProcessStartInfo With {
                     .FileName = 程序路径,
                     .Arguments = 参数,
@@ -166,40 +180,44 @@ Public Module SevenZip
                     .RedirectStandardOutput = True,
                     .RedirectStandardError = True}
                 添加日志($"[Info]7z正在启动，启动命令：{程序路径} {参数}", Color.Orange)
-                KillCountDownTimer.AutoReset = False
-                KillCountDownTimer.Interval = 超时时长 * 1000
                 If 进程.Start() Then
+                    MainForm.分任务进度条.Value = 50
                     If 是否循环更新界面 Then
                         KillCountDownTimer.Enabled = True
                         添加日志($"[Info]7z已启动,请耐心等待压缩完成(超时时长:{超时时长}秒)", Color.Orange)
                         进程.BeginOutputReadLine()
                         进程.BeginErrorReadLine()
-                        Dim 开始时间 As DateTime = DateTime.Now
-                        Dim 等待时长 As TimeSpan = TimeSpan.FromSeconds(超时时长)
+                        Dim C As Integer = 超时时长 * 帧数
+                        Dim S As Double = 40 / C
+                        Dim i As Integer = 0
                         While Not 进程.HasExited
+                            i += 1
+                            MainForm.分任务进度条.Value = If(50 + CInt(S * i) <= 90, 50 + CInt(S * i), 90)
                             Application.DoEvents() ' 允许 UI 响应操作
-                            Threading.Thread.Sleep(延时毫秒数) ' 降低 CPU 占用
+                            Thread.Sleep(延时毫秒数) ' 降低 CPU 占用
                         End While
                     Else
                         If Not 进程.WaitForExit(超时时长 * 1000) Then
                             进程.Kill()
+                            MainForm.分任务进度条.Value = 90
                             进程是否被杀死 = True
-                            Dim 输出 = 进程.StandardOutput.ReadToEnd()
-                            Dim 错误信息 = 进程.StandardError.ReadToEnd()
-                            If Not String.IsNullOrEmpty(输出) Then 添加日志($"[Info]7z输出：{输出}", Color.Orange)
-                            If Not String.IsNullOrEmpty(错误信息) Then 添加日志($"[ERROR]7z错误：{错误信息}", Color.Red)
                         End If
+                        Dim 输出 = 进程.StandardOutput.ReadToEnd()
+                        Dim 错误信息 = 进程.StandardError.ReadToEnd()
+                        If Not String.IsNullOrEmpty(输出) Then 添加日志($"[Info]7z输出：{输出}", Color.Orange)
+                        If Not String.IsNullOrEmpty(错误信息) Then 添加日志($"[ERROR]7z错误：{错误信息}", Color.Red)
                     End If
+                    MainForm.分任务进度条.Value = 100
                 Else
                     添加日志($"[ERROR]7z启动失败", Color.Red)
-                    Return False
+                    Return 2
                 End If
                 If 进程是否被杀死 Then
-                    Return False
+                    Return 2
                 Else
                     Select Case 进程.ExitCode
                         Case 0
-                            Return True
+                            Return 0
                         Case Else
                             If 进程.ExitCode = 1 Then
                                 If 进程是否被杀死 Then
@@ -213,13 +231,13 @@ Public Module SevenZip
                                 End If
                                 添加日志("[ERROR]压缩过程中发生致命错误", Color.Red)
                             End If
-                            Return False
+                            Return 进程.ExitCode
                     End Select
                 End If
             Catch ex As Exception
                 添加日志($"[ERROR]压缩过程中发生错误:{ex.Message}", Color.Red)
-                Return False
             End Try
+            Return 2
         End Function
         Private ReadOnly uiContext As SynchronizationContext = SynchronizationContext.Current
         Private Sub 解析输出数据(原始数据 As String)
@@ -253,6 +271,7 @@ Public Module SevenZip
         End Sub
         Private Shared Sub UI更新(原始数据 As String, Optional 当前进度 As Integer = -1, Optional 压缩中文件 As String = "", Optional 压缩速度 As String = "")
             添加日志($"[原始输出]:{原始数据}", Color.Gray)
+            MainForm.分任务进度条.Value = 100
             If Not 当前进度 = -1 Then
                 添加日志($"[Progress]当前进度：{当前进度}%", Color.Green)
                 MainForm.更新压缩进度(当前进度)
@@ -295,20 +314,24 @@ Public Module SevenZip
                 If 上次备份时间 > DateTime.MinValue Then
                     添加日志("[Info]找到上次备份时间，将执行增量备份", Color.Blue)
                     Dim 增量文件临时存放目录 = 复制增量文件到临时存放目录并输出目录(输入目录, 上次备份时间)
+                    MainForm.分任务进度条.Value = 40
                     If 压缩级别 = 0 Then
-                        If 压缩方法 = "GNU" Or 压缩方法 = "POSIX" Then
-                            附加参数 = $" -r -aoa -sdel -bso -t{压缩格式} -mx0 -mo={压缩方法} -x!""cache\*"" -x!""tmp\*"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN\*"" {排除文件参数}"
+                        If 压缩方法 = "GNU" Or 压缩方法 = "POSIX" Then 'tar
+                            附加参数 = $" -r -aoa -sdel -t{压缩格式} -mx0 -mo={压缩方法} -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                        ElseIf 压缩方法 = "" Then 'wim
+                            附加参数 = $" -r -aoa -sdel -twim -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
                         Else
-                            附加参数 = $" -r -aoa -sdel -bso -t{压缩格式} -mx{压缩级别} -x!""cache\*"" -x!""tmp\*"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN\*"" {排除文件参数}"
+                            附加参数 = $" -r -aoa -sdel -t{压缩格式} -mx{压缩级别} -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
                         End If
                     Else
-                            附加参数 = $" -r -aoa -sdel -bso -t{压缩格式} -mx{压缩级别} -m0={压缩方法}:d={字典大小}:fb={单词大小} -ms -mmt{线程数} -x!""cache\*"" -x!""tmp\*"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN\*"" {排除文件参数}"
+                        附加参数 = $" -r -aoa -sdel -t{压缩格式} -mx{压缩级别} -m0={压缩方法}:d={字典大小.TrimEnd("B"c)}:fb={单词大小} -ms -mmt{线程数} -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
                     End If
                     If String.IsNullOrEmpty(增量文件临时存放目录) Then
                         添加日志($"[ERROR]复制增量文件到临时存放目录失败或无更新文件,已终止操作", Color.Red)
                         Return
                     End If
-                    If 压缩器.调用7Zip("a", 附加参数, 输出路径, 增量文件临时存放目录, MC服务端序号) Then
+                    Dim R As Integer = 压缩器.调用7Zip("a", 附加参数, 输出路径, 增量文件临时存放目录, MC服务端序号)
+                    If R = 0 Or R = 1 Then
                         File.WriteAllText(时间文件, 备份时间.ToString("o"))
                         添加日志($"[Success]备份完成：{输出路径}", Color.Green)
                     Else
@@ -317,11 +340,34 @@ Public Module SevenZip
                             File.Delete(输出路径)
                             If File.Exists(输出路径) Then 添加日志($"[Info]出错的压缩文件删除成功", Color.Green)
                         End If
+                    End If
+                    If Directory.Exists(临时目录) Then
+                        Directory.Delete(临时目录)
+                        If Directory.Exists(临时目录) Then
+                            添加日志($"[ERROR]临时文件夹删除失败", Color.Red)
+                            添加日志($"[ERROR]请手动删除{临时目录}", Color.Red)
+                        Else
+                            添加日志($"[Success]临时文件夹删除成功", Color.Green)
+                        End If
+                    Else
+                        添加日志($"[Success]临时文件夹删除成功", Color.Green)
                     End If
                 Else
                     添加日志("[Info]未找到上次备份时间，将执行完整备份", Color.Blue)
-                    Dim 附加参数 As String = $" -r -aoa -bso -t{压缩格式} -mx{压缩级别} -m0={压缩方法}:d={字典大小}:fb={单词大小} -mmt{线程数} -x!""cache\*"" -x!""tmp\*"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN\*"" {排除文件参数}"
-                    If 压缩器.调用7Zip("a", 附加参数, 输出路径, 输入目录, MC服务端序号) Then
+                    MainForm.分任务进度条.Value = 40
+                    If 压缩级别 = 0 Then
+                        If 压缩方法 = "GNU" Or 压缩方法 = "POSIX" Then 'tar
+                            附加参数 = $" -r -aoa -t{压缩格式} -mx0 -mo={压缩方法} -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                        ElseIf 压缩方法 = "" Then 'wim
+                            附加参数 = $" -r -aoa -twim -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                        Else
+                            附加参数 = $" -r -aoa -t{压缩格式} -mx{压缩级别} -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                        End If
+                    Else
+                        附加参数 = $" -r -aoa -t{压缩格式} -mx{压缩级别} -m0={压缩方法}:d={字典大小.TrimEnd("B"c)}:fb={单词大小} -ms -mmt{线程数} -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                    End If
+                    Dim R As Integer = 压缩器.调用7Zip("a", 附加参数, 输出路径, 输入目录, MC服务端序号)
+                    If R = 0 Or R = 1 Then
                         File.WriteAllText(时间文件, 备份时间.ToString("o"))
                         添加日志($"[Success]备份完成：{输出路径}", Color.Green)
                     Else
@@ -330,15 +376,6 @@ Public Module SevenZip
                             File.Delete(输出路径)
                             If File.Exists(输出路径) Then 添加日志($"[Info]出错的压缩文件删除成功", Color.Green)
                         End If
-                    End If
-                End If
-                If Directory.Exists(临时目录) Then
-                    Directory.Delete(临时目录)
-                    If Directory.Exists(临时目录) Then
-                        添加日志($"[ERROR]临时文件夹删除失败", Color.Red)
-                        添加日志($"[ERROR]请手动删除{临时目录}", Color.Red)
-                    Else
-                        添加日志($"[Success]临时文件夹删除成功", Color.Green)
                     End If
                 End If
             Catch ex As Exception
@@ -346,10 +383,22 @@ Public Module SevenZip
             End Try
         End Sub
         Private Shared Function 复制增量文件到临时存放目录并输出目录(源路径 As String, 上次备份时间 As DateTime) As String
+            Dim 原主任务 As String = MainForm.执行中的主任务.Text
+            Dim 原主进度 As Integer = MainForm.主任务进度条.Value
+            Dim 原分任务 As String = MainForm.执行中的分任务.Text
+            Dim 原分进度 As Integer = MainForm.分任务进度条.Value
+            MainForm.执行中的主任务.Text = 原分任务
+            MainForm.主任务进度条.Value = 原分进度
+            MainForm.执行中的分任务.Text = "复制增量文件到临时存放目录"
             Dim 复制器 As New 文件复制器()
+            Dim k As Double
+            Dim y As Integer
             ' 注册进度事件
             AddHandler 复制器.进度更新,
                 Sub(当前进度, 总数量)
+                    k = 总数量 / 100
+                    y = If(CInt（当前进度 / k） <= 100, CInt(当前进度 / k）, 100)
+                    MainForm.分任务进度条.Value = y
                     添加日志($"进度: {当前进度}/{总数量} ({(当前进度 / 总数量):P})", Color.Black)
                 End Sub
             Dim 临时路径 = Path.Combine(备份输出目录, "增量文件")
@@ -361,6 +410,10 @@ Public Module SevenZip
             Catch ex As Exception
                 添加日志($"[ERROR]执行复制增量文件时出错：{ex.Message}", Color.Red)
                 Return ""
+            Finally
+                MainForm.执行中的主任务.Text = 原主任务
+                MainForm.主任务进度条.Value = 原主进度
+                MainForm.执行中的分任务.Text = 原分任务
             End Try
         End Function
         Private Shared Sub 添加日志(信息 As String, 颜色 As Color)
@@ -372,24 +425,42 @@ Public Module SevenZip
         End Sub
     End Class
     Public Class 完整备份管理器
+        Private Const 时间记录文件 As String = "LastBackup.time"
         Public Sub 执行完整备份(输入目录 As String, 输出目录 As String, Optional 压缩文件说明 As String = "某文件", Optional 排除文件参数 As String = "", Optional MC服务端序号 As Integer = -1)
+            Dim 备份时间 As DateTime = DateTime.Now
+            Dim 时间文件 = Path.Combine(输出目录, 时间记录文件)
             ' 初始化压缩器
             Dim 压缩器 As New SevenZIP
             Dim 输出路径 = Path.Combine(输出目录, $"{压缩文件说明}的完整备份_{DateTime.Now:yyyyMMdd-HHmmss}.7z")
             Dim 附加参数 As String
-            If 压缩方法 = "GNU" Or 压缩方法 = "POSIX" Then
-                附加参数 = $" -r -aoa -bso -t{压缩格式} -mx0 -mo={压缩方法} -x!""cache\*"" -x!""tmp\*"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN\*"" {排除文件参数}"
+            If 压缩级别 = 0 Then
+                If 压缩方法 = "GNU" Or 压缩方法 = "POSIX" Then 'tar
+                    附加参数 = $" -r -aoa -t{压缩格式} -mx0 -mo={压缩方法} -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                ElseIf 压缩方法 = "" Then 'wim
+                    附加参数 = $" -r -aoa -twim -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                Else
+                    附加参数 = $" -r -aoa -t{压缩格式} -mx{压缩级别} -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                End If
             Else
-                附加参数 = $" -r -aoa -bso -t{压缩格式} -mx{压缩级别} -m0={压缩方法}:d={字典大小}:fb={单词大小} -ms -mmt{线程数} -x!""cache\*"" -x!""tmp\*"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN\*"" {排除文件参数}"
-            End if
+                附加参数 = $" -r -aoa -t{压缩格式} -mx{压缩级别} -m0={压缩方法}:d={字典大小.TrimEnd("B"c)}:fb={单词大小} -ms -mmt{线程数} -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+            End If
+            MainForm.分任务进度条.Value = 40
             Try
-                If 压缩器.调用7Zip("a", 附加参数, 输出路径, 输入目录, MC服务端序号) Then
+                Dim R As Integer = 压缩器.调用7Zip("a", 附加参数, 输出路径, 输入目录, MC服务端序号)
+                If R = 0 Or R = 1 Then
                     添加日志($"[Success] 完整备份完成：{输出路径}", Color.Green)
+                    File.WriteAllText(时间文件, 备份时间.ToString("o"))
                 Else
                     添加日志("[ERROR] 压缩过程返回错误", Color.Red)
                     If File.Exists(输出路径) Then
                         File.Delete(输出路径)
-                        If File.Exists(输出路径) Then 添加日志($"[Info]出错的压缩文件删除成功", Color.Green)
+                        If File.Exists(输出路径) Then
+                            添加日志($"[Info]出错的压缩文件删除成功", Color.Green)
+                        Else
+                            添加日志($"[Waring]出错的压缩文件删除失败:{输出路径}", Color.Green)
+                        End If
+                    Else
+                        添加日志($"[Info]出错的压缩文件删除成功", Color.Green)
                     End If
                 End If
             Catch ex As Exception
@@ -405,7 +476,6 @@ Public Module SevenZip
         End Sub
     End Class
     Public Class 文件复制器
-        Private ReadOnly 主窗体 As MainForm = MainForm
         Public Event 进度更新 As Action(Of Integer, Integer)
         Private Shared Sub 添加日志(信息 As String, 颜色 As Color)
             If 日志窗口.InvokeRequired Then
@@ -471,7 +541,6 @@ Public Module SevenZip
                     End Try
                     ' 触发进度更新事件
                     RaiseEvent 进度更新(i + 1, 文件列表.Count)
-                    主窗体.更新复制进度(i + 1, 文件列表.Count)
                 Next
             Catch ex As Exception
                 添加日志($"[ERROR]操作异常中止: {ex.Message}", Color.Red)
