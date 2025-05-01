@@ -39,6 +39,8 @@ Partial Class MainSettingsForm
 		FPS = New TextBox()
 		Label2 = New Label()
 		CheckBox1 = New CheckBox()
+		TextBox1 = New TextBox()
+		Label3 = New Label()
 		SuspendLayout()
 		' 
 		' ButtonSaveAndExit
@@ -161,6 +163,22 @@ Partial Class MainSettingsForm
 		CheckBox1.Text = "间隔时间计算方式"
 		CheckBox1.UseVisualStyleBackColor = True
 		' 
+		' TextBox1
+		' 
+		TextBox1.Location = New Point(172, 156)
+		TextBox1.Name = "TextBox1"
+		TextBox1.Size = New Size(33, 24)
+		TextBox1.TabIndex = 22
+		' 
+		' Label3
+		' 
+		Label3.AutoSize = True
+		Label3.Location = New Point(43, 159)
+		Label3.Name = "Label3"
+		Label3.Size = New Size(239, 19)
+		Label3.TabIndex = 21
+		Label3.Text = "日志框位置更新频率：      （0~1000）"
+		' 
 		' MainSettingsForm
 		' 
 		AcceptButton = ButtonSaveAndExit
@@ -169,6 +187,8 @@ Partial Class MainSettingsForm
 		CancelButton = ButtonCancle
 		ClientSize = New Size(934, 521)
 		ControlBox = False
+		Controls.Add(TextBox1)
+		Controls.Add(Label3)
 		Controls.Add(CheckBox1)
 		Controls.Add(FPS)
 		Controls.Add(Label2)
@@ -209,4 +229,6 @@ Partial Class MainSettingsForm
 	Friend WithEvents FPS As TextBox
 	Friend WithEvents Label2 As Label
 	Friend WithEvents CheckBox1 As CheckBox
+	Friend WithEvents TextBox1 As TextBox
+	Friend WithEvents Label3 As Label
 End Class

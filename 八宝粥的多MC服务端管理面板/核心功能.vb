@@ -28,29 +28,26 @@ Public Module 核心功能模块
         Private 执行时间间隔 As TimeSpan
         Private WithEvents 计时器 As New Timers.Timer With {.AutoReset = False}
         Public Sub New()
-            计算下一次执行时间()
-            启动计时器()
+            启动()
             添加日志($"[Success]已启动备份计划", Color.Green)
         End Sub
-        Private Sub 计算下一次执行时间()
+        Private Sub 启动()
             添加日志("[Info]正在计算下一次执行时间", Color.Black)
             Dim 当前时间 As DateTime
-            间隔天数 = If(CInt(间隔天数) < 1, 1, 间隔天数)
+            间隔天数 = If(CDbl(间隔天数) < 1, 1, 间隔天数)
             Dim H = 运行时间.Split(":")(0)
             Dim M = 运行时间.Split(":")(1)
             Dim S = 运行时间.Split(":")(2)
             If 运行模式 Then
                 当前时间 = DateTime.Now.Date
-                下次执行时间 = 当前时间.AddDays(CInt(间隔天数)).AddHours(CInt(H)).AddMinutes(CInt(M)).AddSeconds(CInt(S))
+                下次执行时间 = 当前时间.AddDays(CDbl(间隔天数)).AddHours(CDbl(H)).AddMinutes(CDbl(M)).AddSeconds(CDbl(S))
             Else
                 当前时间 = DateTime.Now
-                下次执行时间 = 当前时间.AddHours(CInt(H)).AddMinutes(CInt(M)).AddSeconds(CInt(S))
+                下次执行时间 = 当前时间.AddHours(CDbl(H)).AddMinutes(CDbl(M)).AddSeconds(CDbl(S))
             End If
             执行时间间隔 = 下次执行时间 - DateTime.Now
             添加日志($"[Success]执行时间成功传入,下次执行时间:{下次执行时间}", Color.Green)
-        End Sub
-        Private Sub 启动计时器()
-            计时器.Interval = (下次执行时间 - DateTime.Now).TotalMilliseconds
+            计时器.Interval = 执行时间间隔.TotalMilliseconds
             计时器.Start()
             服务运行状态 = True
         End Sub
@@ -59,20 +56,17 @@ Public Module 核心功能模块
             uiContext.Post(Sub()
                                Dim H As New 核心功能类
                                H.核心功能方法()
-                               计算下一次执行时间()
-                               启动计时器()
+                               启动()
                            End Sub, Nothing)
         End Sub
         Public Function 获取剩余秒数() As (剩余秒数 As Integer, 总秒数 As Integer）
             Dim TS = (下次执行时间 - DateTime.Now).TotalSeconds
-            If TS <= 0 Then
-                TS = 0
-            End If
+            TS = If(TS >= 0, TS, 0)
             Return (TS, 执行时间间隔.TotalSeconds)
         End Function
         Public Sub 停止任务()
-            计时器?.Dispose()
             服务运行状态 = False
+            计时器?.Dispose()
         End Sub
     End Class
     Public Class 核心功能类
@@ -81,77 +75,104 @@ Public Module 核心功能模块
                 添加日志("[Warning]重复运行备份功能,后发起的请求已取消", Color.Red)
                 Exit Sub
             End If
-            Dim 原状态 As Boolean = 服务运行状态
-            服务运行状态 = False
             备份操作进行状态 = True
-            If MainForm.InvokeRequired Then
-                MainForm.Invoke(Sub() MainForm.服务运行时更改控件状态(True))
-            Else
-                MainForm.服务运行时更改控件状态(True)
-            End If
+            Dim 原服务运行状态 As Boolean = 服务运行状态
+            服务运行状态 = False
+			MainForm.服务运行时更改控件状态(True)
+            '---------------------------------------------------------------备份MC服务端操作---------------------------------
             Try
-                MainForm.执行中的主任务.Text = "备份MC服务端"
-                MainForm.主任务进度条.Maximum = 100
-                MainForm.主任务进度条.Value = 0
-                If 是否关服备份 Then
-                    If RCON关闭MC服务器() Then
-                        MainForm.主任务进度条.Value = 10
-                        添加日志($"[Info]等待MC服务端彻底关闭({等待服务端关闭时长}s)", Color.Orange)
-                        MainForm.执行中的分任务.Text = $"等待MC服务端彻底关闭({等待服务端关闭时长}s)"
-                        If 是否循环更新界面 Then
-                            Dim C As Integer = 等待服务端关闭时长 * 帧数
-                            Dim S As Double = 100 / C
-                            For i As Integer = 1 To C
-                                MainForm.分任务进度条.Value = If(CInt(S * i) <= 100, CInt(S * i), 100)
-                                Application.DoEvents()
-                                Thread.Sleep(延时毫秒数)
-                            Next
-                            MainForm.分任务进度条.Value = 100
-                        Else
-                            Thread.Sleep(等待服务端关闭时长 * 1000)
-                            MainForm.分任务进度条.Value = 100
-                        End If
-                        MainForm.主任务进度条.Value = 15
-                        备份MC服务端()
-                        MainForm.主任务进度条.Value = 55
-                        启动MC服务器()
-                        MainForm.主任务进度条.Value = 60
-                        向Sftp服务器上传MC服务端备份文件()
-                        MainForm.主任务进度条.Value = 100
-                    Else
-                        MainForm.执行中的分任务.Text = "无"
-                    End If
-                Else
-                    If RCON停止服务端自动保存() Then
-                        MainForm.主任务进度条.Maximum = 100
-                        MainForm.主任务进度条.Value = 10
-                        备份MC服务端()
-                        MainForm.主任务进度条.Value = 60
-                        向Sftp服务器上传MC服务端备份文件()
-                        MainForm.主任务进度条.Value = 90
-                        RCON启用服务端自动保存()
-                        MainForm.主任务进度条.Value = 100
-                    Else
-                        MainForm.执行中的分任务.Text = "无"
-                    End If
+				MainForm.执行中的主任务.Text = "备份MC服务端"
+				MainForm.主任务进度条.Maximum = 100 '确保进度条最大值为100
+				MainForm.主任务进度条.Value = 0
+				Dim RCON执行成功 As Boolean = False
+				If 是否关服备份 Then
+					RCON执行成功 = RCON关闭MC服务器()
+				Else
+					RCON执行成功 = RCON停止服务端自动保存()
+				End If
+				If RCON执行成功 = False Then
+					MainForm.执行中的分任务.Text = "无"
+					Exit Try
+				End If
+				MainForm.主任务进度条.Value = 10
+
+				If 是否关服备份 Then
+					添加日志($"[Info]等待MC服务端彻底关闭({等待服务端关闭时长}s)", Color.Orange)
+					MainForm.执行中的分任务.Text = $"等待MC服务端彻底关闭({等待服务端关闭时长}s)"
+					If 是否循环更新界面 Then
+						Dim C As Integer = 等待服务端关闭时长 * 帧数
+						Dim S As Double = 100 / C
+						For i As Integer = 1 To C
+							MainForm.分任务进度条.Value = If(CInt(S * i) <= 100, CInt(S * i), 100)
+							Application.DoEvents()
+							Thread.Sleep(延时毫秒数)
+						Next
+						MainForm.分任务进度条.Value = 100
+					Else
+						Thread.Sleep(等待服务端关闭时长 * 1000)
+						MainForm.分任务进度条.Value = 100
+					End If
+				End If
+				MainForm.主任务进度条.Value = 15
+
+				备份MC服务端()
+				MainForm.主任务进度条.Value = 60
+
+				向Sftp服务器上传MC服务端备份文件()
+				MainForm.主任务进度条.Value = 90
+
+                If Not 是否关服备份 Then
+                    RCON启用服务端自动保存()
                 End If
-                If 备份自定义目录() Then
+                MainForm.主任务进度条.Value = 100
+                MainForm.执行中的分任务.Text = "完成备份MC服务端任务"
+                Dim x As Integer = 0
+                While x * 延时毫秒数 < 1000
+                    Thread.Sleep(延时毫秒数) '展示完成状态
+                    x += 1
+                End While
+            Catch ex As Exception
+				添加日志($"[ERROR]执行备份MC服务端任务时发生错误:{ex.Message}", Color.Red)
+			Finally
+				MainForm.执行中的主任务.Text = "无"
+				MainForm.主任务进度条.Value = 0
+				MainForm.执行中的分任务.Text = "无"
+				MainForm.分任务进度条.Value = 0
+			End Try
+            '------------------------------------------------------------备份自定义目录操作--------------------------------
+            Try
+                MainForm.执行中的主任务.Text = "备份自定义目录"
+                MainForm.主任务进度条.Value = 0
+                If 是否备份自定义目录 Then
+                    备份自定义目录()
                     MainForm.主任务进度条.Value = 50
+                    If 是否关服备份 Then
+                        启动MC服务器()
+                    End If
                     Sftp上传自定义备份文件()
+                    MainForm.执行中的主任务.Text = "完成备份自定义目录任务"
                     MainForm.主任务进度条.Value = 100
                 Else
-                    MainForm.执行中的分任务.Text = "无"
+                    If 是否关服备份 Then
+                        启动MC服务器()
+                    End If
                 End If
+                Dim x As Integer = 0
+                While x * 延时毫秒数 < 1000
+                    Thread.Sleep(延时毫秒数) '展示完成状态
+                    x += 1
+                End While
             Catch ex As Exception
-                添加日志($"[ERROR]执行任务时发生错误:{ex.Message}", Color.Red)
+                添加日志($"[ERROR]执行备份自定义文件夹任务时发生错误:{ex.Message}", Color.Red)
+            Finally
+                MainForm.执行中的主任务.Text = "无"
+                MainForm.主任务进度条.Value = 0
+                MainForm.执行中的分任务.Text = "无"
+                MainForm.分任务进度条.Value = 0
             End Try
-            服务运行状态 = 原状态
-            If MainForm.InvokeRequired Then
-                MainForm.Invoke(Sub() MainForm.服务运行时更改控件状态(False))
-            Else
-                MainForm.服务运行时更改控件状态(False)
-            End If
             备份操作进行状态 = False
+            服务运行状态 = 原服务运行状态
+            MainForm.服务运行时更改控件状态(False)
         End Sub
         Private Function RCON关闭MC服务器() As Boolean
             MainForm.执行中的分任务.Text = "使用RCON通信关闭MC服务端"
@@ -456,8 +477,6 @@ Public Module 核心功能模块
                 If Not String.IsNullOrEmpty(自定义备份目录) Then
                     If Directory.Exists(自定义备份目录) Then
                         If Not String.IsNullOrEmpty(备份输出目录) Then
-                            MainForm.执行中的主任务.Text = "备份自定义目录"
-                            MainForm.主任务进度条.Value = 0
                             If 是否增量备份 Then
                                 ' 执行增量备份
                                 Dim 备份路径 = Path.Combine(备份输出目录, "增量备份")
@@ -465,7 +484,7 @@ Public Module 核心功能模块
                                     Directory.CreateDirectory(备份路径)
                                 End If
                                 Dim 增量备份实例 As New 增量备份管理器()
-                                增量备份实例.执行增量备份(自定义备份目录, Path.Combine(备份路径, "自定义备份目录"), "自定义备份目录")
+                                增量备份实例.执行增量备份(自定义备份目录, Path.Combine(备份路径, "自定义备份目录"), "自定义备份目录", 自定义备份目录排除文件参数)
                                 Return True
                             Else
                                 ' 执行完整备份
@@ -474,7 +493,7 @@ Public Module 核心功能模块
                                     Directory.CreateDirectory(备份路径)
                                 End If
                                 Dim 完整备份实例 As New 完整备份管理器()
-                                完整备份实例.执行完整备份(自定义备份目录, Path.Combine(备份路径, "自定义备份目录"), "自定义备份目录")
+                                完整备份实例.执行完整备份(自定义备份目录, Path.Combine(备份路径, "自定义备份目录"), "自定义备份目录", 自定义备份目录排除文件参数)
                                 Return True
                             End If
                         Else
@@ -494,45 +513,47 @@ Public Module 核心功能模块
                 Return False
             End If
         End Function
-        Private Sub Sftp上传自定义备份文件()
-            MainForm.执行中的主任务.Text = $" 向Sftp服务器上传自定义备份文件夹的备份文件"
-            Dim 任务列表 As New List(Of Integer)
-            If Sftp1开关 Then 任务列表.Add(1)
-            If Sftp2开关 Then 任务列表.Add(2)
-            If Sftp3开关 Then 任务列表.Add(3)
-            If 任务列表.Count = 0 Then
-                添加日志("[Warning]无可用Sftp服务器", Color.DarkOrange)
-                Return
-            End If
-            Dim 备份模式 As String
-            If 是否增量备份 Then
-                备份模式 = "增量备份"
-            Else
-                备份模式 = "完整备份"
-            End If
-            Dim 本地文件目录 = Path.Combine(备份输出目录, $"{备份模式}", "自定义备份目录")
-            Dim 本地文件路径 = Path.Combine(本地文件目录, $"自定义备份目录的{备份模式}_{读取上次备份时间(本地文件目录):yyyyMMdd-HHmmss}.{压缩格式}")
-            Dim 远程文件目录 = $"/备份/{备份模式}/自定义备份目录"
-            If Sftp1开关 Then
-                处理单个Sftp服务端_上传文件(Sftp1地址, Sftp1端口, Sftp1用户名, Sftp1密码, "1", 本地文件路径, 远程文件目录)
-            End If
-            If Sftp2开关 Then
-                处理单个Sftp服务端_上传文件(Sftp2地址, Sftp2端口, Sftp2用户名, Sftp2密码, "2", 本地文件路径, 远程文件目录)
-            End If
-            If Sftp3开关 Then
-                处理单个Sftp服务端_上传文件(Sftp3地址, Sftp3端口, Sftp3用户名, Sftp3密码, "3", 本地文件路径, 远程文件目录)
-            End If
-        End Sub
-        Private Function 读取上次备份时间(输出目录 As String)
-            Dim 上次备份时间 As DateTime = DateTime.MinValue
-            Dim 时间记录文件 As String = "LastBackup.time"
-            Dim 时间文件 = Path.Combine(输出目录, 时间记录文件)
+		Private Sub Sftp上传自定义备份文件()
+			MainForm.执行中的主任务.Text = $" 向Sftp服务器上传自定义备份文件夹的备份文件"
+			Dim 任务列表 As New List(Of Integer)
+			If Sftp1开关 Then 任务列表.Add(1)
+			If Sftp2开关 Then 任务列表.Add(2)
+			If Sftp3开关 Then 任务列表.Add(3)
+			If 任务列表.Count = 0 Then
+				添加日志("[Warning]无可用Sftp服务器", Color.DarkOrange)
+				Return
+			End If
+			Dim 备份模式 As String
+			If 是否增量备份 Then
+				备份模式 = "增量备份"
+			Else
+				备份模式 = "完整备份"
+			End If
+			Dim 本地文件目录 = Path.Combine(备份输出目录, $"{备份模式}", "自定义备份目录")
+			Dim 本地文件路径 = Path.Combine(本地文件目录, $"自定义备份目录的{备份模式}_{读取上次备份时间(本地文件目录):yyyyMMdd-HHmmss}.{压缩格式}")
+			Dim 远程文件目录 = $"/备份/{备份模式}/自定义备份目录"
+			If Sftp1开关 Then
+				处理单个Sftp服务端_上传文件(Sftp1地址, Sftp1端口, Sftp1用户名, Sftp1密码, "1", 本地文件路径, 远程文件目录)
+			End If
+			If Sftp2开关 Then
+				处理单个Sftp服务端_上传文件(Sftp2地址, Sftp2端口, Sftp2用户名, Sftp2密码, "2", 本地文件路径, 远程文件目录)
+			End If
+			If Sftp3开关 Then
+				处理单个Sftp服务端_上传文件(Sftp3地址, Sftp3端口, Sftp3用户名, Sftp3密码, "3", 本地文件路径, 远程文件目录)
+			End If
+		End Sub
+		Private Function 读取上次备份时间(输出目录 As String) As DateTime
+			Dim 上次备份时间 As DateTime = DateTime.MinValue
+			Dim 时间记录文件 As String = "LastBackup.time"
+			Dim 时间文件 = Path.Combine(输出目录, 时间记录文件)
             If File.Exists(时间文件) Then
-                DateTime.TryParse(File.ReadAllText(时间文件), 上次备份时间)
+                If DateTime.TryParse(File.ReadAllText(时间文件), 上次备份时间) Then
+                    Return 上次备份时间
+                End If
             End If
             Return 上次备份时间
         End Function
-        Private Function 检测服务端是否已启动(服务端序号 As Integer) As Boolean
+		Private Function 检测服务端是否已启动(服务端序号 As Integer) As Boolean
             Select Case 服务端序号
                 Case 1
                     Dim P As String = Path.Combine(MC服务端1路径, "logs", "latest.log")

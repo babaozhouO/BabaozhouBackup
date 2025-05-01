@@ -16,7 +16,7 @@ Public Class MainSettingsForm
         日志窗口.添加日志(信息, 颜色)
     End Sub
     Private Sub ButtonCancle_Click(sender As Object, e As EventArgs) Handles ButtonCancle.Click
-        Dim 用户选择 As Integer = MessageBox.Show("是否放弃保存设置并退出?", "提示", MessageBoxButtons.YesNo)
+        Dim 用户选择 As DialogResult = MessageBox.Show("是否放弃保存设置并退出?", "提示", MessageBoxButtons.YesNo)
         If 用户选择 = DialogResult.Yes Then
             添加日志("[Action]关闭主程序设置窗口", Color.Black)
             Me.Close()
@@ -24,10 +24,11 @@ Public Class MainSettingsForm
     End Sub
     Private Sub ButtonSaveAndExit_Click(sender As Object, e As EventArgs) Handles ButtonSaveAndExit.Click
         Dim 要写入的运行时间配置 As String
-        Dim 用户选择 As Integer = MessageBox.Show("是否保存设置并退出?", "提示", MessageBoxButtons.YesNo)
+        Dim 用户选择 As DialogResult = MessageBox.Show("是否保存设置并退出?", "提示", MessageBoxButtons.YesNo)
         If 用户选择 = DialogResult.Yes Then
             要写入的运行时间配置 = TextBoxhour.Text + ":" + TextBoxminute.Text + ":" + TextBoxsecond.Text
-            写入主程序配置(Days.Text, 要写入的运行时间配置, CheckBox是否关服备份.Checked, CInt(WaitingSeconds.Text), CInt(FPS.Text), CheckBox1.Checked)
+            If TextBox1.Text = "" Then TextBox1.Text = "0"
+            写入主程序配置(Days.Text, 要写入的运行时间配置, CheckBox是否关服备份.Checked, CInt(WaitingSeconds.Text), CInt(FPS.Text), CheckBox1.Checked, TextBox1.Text)
             日志窗口.日志输出主程序配置()
             添加日志("[Action]关闭主程序设置窗口", Color.Black)
             Me.Close()
@@ -43,6 +44,7 @@ Public Class MainSettingsForm
 		WaitingSeconds.Text = 等待服务端关闭时长.ToString
         CheckBox1.Checked = 运行模式
         FPS.Text = 帧数.ToString
+        TextBox1.Text = 日志窗口位置更新频率.ToString
     End Sub
     ' 窗口激活时更新日志位置
     Private Sub MainSettingsForm_Activated(sender As Object, e As EventArgs) Handles MyBase.Activated

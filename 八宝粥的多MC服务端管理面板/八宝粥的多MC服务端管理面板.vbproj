@@ -6,9 +6,9 @@
     <UseWindowsForms>true</UseWindowsForms>
     <MyType>WindowsForms</MyType>
     <ApplicationIcon>八宝粥.ico</ApplicationIcon>
-    <AssemblyVersion>1.0.3</AssemblyVersion>
-    <FileVersion>1.0.3</FileVersion>
-    <Version>1.0.3</Version>
+    <AssemblyVersion>1.0.32</AssemblyVersion>
+    <FileVersion>1.0.32</FileVersion>
+    <Version>1.0.32</Version>
     <Company>八宝粥的单人团队</Company>
     <Authors>八宝粥</Authors>
     <Product>八宝粥的多MC服务端管理面板</Product>
@@ -17,12 +17,12 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>MSI_Version=False</DefineConstants>
+    <DefineConstants>MSI_Version=True</DefineConstants>
     <OutputPath>C:\Users\wy_13\Desktop\生成\bin</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>MSI_Version=False</DefineConstants>
+    <DefineConstants>MSI_Version=True</DefineConstants>
     <OutputPath>C:\Users\wy_13\Desktop\生成\bin</OutputPath>
   </PropertyGroup>
 

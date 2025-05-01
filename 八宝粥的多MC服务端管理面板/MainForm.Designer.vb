@@ -36,7 +36,7 @@ Partial Class MainForm
 		Button7z = New Button()
 		SftpButton = New Button()
 		ClearlogButton = New Button()
-		ButtonRCON = New Button()
+		ButtonMC = New Button()
 		TestRCONButton = New Button()
 		RunButton = New Button()
 		StopButton = New Button()
@@ -69,7 +69,7 @@ Partial Class MainForm
 		' 
 		IntroductionLabel.AutoSize = True
 		IntroductionLabel.BackColor = Color.Transparent
-		IntroductionLabel.ForeColor = Color.Turquoise
+		IntroductionLabel.ForeColor = Color.Cyan
 		IntroductionLabel.Location = New Point(30, 446)
 		IntroductionLabel.Name = "IntroductionLabel"
 		IntroductionLabel.Size = New Size(557, 57)
@@ -80,6 +80,7 @@ Partial Class MainForm
 		' 
 		LogsLabel.AutoSize = True
 		LogsLabel.BackColor = Color.Transparent
+		LogsLabel.ForeColor = Color.Cyan
 		LogsLabel.Location = New Point(30, 9)
 		LogsLabel.Name = "LogsLabel"
 		LogsLabel.Size = New Size(35, 19)
@@ -153,14 +154,14 @@ Partial Class MainForm
 		ClearlogButton.Text = "清除日志"
 		ClearlogButton.UseVisualStyleBackColor = True
 		' 
-		' ButtonRCON
+		' ButtonMC
 		' 
-		ButtonRCON.Location = New Point(830, 270)
-		ButtonRCON.Name = "ButtonRCON"
-		ButtonRCON.Size = New Size(100, 50)
-		ButtonRCON.TabIndex = 11
-		ButtonRCON.Text = "MC服务端" & vbCrLf & "配置界面"
-		ButtonRCON.UseVisualStyleBackColor = True
+		ButtonMC.Location = New Point(830, 270)
+		ButtonMC.Name = "ButtonMC"
+		ButtonMC.Size = New Size(100, 50)
+		ButtonMC.TabIndex = 11
+		ButtonMC.Text = "MC服务端" & vbCrLf & "配置界面"
+		ButtonMC.UseVisualStyleBackColor = True
 		' 
 		' TestRCONButton
 		' 
@@ -183,6 +184,7 @@ Partial Class MainForm
 		' 
 		' StopButton
 		' 
+		StopButton.Enabled = False
 		StopButton.Location = New Point(710, 210)
 		StopButton.Name = "StopButton"
 		StopButton.Size = New Size(100, 50)
@@ -240,8 +242,10 @@ Partial Class MainForm
 		' 倒计时进度条
 		' 
 		倒计时进度条.Location = New Point(736, 486)
+		倒计时进度条.Maximum = 60
 		倒计时进度条.Name = "倒计时进度条"
 		倒计时进度条.Size = New Size(180, 20)
+		倒计时进度条.Step = 1
 		倒计时进度条.Style = ProgressBarStyle.Continuous
 		倒计时进度条.TabIndex = 21
 		' 
@@ -303,6 +307,8 @@ Partial Class MainForm
 		' Label1
 		' 
 		Label1.AutoSize = True
+		Label1.BackColor = Color.Transparent
+		Label1.ForeColor = Color.Cyan
 		Label1.Location = New Point(12, 504)
 		Label1.Name = "Label1"
 		Label1.Size = New Size(87, 19)
@@ -312,6 +318,8 @@ Partial Class MainForm
 		' Label2
 		' 
 		Label2.AutoSize = True
+		Label2.BackColor = Color.Transparent
+		Label2.ForeColor = Color.Cyan
 		Label2.Location = New Point(12, 551)
 		Label2.Name = "Label2"
 		Label2.Size = New Size(87, 19)
@@ -329,6 +337,8 @@ Partial Class MainForm
 		' 执行中的分任务
 		' 
 		执行中的分任务.AutoSize = True
+		执行中的分任务.BackColor = Color.Transparent
+		执行中的分任务.ForeColor = Color.Cyan
 		执行中的分任务.Location = New Point(95, 551)
 		执行中的分任务.Name = "执行中的分任务"
 		执行中的分任务.Size = New Size(48, 19)
@@ -338,6 +348,8 @@ Partial Class MainForm
 		' 执行中的主任务
 		' 
 		执行中的主任务.AutoSize = True
+		执行中的主任务.BackColor = Color.Transparent
+		执行中的主任务.ForeColor = Color.Cyan
 		执行中的主任务.Location = New Point(95, 504)
 		执行中的主任务.Name = "执行中的主任务"
 		执行中的主任务.Size = New Size(48, 19)
@@ -370,7 +382,7 @@ Partial Class MainForm
 		Controls.Add(StopButton)
 		Controls.Add(RunButton)
 		Controls.Add(TestRCONButton)
-		Controls.Add(ButtonRCON)
+		Controls.Add(ButtonMC)
 		Controls.Add(ClearlogButton)
 		Controls.Add(SftpButton)
 		Controls.Add(Button7z)
@@ -403,7 +415,7 @@ Partial Class MainForm
 	Friend WithEvents Button7z As Button
 	Friend WithEvents SftpButton As Button
 	Friend WithEvents ClearlogButton As Button
-	Friend WithEvents ButtonRCON As Button
+	Friend WithEvents ButtonMC As Button
 	Friend WithEvents TestRCONButton As Button
 	Friend WithEvents RunButton As Button
 	Friend WithEvents StopButton As Button

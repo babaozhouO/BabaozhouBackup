@@ -88,20 +88,13 @@ Public Module SevenZip
             If Not File.Exists(程序路径) Then 添加日志($"[ERROR]7z程序不存在：{程序路径}", Color.Red) : Return False
             添加日志($"[Success]输出输入路径有效", Color.DarkGreen)
             Dim O As String = If(是否增量备份, "增量备份", "完整备份")
-            MainForm.执行中的分任务.Text = $"执行MC服务端{要备份的MC服务端序号}{O}操作"
             MainForm.分任务进度条.Value = 10
             If 要备份的MC服务端序号 = -1 Then
-                If 是否增量备份 Then
-                    添加日志($"[Info]开始执行自定义文件夹增量备份操作", Color.Orange)
-                Else
-                    添加日志($"[Info]开始执行自定义文件夹完整备份操作", Color.Orange)
-                End If
+                MainForm.执行中的分任务.Text = $"执行自定义文件夹{要备份的MC服务端序号}{O}操作"
+                添加日志($"[Info]开始执行自定义文件夹{O}操作", Color.Orange)
             Else
-                If 是否增量备份 Then
-                    添加日志($"[Info]开始执行MC服务端{要备份的MC服务端序号}增量备份操作", Color.Orange)
-                Else
-                    添加日志($"[Info]开始执行MC服务端{要备份的MC服务端序号}完整备份操作", Color.Orange)
-                End If
+                MainForm.执行中的分任务.Text = $"执行MC服务端{要备份的MC服务端序号}{O}操作"
+                添加日志($"[Info]开始执行MC服务端{要备份的MC服务端序号}{O}操作", Color.Orange)
             End If
             Dim 参数 = 生成压缩参数(操作模式, 附加参数, 输出路径, 输入目录)
             MainForm.分任务进度条.Value = 15
@@ -230,15 +223,22 @@ Public Module SevenZip
                                     添加日志("[Warning]压缩过程中7z进程被杀死", Color.Orange)
                                 End If
                                 添加日志("[ERROR]压缩过程中发生致命错误", Color.Red)
+                                添加日志("[ERROR]请检查压缩参数设置，可能是需要的内存过多", Color.Red)
                             End If
                             Return 进程.ExitCode
                     End Select
                 End If
             Catch ex As Exception
                 添加日志($"[ERROR]压缩过程中发生错误:{ex.Message}", Color.Red)
+                MainForm.分任务进度条.Value = 0
             End Try
             Return 2
         End Function
+        '      Private 标准输出读取器 = 进程.StandardOutput
+        '      Private 错误输出读取器 = 进程.StandardError
+        'Private Sub 读取输出()
+        '	Dim 标准输出读取缓冲区(4096) As Byte
+        'End Sub
         Private ReadOnly uiContext As SynchronizationContext = SynchronizationContext.Current
         Private Sub 解析输出数据(原始数据 As String)
             Dim 当前进度 As Integer = -1
@@ -317,14 +317,14 @@ Public Module SevenZip
                     MainForm.分任务进度条.Value = 40
                     If 压缩级别 = 0 Then
                         If 压缩方法 = "GNU" Or 压缩方法 = "POSIX" Then 'tar
-                            附加参数 = $" -r -aoa -sdel -t{压缩格式} -mx0 -mo={压缩方法} -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                            附加参数 = $" -r -aoa -sdel -t{压缩格式} -mx0 -mo={压缩方法} -x!""cache"" -x!""tmp"" -x!""*.tmp"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN"" {排除文件参数}"
                         ElseIf 压缩方法 = "" Then 'wim
-                            附加参数 = $" -r -aoa -sdel -twim -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                            附加参数 = $" -r -aoa -sdel -twim -x!""cache"" -x!""tmp"" -x!""*.tmp"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN"" {排除文件参数}"
                         Else
-                            附加参数 = $" -r -aoa -sdel -t{压缩格式} -mx{压缩级别} -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                            附加参数 = $" -r -aoa -sdel -t{压缩格式} -mx{压缩级别} -x!""cache"" -x!""tmp"" -x!""*.tmp"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN"" {排除文件参数}"
                         End If
                     Else
-                        附加参数 = $" -r -aoa -sdel -t{压缩格式} -mx{压缩级别} -m0={压缩方法}:d={字典大小.TrimEnd("B"c)}:fb={单词大小} -ms -mmt{线程数} -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                        附加参数 = $" -r -aoa -sdel -t{压缩格式} -mx{压缩级别} -m0={压缩方法}:d={字典大小.TrimEnd("B"c)}:fb={单词大小} -ms -mmt{线程数} -x!""cache"" -x!""tmp"" -x!""*.tmp"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN"" {排除文件参数}"
                     End If
                     If String.IsNullOrEmpty(增量文件临时存放目录) Then
                         添加日志($"[ERROR]复制增量文件到临时存放目录失败或无更新文件,已终止操作", Color.Red)
@@ -342,7 +342,16 @@ Public Module SevenZip
                         End If
                     End If
                     If Directory.Exists(临时目录) Then
-                        Directory.Delete(临时目录)
+                        Try
+                            ' 递归删除目录及其所有内容（包括子目录和文件）
+                            Directory.Delete(临时目录, True)
+                        Catch ex As IOException
+                            ' 处理文件被占用或权限问题
+                            添加日志($"文件被占用或权限不足：{ex.Message}", Color.Red)
+                        Catch ex As UnauthorizedAccessException
+                            ' 处理权限不足
+                            添加日志($"权限不足：{ex.Message}", Color.Red)
+                        End Try
                         If Directory.Exists(临时目录) Then
                             添加日志($"[ERROR]临时文件夹删除失败", Color.Red)
                             添加日志($"[ERROR]请手动删除{临时目录}", Color.Red)
@@ -357,14 +366,14 @@ Public Module SevenZip
                     MainForm.分任务进度条.Value = 40
                     If 压缩级别 = 0 Then
                         If 压缩方法 = "GNU" Or 压缩方法 = "POSIX" Then 'tar
-                            附加参数 = $" -r -aoa -t{压缩格式} -mx0 -mo={压缩方法} -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                            附加参数 = $" -r -aoa -t{压缩格式} -mx0 -mo={压缩方法} -x!""cache"" -x!""tmp"" -x!""*.tmp"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN"" {排除文件参数}"
                         ElseIf 压缩方法 = "" Then 'wim
-                            附加参数 = $" -r -aoa -twim -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                            附加参数 = $" -r -aoa -twim -x!""cache"" -x!""tmp"" -x!""*.tmp"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN"" {排除文件参数}"
                         Else
-                            附加参数 = $" -r -aoa -t{压缩格式} -mx{压缩级别} -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                            附加参数 = $" -r -aoa -t{压缩格式} -mx{压缩级别} -x!""cache"" -x!""tmp"" -x!""*.tmp"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN"" {排除文件参数}"
                         End If
                     Else
-                        附加参数 = $" -r -aoa -t{压缩格式} -mx{压缩级别} -m0={压缩方法}:d={字典大小.TrimEnd("B"c)}:fb={单词大小} -ms -mmt{线程数} -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                        附加参数 = $" -r -aoa -t{压缩格式} -mx{压缩级别} -m0={压缩方法}:d={字典大小.TrimEnd("B"c)}:fb={单词大小} -ms -mmt{线程数} -x!""cache"" -x!""tmp"" -x!"" * .tmp"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN"" {排除文件参数}"
                     End If
                     Dim R As Integer = 压缩器.调用7Zip("a", 附加参数, 输出路径, 输入目录, MC服务端序号)
                     If R = 0 Or R = 1 Then
@@ -380,6 +389,10 @@ Public Module SevenZip
                 End If
             Catch ex As Exception
                 添加日志($"[ERROR]备份时发生错误：{ex.Message}", Color.Red)
+                If ex.Message.Contains("目录不是空的") Then
+                    添加日志($"[ERROR]临时文件夹删除失败", Color.Red)
+                    添加日志($"[ERROR]请手动删除{临时目录}", Color.Red)
+                End If
             End Try
         End Sub
         Private Shared Function 复制增量文件到临时存放目录并输出目录(源路径 As String, 上次备份时间 As DateTime) As String
@@ -435,14 +448,14 @@ Public Module SevenZip
             Dim 附加参数 As String
             If 压缩级别 = 0 Then
                 If 压缩方法 = "GNU" Or 压缩方法 = "POSIX" Then 'tar
-                    附加参数 = $" -r -aoa -t{压缩格式} -mx0 -mo={压缩方法} -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                    附加参数 = $" -r -aoa -t{压缩格式} -mx0 -mo={压缩方法} -x!""cache"" -x!""tmp"" -x!""*.tmp"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN"" {排除文件参数}"
                 ElseIf 压缩方法 = "" Then 'wim
-                    附加参数 = $" -r -aoa -twim -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                    附加参数 = $" -r -aoa -twim -x!""cache"" -x!""tmp"" -x!""*.tmp"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN"" {排除文件参数}"
                 Else
-                    附加参数 = $" -r -aoa -t{压缩格式} -mx{压缩级别} -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                    附加参数 = $" -r -aoa -t{压缩格式} -mx{压缩级别} -x!""cache"" -x!""tmp"" -x!""*.tmp"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN"" {排除文件参数}"
                 End If
             Else
-                附加参数 = $" -r -aoa -t{压缩格式} -mx{压缩级别} -m0={压缩方法}:d={字典大小.TrimEnd("B"c)}:fb={单词大小} -ms -mmt{线程数} -xr!""cache\*"" -xr!""tmp\*"" -x!""Thumbs.db"" -xr!""$RECYCLE.BIN\*"" {排除文件参数}"
+                附加参数 = $" -r -aoa -t{压缩格式} -mx{压缩级别} -m0={压缩方法}:d={字典大小.TrimEnd("B"c)}:fb={单词大小} -ms -mmt{线程数} -x!""cache"" -x!""tmp"" -x!""*.tmp"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN"" {排除文件参数}"
             End If
             MainForm.分任务进度条.Value = 40
             Try
@@ -487,6 +500,7 @@ Public Module SevenZip
         ''' <summary>
         ''' 复制指定时间后修改的文件到临时目录并保留相对路径结构
         ''' </summary>
+        ''' <returns>复制成功的文件数量</returns>
         Public Function 复制修改时间后的文件(源目录 As String, 临时目录 As String, 时间阈值 As DateTime) As Integer
             ' 1. 验证输入路径
             If Not Directory.Exists(源目录) Then 添加日志($"源目录不存在: {源目录}", Color.Red) : Return 0

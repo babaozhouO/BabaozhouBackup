@@ -19,7 +19,6 @@ Public Class SFTP客户端 ' SFTP 客户端类，实现连接和文件上传功�
     Implements IDisposable
     Private 客户端实例 As SftpClient ' SFTP 客户端实例
     Public 连接状态 As Boolean = False ' 连接状态
-    Public 远程文件存在状态 As Boolean = False ' 远程文件存在状态
     Private 服务端序号 As String
     Private Shared ReadOnly 正斜杠 As Char() = {"/"c}
     Private Shared ReadOnly 反斜杠 As Char() = {"\"c}
@@ -53,11 +52,17 @@ Public Class SFTP客户端 ' SFTP 客户端类，实现连接和文件上传功�
             End If
         Catch
             添加日志($"[ERROR]SFTP{服务端序号}服务器连接失败，请检查网络和凭据或配置文件", Color.Red)
+            MainForm.执行中的分任务.Text = $"无"
+            MainForm.分任务进度条.Value = 0
         End Try
         If 客户端实例 IsNot Nothing AndAlso 客户端实例.IsConnected Then
             连接状态 = True
             添加日志($"[Success]成功连接Sftp{服务端序号}服务器", Color.Green)
             MainForm.分任务进度条.Value = 10
+        Else
+            添加日志($"[ERROR]]SFTP{服务端序号}服务器连接失败，请检查网络和凭据或配置文件", Color.Red)
+            MainForm.执行中的分任务.Text = $"无"
+            MainForm.分任务进度条.Value = 0
         End If
     End Sub
     Private WithEvents 模拟文件上传耗时 As New Timers.Timer With {.AutoReset = True, .Interval = 1000}
@@ -143,30 +148,34 @@ Public Class SFTP客户端 ' SFTP 客户端类，实现连接和文件上传功�
             Exit Sub
         End Try
     End Sub
-    Public Sub 检测远程文件是否存在(远程文件路径 As String) ' 检测远程文件是否存在
-        If 客户端实例 Is Nothing OrElse Not 客户端实例.IsConnected Then 添加日志($"[ERROR]Sftp{服务端序号}客户端未连接", Color.Red) : Return
+    Public Function 检测远程文件是否存在(远程文件路径 As String) ' 检测远程文件是否存在
+        If 客户端实例 Is Nothing OrElse Not 客户端实例.IsConnected Then
+            添加日志($"[ERROR]Sftp{服务端序号}客户端未连接", Color.Red)
+            Return False
+        End If
         MainForm.分任务进度条.Value = 30
         Try
             If 客户端实例.Exists(远程文件路径) Then
-                远程文件存在状态 = True
                 添加日志($"[Success]Sftp{服务端序号}客户端发现远程文件存在", Color.Green)
+                Return True
             Else
                 添加日志($"[ERROR]Sftp{服务端序号}客户端发现远程文件不存在", Color.Red)
+                Return False
             End If
         Catch
-            添加日志($"[ERROR]Sftp{服务端序号}客户端检测远程文件失败", Color.Red)
-        End Try
-    End Sub
+			添加日志($"[ERROR]Sftp{服务端序号}客户端检测远程文件失败", Color.Red)
+			Return False
+		End Try
+    End Function
     Public Sub 删除文件(远程文件路径 As String)  ' 删除远程文件
-        If 客户端实例 Is Nothing OrElse Not 客户端实例.IsConnected Then 添加日志($"[ERROR]Sftp{服务端序号}客户端未连接", Color.Red)
+        If 客户端实例 Is Nothing OrElse Not 客户端实例.IsConnected Then
+            添加日志($"[ERROR]Sftp{服务端序号}客户端未连接", Color.Red)
+            Exit Sub
+        End If
+        MainForm.分任务进度条.Value = 50
         Try
-            If 远程文件存在状态 Then
-                MainForm.分任务进度条.Value = 50
-                客户端实例.DeleteFile(远程文件路径)
-                添加日志($"[Success]Sftp{服务端序号}客户端成功删除远程文件", Color.Green)
-            Else
-                添加日志($"[ERROR]Sftp{服务端序号}客户端发现远程文件不存在", Color.Red)
-            End If
+            客户端实例.DeleteFile(远程文件路径)
+            添加日志($"[Success]Sftp{服务端序号}客户端成功删除远程文件", Color.Green)
         Catch
             添加日志($"[ERROR]Sftp{服务端序号}客户端删除远程文件失败", Color.Red)
         Finally
@@ -195,16 +204,26 @@ Public Module 处理单个Sftp服务端功能
             If Not Sftp实例.连接状态 Then Return
             Sftp实例.上传文件(本地文件路径, 远程目录)
         End Using
-        Return
     End Sub
     Public Sub 处理单个Sftp服务端_删除文件(地址 As String, 端口 As String, 用户名 As String, 密码 As String, 服务器序号 As String, 远程文件路径 As String)
         Using Sftp实例 As New SFTP客户端()
             Sftp实例.建立Sftp连接(地址, 端口, 用户名, 密码, 服务器序号)
-            If Not Sftp实例.连接状态 Then Return
-            Sftp实例.检测远程文件是否存在(远程文件路径)
-            If Not Sftp实例.远程文件存在状态 Then Return
-            Sftp实例.删除文件(远程文件路径)
+            If Sftp实例.连接状态 AndAlso Sftp实例.检测远程文件是否存在(远程文件路径) Then
+                Sftp实例.删除文件(远程文件路径)
+            End If
         End Using
-        Return
+    End Sub
+    Public Sub 测试单个Sftp服务端_上传和删除(地址 As String, 端口 As String, 用户名 As String, 密码 As String, 服务器序号 As String, 本地文件路径 As String, 远程目录 As String, 远程文件路径 As String)
+        Using Sftp实例 As New SFTP客户端()
+            Sftp实例.建立Sftp连接(地址, 端口, 用户名, 密码, 服务器序号)
+            MainForm.主任务进度条.PerformStep()
+            If Not Sftp实例.连接状态 Then Return
+            Sftp实例.上传文件(本地文件路径, 远程目录)
+            MainForm.主任务进度条.PerformStep()
+            If Sftp实例.连接状态 AndAlso Sftp实例.检测远程文件是否存在(远程文件路径) Then
+                Sftp实例.删除文件(远程文件路径)
+            End If
+            MainForm.主任务进度条.PerformStep()
+        End Using
     End Sub
 End Module

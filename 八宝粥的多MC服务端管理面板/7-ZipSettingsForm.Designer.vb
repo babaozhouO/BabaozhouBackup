@@ -52,6 +52,9 @@ Partial Class SevenZipSettingsForm
 		选择字典大小 = New ComboBox()
 		Label9 = New Label()
 		Label10 = New Label()
+		TextBox4 = New TextBox()
+		Label11 = New Label()
+		Label17 = New Label()
 		SuspendLayout()
 		' 
 		' label压缩格式
@@ -112,7 +115,7 @@ Partial Class SevenZipSettingsForm
 		' Label1
 		' 
 		Label1.AutoSize = True
-		Label1.Location = New Point(491, 68)
+		Label1.Location = New Point(323, 98)
 		Label1.Name = "Label1"
 		Label1.Size = New Size(87, 19)
 		Label1.TabIndex = 8
@@ -120,7 +123,7 @@ Partial Class SevenZipSettingsForm
 		' 
 		' Button1
 		' 
-		Button1.Location = New Point(719, 65)
+		Button1.Location = New Point(834, 95)
 		Button1.Name = "Button1"
 		Button1.Size = New Size(24, 24)
 		Button1.TabIndex = 119
@@ -128,15 +131,15 @@ Partial Class SevenZipSettingsForm
 		' 
 		' TextBox2
 		' 
-		TextBox2.Location = New Point(584, 65)
+		TextBox2.Location = New Point(416, 95)
 		TextBox2.Name = "TextBox2"
-		TextBox2.Size = New Size(129, 24)
+		TextBox2.Size = New Size(412, 24)
 		TextBox2.TabIndex = 118
 		' 
 		' CheckBox1
 		' 
 		CheckBox1.AutoSize = True
-		CheckBox1.Location = New Point(491, 95)
+		CheckBox1.Location = New Point(323, 125)
 		CheckBox1.Name = "CheckBox1"
 		CheckBox1.Size = New Size(106, 23)
 		CheckBox1.TabIndex = 120
@@ -145,7 +148,7 @@ Partial Class SevenZipSettingsForm
 		' 
 		' Button2
 		' 
-		Button2.Location = New Point(719, 35)
+		Button2.Location = New Point(834, 35)
 		Button2.Name = "Button2"
 		Button2.Size = New Size(24, 24)
 		Button2.TabIndex = 123
@@ -153,15 +156,15 @@ Partial Class SevenZipSettingsForm
 		' 
 		' TextBox1
 		' 
-		TextBox1.Location = New Point(597, 35)
+		TextBox1.Location = New Point(429, 35)
 		TextBox1.Name = "TextBox1"
-		TextBox1.Size = New Size(116, 24)
+		TextBox1.Size = New Size(399, 24)
 		TextBox1.TabIndex = 122
 		' 
 		' Label2
 		' 
 		Label2.AutoSize = True
-		Label2.Location = New Point(491, 38)
+		Label2.Location = New Point(323, 38)
 		Label2.Name = "Label2"
 		Label2.Size = New Size(100, 19)
 		Label2.TabIndex = 121
@@ -170,7 +173,7 @@ Partial Class SevenZipSettingsForm
 		' CheckBox2
 		' 
 		CheckBox2.AutoSize = True
-		CheckBox2.Location = New Point(603, 95)
+		CheckBox2.Location = New Point(435, 125)
 		CheckBox2.Name = "CheckBox2"
 		CheckBox2.Size = New Size(119, 23)
 		CheckBox2.TabIndex = 124
@@ -290,12 +293,40 @@ Partial Class SevenZipSettingsForm
 		Label10.TabIndex = 137
 		Label10.Text = "建议设置压缩参数时，右键任意文件夹选择7-zip的添加到压缩包选项" & vbCrLf & "选择好合适的压缩参数再转移到本程序内(注意内存占用)"
 		' 
+		' TextBox4
+		' 
+		TextBox4.Location = New Point(520, 65)
+		TextBox4.Name = "TextBox4"
+		TextBox4.Size = New Size(338, 24)
+		TextBox4.TabIndex = 139
+		' 
+		' Label11
+		' 
+		Label11.AutoSize = True
+		Label11.Location = New Point(323, 68)
+		Label11.Name = "Label11"
+		Label11.Size = New Size(191, 19)
+		Label11.TabIndex = 138
+		Label11.Text = "自定义备份目录的排除文件参数"
+		' 
+		' Label17
+		' 
+		Label17.AutoSize = True
+		Label17.Location = New Point(323, 151)
+		Label17.Name = "Label17"
+		Label17.Size = New Size(535, 57)
+		Label17.TabIndex = 182
+		Label17.Text = "排除文件参数说明：-x!""文件名"" 排除单个文件；-x!""文件夹 ""排除整个文件夹" & vbCrLf & "排除服务端根目录下error.txt和logs文件夹参数示例：-x!""error.txt"" -x!""logs""" & vbCrLf & "已固定排除 -x!""cache"" -x!""tmp"" -x!"" * .tmp"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN"""
+		' 
 		' SevenZipSettingsForm
 		' 
 		AutoScaleDimensions = New SizeF(8F, 19F)
 		AutoScaleMode = AutoScaleMode.Font
 		ClientSize = New Size(884, 561)
 		ControlBox = False
+		Controls.Add(Label17)
+		Controls.Add(TextBox4)
+		Controls.Add(Label11)
 		Controls.Add(Label10)
 		Controls.Add(选择单词大小)
 		Controls.Add(Label8)
@@ -359,4 +390,7 @@ Partial Class SevenZipSettingsForm
 	Friend WithEvents 选择字典大小 As ComboBox
 	Friend WithEvents Label9 As Label
 	Friend WithEvents Label10 As Label
+	Friend WithEvents TextBox4 As TextBox
+	Friend WithEvents Label11 As Label
+	Friend WithEvents Label17 As Label
 End Class

@@ -19,10 +19,7 @@ Public Class 日志窗口
         日志处理器实例.绑定文本框(Me.LogsRichTextBox)
     End Sub
     Public Sub 添加日志(信息 As String, 颜色 As Color)
-        Try
-            日志处理器实例.添加日志(信息, 颜色)
-        Catch
-        End Try
+        日志处理器实例.添加日志(信息, 颜色)
     End Sub
     Public Sub 日志输出软件信息()
         日志处理器实例.日志输出软件信息()
@@ -43,7 +40,12 @@ Public Class 日志窗口
     Private ReadOnly 主窗口 As MainForm
     ' 智能停靠方法
     Public Sub 更新停靠位置(目标窗口 As Form)
-        当前目标窗口 = 目标窗口
+        If 日志窗口是否更新位置 Then
+            当前目标窗口 = 目标窗口
+        Else
+            当前目标窗口 = MainForm
+            目标窗口 = MainForm
+        End If
         If 日志窗口隐藏状态 Then Return
         Me.Visible = 目标窗口.Visible
         If TypeOf 目标窗口 Is MainForm Then

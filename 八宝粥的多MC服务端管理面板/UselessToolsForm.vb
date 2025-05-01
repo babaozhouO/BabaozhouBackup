@@ -11,8 +11,6 @@
 'WITHOUT WARRANTIES Or CONDITIONS Of ANY KIND, either express Or implied.
 'See the License For the specific language governing permissions And
 'limitations under the License.
-Imports System.ComponentModel
-Imports System.IO
 Public Class UselessToolsForm
 	Private Sub 添加日志(信息 As String, 颜色 As Color)
 		日志窗口.添加日志(信息, 颜色)
@@ -34,8 +32,8 @@ Public Class UselessToolsForm
 		End If
 	End Sub
 	Private Sub 安装7Zip_Click(sender As Object, e As EventArgs) Handles 安装7Zip.Click
-		Dim 七Zip安装包路径 As String = Path.Combine(程序数据目录, "资源", "7z2409-x64.exe")
-		If Not File.Exists(七Zip安装包路径) Then
+		Dim 七Zip安装包路径 As String = IO.Path.Combine(程序数据目录, "资源", "7z2409-x64.exe")
+		If Not IO.File.Exists(七Zip安装包路径) Then
 			添加日志("[ERROR]资源文件被你删了", Color.Red)
 			MsgBox("你个坏蛋,把我的资源文件删了！", MsgBoxStyle.Critical, "坏蛋！")
 			Return
@@ -48,8 +46,28 @@ Public Class UselessToolsForm
 		Process.Start(七Zip安装包路径)
 	End Sub
 	Private Sub 退出_Click(sender As Object, e As EventArgs) Handles 退出.Click
-		Dim 用户选择 As Integer = MessageBox.Show("确认退出?", "提示", MessageBoxButtons.YesNo)
+		Dim 用户选择 As DialogResult = MessageBox.Show("确认退出?", "提示", MessageBoxButtons.YesNo)
 		If 用户选择 = DialogResult.Yes Then
+			RCON实例1.断开连接(1)
+			RCON实例1 = Nothing
+			RCON实例2.断开连接(2)
+			RCON实例2 = Nothing
+			RCON实例3.断开连接(3)
+			RCON实例3 = Nothing
+			RCON实例4.断开连接(4)
+			RCON实例4 = Nothing
+			RCON实例5.断开连接(5)
+			RCON实例5 = Nothing
+			RCON实例6.断开连接(6)
+			RCON实例6 = Nothing
+			RCON实例7.断开连接(7)
+			RCON实例7 = Nothing
+			RCON实例8.断开连接(8)
+			RCON实例8 = Nothing
+			RCON实例9.断开连接(9)
+			RCON实例9 = Nothing
+			RCON实例10.断开连接(10)
+			RCON实例10 = Nothing
 			Me.Close()
 		End If
 	End Sub
@@ -375,6 +393,7 @@ Public Class UselessToolsForm
 			添加日志("[Action]启动所有已启用的MC服务端", Color.Orange)
 			Dim H As New 核心功能类
 			H.启动MC服务器()
+			MainForm.分任务进度条.Value = 0
 		Else
 			添加日志("没有可用的MC服务端,全给你关掉了(恼)", Color.Red)
 		End If
@@ -383,18 +402,5 @@ Public Class UselessToolsForm
 		倒计时冷却.Enabled = False
 		启动MC服务端.Enabled = True
 		启动MC服务端.Text = "启动已启用的MC服务端"
-	End Sub
-
-	Private Sub UselessToolsForm_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
-		RCON实例1 = Nothing
-		RCON实例2 = Nothing
-		RCON实例3 = Nothing
-		RCON实例4 = Nothing
-		RCON实例5 = Nothing
-		RCON实例6 = Nothing
-		RCON实例7 = Nothing
-		RCON实例8 = Nothing
-		RCON实例9 = Nothing
-		RCON实例10 = Nothing
 	End Sub
 End Class

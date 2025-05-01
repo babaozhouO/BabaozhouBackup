@@ -59,7 +59,7 @@ Module 日志处理模块
         Public Sub 日志输出软件信息()
             添加日志("[Info]作者:八宝粥", Color.Black)
             添加日志("[Info]联系方式:邮箱:1749861851@qq.com", Color.Black)
-            添加日志("[Info]程序启动,V0.1.0-alphav3.0", Color.Green)
+            添加日志("[Info]程序启动,V0.1.0-alphav3.2", Color.Green)
             添加日志("[Info]Github仓库链接:https://github.com/babaozhouO/BBZ-MCServers-Manager", Color.Black)
             添加日志("[Warning]未经作者同意，不得删除软件中的作者标识，本软件受开源协议保护"， Color.Red)
             添加日志("[Info]正在读取配置文件", Color.Black)

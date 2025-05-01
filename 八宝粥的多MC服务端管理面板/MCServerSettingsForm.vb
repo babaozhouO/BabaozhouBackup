@@ -16,14 +16,14 @@ Public Class MCServerSettingsForm
 		日志窗口.添加日志(信息, 颜色)
 	End Sub
 	Private Sub ButtonCancle_Click(sender As Object, e As EventArgs) Handles ButtonCancle.Click
-		Dim 用户选择 As Integer = MessageBox.Show("是否放弃保存设置并退出?", "提示", MessageBoxButtons.YesNo)
+		Dim 用户选择 As DialogResult = MessageBox.Show("是否放弃保存设置并退出?", "提示", MessageBoxButtons.YesNo)
 		If 用户选择 = DialogResult.Yes Then
 			添加日志("[Action]关闭MC服务器设置窗口", Color.Black)
 			Me.Close()
 		End If
 	End Sub
 	Private Sub ButtonSaveAndExit_Click(sender As Object, e As EventArgs) Handles ButtonSaveAndExit.Click
-		Dim 用户选择 As Integer = MessageBox.Show("是否保存设置并退出?", "提示", MessageBoxButtons.YesNo)
+		Dim 用户选择 As DialogResult = MessageBox.Show("是否保存设置并退出?", "提示", MessageBoxButtons.YesNo)
 		If 用户选择 = DialogResult.Yes Then
 			保存MC服务端配置()
 			添加日志("[Success]成功保存MC服务器设置", Color.Green)
@@ -129,6 +129,7 @@ Public Class MCServerSettingsForm
 		密码1.Text = RCON1密码
 		TextBox11.Text = MC服务端1启动脚本名称
 		TextBox1.Text = MC服务端1路径
+		TextBox16.Text = 备份MC服务端1排除文件参数
 		'加载RCON2配置
 		If 是否控制MC服务端2 Then 开关控件2.切换状态()
 		MCServer2.Text = MC服务端2名称
@@ -138,6 +139,7 @@ Public Class MCServerSettingsForm
 		密码2.Text = RCON2密码
 		TextBox12.Text = MC服务端2启动脚本名称
 		TextBox2.Text = MC服务端2路径
+		TextBox17.Text = 备份MC服务端2排除文件参数
 		'加载RCON3配置
 		If 是否控制MC服务端3 Then 开关控件3.切换状态()
 		MCServer3.Text = MC服务端3名称
@@ -147,6 +149,7 @@ Public Class MCServerSettingsForm
 		密码3.Text = RCON3密码
 		TextBox13.Text = MC服务端3启动脚本名称
 		TextBox3.Text = MC服务端3路径
+		TextBox18.Text = 备份MC服务端3排除文件参数
 		'加载RCON4配置
 		If 是否控制MC服务端4 Then 开关控件4.切换状态()
 		MCServer4.Text = MC服务端4名称
@@ -156,6 +159,7 @@ Public Class MCServerSettingsForm
 		密码4.Text = RCON4密码
 		TextBox14.Text = MC服务端4启动脚本名称
 		TextBox4.Text = MC服务端4路径
+		TextBox19.Text = 备份MC服务端4排除文件参数
 		'加载RCON5配置
 		If 是否控制MC服务端5 Then 开关控件5.切换状态()
 		MCServer5.Text = MC服务端5名称
@@ -165,6 +169,7 @@ Public Class MCServerSettingsForm
 		密码5.Text = RCON5密码
 		TextBox15.Text = MC服务端5启动脚本名称
 		TextBox5.Text = MC服务端5路径
+		TextBox20.Text = 备份MC服务端5排除文件参数
 		'加载RCON6配置
 		If 是否控制MC服务端6 Then 开关控件6.切换状态()
 		MCServer6.Text = MC服务端6名称
@@ -174,6 +179,7 @@ Public Class MCServerSettingsForm
 		密码6.Text = RCON6密码
 		TextBox21.Text = MC服务端6启动脚本名称
 		TextBox6.Text = MC服务端6路径
+		TextBox26.Text = 备份MC服务端6排除文件参数
 		'加载RCON7配置
 		If 是否控制MC服务端7 Then 开关控件7.切换状态()
 		MCServer7.Text = MC服务端7名称
@@ -183,6 +189,7 @@ Public Class MCServerSettingsForm
 		密码7.Text = RCON7密码
 		TextBox22.Text = MC服务端7启动脚本名称
 		TextBox7.Text = MC服务端7路径
+		TextBox27.Text = 备份MC服务端7排除文件参数
 		'加载RCON8配置
 		If 是否控制MC服务端8 Then 开关控件8.切换状态()
 		MCServer8.Text = MC服务端8名称
@@ -192,6 +199,7 @@ Public Class MCServerSettingsForm
 		密码8.Text = RCON8密码
 		TextBox23.Text = MC服务端8启动脚本名称
 		TextBox8.Text = MC服务端8路径
+		TextBox28.Text = 备份MC服务端8排除文件参数
 		'加载RCON9配置
 		If 是否控制MC服务端9 Then 开关控件9.切换状态()
 		MCServer9.Text = MC服务端9名称
@@ -201,6 +209,7 @@ Public Class MCServerSettingsForm
 		密码9.Text = RCON9密码
 		TextBox24.Text = MC服务端9启动脚本名称
 		TextBox9.Text = MC服务端9路径
+		TextBox29.Text = 备份MC服务端9排除文件参数
 		'加载RCON10配置
 		If 是否控制MC服务端10 Then 开关控件10.切换状态()
 		MCServer10.Text = MC服务端10名称
@@ -210,6 +219,7 @@ Public Class MCServerSettingsForm
 		密码10.Text = RCON10密码
 		TextBox25.Text = MC服务端10启动脚本名称
 		TextBox10.Text = MC服务端10路径
+		TextBox30.Text = 备份MC服务端10排除文件参数
 	End Sub
 	Private Sub 保存MC服务端配置()
 		写入MC服务端配置(1, 是否控制MC服务端1, 名称1.Text, 地址1.Text, 端口1.Text, 密码1.Text, TextBox1.Text, TextBox11.Text, TextBox16.Text)

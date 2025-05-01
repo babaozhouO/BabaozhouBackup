@@ -75,7 +75,7 @@ Public Class SevenZipSettingsForm
 		End Select
 		压缩级别 = 选择压缩级别.SelectedIndex
 		If 用户选择 = DialogResult.Yes Then
-			写入7zip配置(压缩格式, 压缩级别, 压缩方法, 选择字典大小.Text, 选择单词大小.Text, CInt(TextBox3.Text), TextBox1.Text, TextBox2.Text, 是否增量备份, 是否备份自定义目录, CPU线程数.Text)
+			写入7zip配置(压缩格式, 压缩级别, 压缩方法, 选择字典大小.Text, 选择单词大小.Text, CInt(TextBox3.Text), TextBox1.Text, TextBox2.Text, 是否增量备份, 是否备份自定义目录, CPU线程数.Text, TextBox4.Text)
 			添加日志("[Success]成功保存7-Zip设置", Color.Green)
 			日志窗口.日志输出7zip配置()
 			添加日志("--------------------------------------------------------------", Color.Black)
@@ -654,6 +654,7 @@ Public Class SevenZipSettingsForm
 		TextBox1.Text = 自定义备份目录
 		TextBox2.Text = 备份输出目录
 		TextBox3.Text = 超时时长.ToString
+		TextBox4.Text = 自定义备份目录排除文件参数
 		CheckBox1.Checked = 是否增量备份
 		CheckBox2.Checked = 是否备份自定义目录
 	End Sub
