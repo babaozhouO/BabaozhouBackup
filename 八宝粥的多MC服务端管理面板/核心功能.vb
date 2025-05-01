@@ -14,6 +14,7 @@
 Imports System.Threading
 Imports System.IO
 Imports System.Runtime.InteropServices
+Imports System.Diagnostics.Eventing.Reader
 Public Module 核心功能模块
     Private Sub 添加日志(信息 As String, 颜色 As Color)
         If 日志窗口.InvokeRequired Then
@@ -78,50 +79,73 @@ Public Module 核心功能模块
             备份操作进行状态 = True
             Dim 原服务运行状态 As Boolean = 服务运行状态
             服务运行状态 = False
-			MainForm.服务运行时更改控件状态(True)
+            MainForm.服务运行时更改控件状态(True)
             '---------------------------------------------------------------备份MC服务端操作---------------------------------
+            Dim MC服务端是否已关闭 As Boolean
             Try
-				MainForm.执行中的主任务.Text = "备份MC服务端"
-				MainForm.主任务进度条.Maximum = 100 '确保进度条最大值为100
-				MainForm.主任务进度条.Value = 0
-				Dim RCON执行成功 As Boolean = False
-				If 是否关服备份 Then
-					RCON执行成功 = RCON关闭MC服务器()
-				Else
-					RCON执行成功 = RCON停止服务端自动保存()
-				End If
-				If RCON执行成功 = False Then
-					MainForm.执行中的分任务.Text = "无"
-					Exit Try
-				End If
-				MainForm.主任务进度条.Value = 10
+                MainForm.执行中的主任务.Text = "备份MC服务端"
+                MainForm.主任务进度条.Maximum = 100 '确保进度条最大值为100
+                MainForm.主任务进度条.Value = 0
+                Dim RCON执行成功 As Boolean = False
+                If 是否关服备份 Then
+                    RCON执行成功 = RCON关闭MC服务器()
+                Else
+                    RCON执行成功 = RCON停止服务端自动保存()
+                End If
+                If 是否关服备份 Then
+                    If RCON执行成功 Then
+                        MC服务端是否已关闭 = True
+                    Else
+                        If Not 检测服务端是否已启动(1) Or
+                           Not 检测服务端是否已启动(2) Or
+                           Not 检测服务端是否已启动(3) Or
+                           Not 检测服务端是否已启动(4) Or
+                           Not 检测服务端是否已启动(5) Or
+                           Not 检测服务端是否已启动(6) Or
+                           Not 检测服务端是否已启动(7) Or
+                           Not 检测服务端是否已启动(8) Or
+                           Not 检测服务端是否已启动(9) Or
+                           Not 检测服务端是否已启动(10) Then '直接备份
+                            MC服务端是否已关闭 = True
+                        Else
+                            添加日志("[ERROR]服务端既没有关闭也无法进行RCON通信,已取消备份MC服务端", Color.Purple)
+                            MC服务端是否已关闭 = False
+                            Exit Try
+                        End If
+                    End If
+                Else
+                    If Not RCON执行成功 Then
+                        添加日志("[ERROR]服务端既没有关闭也无法进行RCON通信,已取消备份MC服务端", Color.Purple)
+                        Exit Try
+                    End If
+                End If
+                MainForm.主任务进度条.Value = 10
+                If 是否关服备份 AndAlso RCON执行成功 Then
+                    添加日志($"[Info]等待MC服务端彻底关闭({等待服务端关闭时长}s)", Color.Orange)
+                    MainForm.执行中的分任务.Text = $"等待MC服务端彻底关闭({等待服务端关闭时长}s)"
+                    If 是否循环更新界面 Then
+                        Dim C As Integer = 等待服务端关闭时长 * 帧数
+                        Dim S As Double = 100 / C
+                        For i As Integer = 1 To C
+                            MainForm.分任务进度条.Value = If(CInt(S * i) <= 100, CInt(S * i), 100)
+                            Application.DoEvents()
+                            Thread.Sleep(延时毫秒数)
+                        Next
+                        MainForm.分任务进度条.Value = 100
+                    Else
+                        Thread.Sleep(等待服务端关闭时长 * 1000)
+                        MainForm.分任务进度条.Value = 100
+                    End If
+                End If
+                MainForm.主任务进度条.Value = 15
 
-				If 是否关服备份 Then
-					添加日志($"[Info]等待MC服务端彻底关闭({等待服务端关闭时长}s)", Color.Orange)
-					MainForm.执行中的分任务.Text = $"等待MC服务端彻底关闭({等待服务端关闭时长}s)"
-					If 是否循环更新界面 Then
-						Dim C As Integer = 等待服务端关闭时长 * 帧数
-						Dim S As Double = 100 / C
-						For i As Integer = 1 To C
-							MainForm.分任务进度条.Value = If(CInt(S * i) <= 100, CInt(S * i), 100)
-							Application.DoEvents()
-							Thread.Sleep(延时毫秒数)
-						Next
-						MainForm.分任务进度条.Value = 100
-					Else
-						Thread.Sleep(等待服务端关闭时长 * 1000)
-						MainForm.分任务进度条.Value = 100
-					End If
-				End If
-				MainForm.主任务进度条.Value = 15
+                备份MC服务端()
+                MainForm.主任务进度条.Value = 60
 
-				备份MC服务端()
-				MainForm.主任务进度条.Value = 60
+                向Sftp服务器上传MC服务端备份文件()
+                MainForm.主任务进度条.Value = 90
 
-				向Sftp服务器上传MC服务端备份文件()
-				MainForm.主任务进度条.Value = 90
-
-                If Not 是否关服备份 Then
+                If Not 是否关服备份 AndAlso RCON执行成功 Then
                     RCON启用服务端自动保存()
                 End If
                 MainForm.主任务进度条.Value = 100
@@ -132,29 +156,30 @@ Public Module 核心功能模块
                     x += 1
                 End While
             Catch ex As Exception
-				添加日志($"[ERROR]执行备份MC服务端任务时发生错误:{ex.Message}", Color.Red)
-			Finally
-				MainForm.执行中的主任务.Text = "无"
-				MainForm.主任务进度条.Value = 0
-				MainForm.执行中的分任务.Text = "无"
-				MainForm.分任务进度条.Value = 0
-			End Try
+                添加日志($"[ERROR]执行备份MC服务端任务时发生错误:{ex.Message}", Color.Red)
+            Finally
+                MainForm.执行中的主任务.Text = "无"
+                MainForm.主任务进度条.Value = 0
+                MainForm.执行中的分任务.Text = "无"
+                MainForm.分任务进度条.Value = 0
+            End Try
             '------------------------------------------------------------备份自定义目录操作--------------------------------
             Try
                 MainForm.执行中的主任务.Text = "备份自定义目录"
                 MainForm.主任务进度条.Value = 0
-                If 是否备份自定义目录 Then
-                    备份自定义目录()
+                If 备份自定义目录() Then
                     MainForm.主任务进度条.Value = 50
-                    If 是否关服备份 Then
-                        启动MC服务器()
-                    End If
+                    If 是否关服备份 AndAlso MC服务端是否已关闭 Then
+						启动MC服务器()
+						MC服务端是否已关闭 = False
+					End If
                     Sftp上传自定义备份文件()
                     MainForm.执行中的主任务.Text = "完成备份自定义目录任务"
                     MainForm.主任务进度条.Value = 100
                 Else
-                    If 是否关服备份 Then
+                    If 是否关服备份 AndAlso MC服务端是否已关闭 Then
                         启动MC服务器()
+                        MC服务端是否已关闭 = False
                     End If
                 End If
                 Dim x As Integer = 0
@@ -165,6 +190,9 @@ Public Module 核心功能模块
             Catch ex As Exception
                 添加日志($"[ERROR]执行备份自定义文件夹任务时发生错误:{ex.Message}", Color.Red)
             Finally
+                If 是否关服备份 AndAlso MC服务端是否已关闭 Then
+                    启动MC服务器()
+                End If
                 MainForm.执行中的主任务.Text = "无"
                 MainForm.主任务进度条.Value = 0
                 MainForm.执行中的分任务.Text = "无"
@@ -513,39 +541,39 @@ Public Module 核心功能模块
                 Return False
             End If
         End Function
-		Private Sub Sftp上传自定义备份文件()
-			MainForm.执行中的主任务.Text = $" 向Sftp服务器上传自定义备份文件夹的备份文件"
-			Dim 任务列表 As New List(Of Integer)
-			If Sftp1开关 Then 任务列表.Add(1)
-			If Sftp2开关 Then 任务列表.Add(2)
-			If Sftp3开关 Then 任务列表.Add(3)
-			If 任务列表.Count = 0 Then
-				添加日志("[Warning]无可用Sftp服务器", Color.DarkOrange)
-				Return
-			End If
-			Dim 备份模式 As String
-			If 是否增量备份 Then
-				备份模式 = "增量备份"
-			Else
-				备份模式 = "完整备份"
-			End If
-			Dim 本地文件目录 = Path.Combine(备份输出目录, $"{备份模式}", "自定义备份目录")
-			Dim 本地文件路径 = Path.Combine(本地文件目录, $"自定义备份目录的{备份模式}_{读取上次备份时间(本地文件目录):yyyyMMdd-HHmmss}.{压缩格式}")
-			Dim 远程文件目录 = $"/备份/{备份模式}/自定义备份目录"
-			If Sftp1开关 Then
-				处理单个Sftp服务端_上传文件(Sftp1地址, Sftp1端口, Sftp1用户名, Sftp1密码, "1", 本地文件路径, 远程文件目录)
-			End If
-			If Sftp2开关 Then
-				处理单个Sftp服务端_上传文件(Sftp2地址, Sftp2端口, Sftp2用户名, Sftp2密码, "2", 本地文件路径, 远程文件目录)
-			End If
-			If Sftp3开关 Then
-				处理单个Sftp服务端_上传文件(Sftp3地址, Sftp3端口, Sftp3用户名, Sftp3密码, "3", 本地文件路径, 远程文件目录)
-			End If
-		End Sub
-		Private Function 读取上次备份时间(输出目录 As String) As DateTime
-			Dim 上次备份时间 As DateTime = DateTime.MinValue
-			Dim 时间记录文件 As String = "LastBackup.time"
-			Dim 时间文件 = Path.Combine(输出目录, 时间记录文件)
+        Private Sub Sftp上传自定义备份文件()
+            MainForm.执行中的主任务.Text = $" 向Sftp服务器上传自定义备份文件夹的备份文件"
+            Dim 任务列表 As New List(Of Integer)
+            If Sftp1开关 Then 任务列表.Add(1)
+            If Sftp2开关 Then 任务列表.Add(2)
+            If Sftp3开关 Then 任务列表.Add(3)
+            If 任务列表.Count = 0 Then
+                添加日志("[Warning]无可用Sftp服务器", Color.DarkOrange)
+                Return
+            End If
+            Dim 备份模式 As String
+            If 是否增量备份 Then
+                备份模式 = "增量备份"
+            Else
+                备份模式 = "完整备份"
+            End If
+            Dim 本地文件目录 = Path.Combine(备份输出目录, $"{备份模式}", "自定义备份目录")
+            Dim 本地文件路径 = Path.Combine(本地文件目录, $"自定义备份目录的{备份模式}_{读取上次备份时间(本地文件目录):yyyyMMdd-HHmmss}.{压缩格式}")
+            Dim 远程文件目录 = $"/备份/{备份模式}/自定义备份目录"
+            If Sftp1开关 Then
+                处理单个Sftp服务端_上传文件(Sftp1地址, Sftp1端口, Sftp1用户名, Sftp1密码, "1", 本地文件路径, 远程文件目录)
+            End If
+            If Sftp2开关 Then
+                处理单个Sftp服务端_上传文件(Sftp2地址, Sftp2端口, Sftp2用户名, Sftp2密码, "2", 本地文件路径, 远程文件目录)
+            End If
+            If Sftp3开关 Then
+                处理单个Sftp服务端_上传文件(Sftp3地址, Sftp3端口, Sftp3用户名, Sftp3密码, "3", 本地文件路径, 远程文件目录)
+            End If
+        End Sub
+        Private Function 读取上次备份时间(输出目录 As String) As DateTime
+            Dim 上次备份时间 As DateTime = DateTime.MinValue
+            Dim 时间记录文件 As String = "LastBackup.time"
+            Dim 时间文件 = Path.Combine(输出目录, 时间记录文件)
             If File.Exists(时间文件) Then
                 If DateTime.TryParse(File.ReadAllText(时间文件), 上次备份时间) Then
                     Return 上次备份时间
@@ -553,79 +581,127 @@ Public Module 核心功能模块
             End If
             Return 上次备份时间
         End Function
-		Private Function 检测服务端是否已启动(服务端序号 As Integer) As Boolean
+        Private Function 检测服务端是否已启动(服务端序号 As Integer) As Boolean
             Select Case 服务端序号
                 Case 1
-                    Dim P As String = Path.Combine(MC服务端1路径, "logs", "latest.log")
-                    Dim 判断结果 As Boolean = 检测文件是否被锁定(P)
-                    If 判断结果 Then 添加日志("[Warning]MC服务端1已启动或无权访问latest.log文件", Color.Orange)
+                    Dim P As String = MC服务端1路径
+                    Dim 判断结果 As Boolean = 检测日志文件是否被锁定(P)
+                    If 判断结果 Then 添加日志("[Warning]MC服务端1已启动或无权访问latest.log文件", Color.Orange) Else 添加日志("[Info]MC服务端1未启动", Color.Black)
                     Return 判断结果
                 Case 2
-                    Dim P As String = Path.Combine(MC服务端2路径, "logs", "latest.log")
-                    Dim 判断结果 As Boolean = 检测文件是否被锁定(P)
-                    If 判断结果 Then 添加日志("[Warning]MC服务端2已启动或无权访问latest.log文件", Color.Orange)
-                    Return 判断结果
+                    Dim P As String = MC服务端2路径
+					Dim 判断结果 As Boolean = 检测日志文件是否被锁定(P)
+					If 判断结果 Then 添加日志("[Warning]MC服务端2已启动或无权访问latest.log文件", Color.Orange) Else 添加日志("[Info]MC服务端2未启动", Color.Black)
+					Return 判断结果
                 Case 3
-                    Dim P As String = Path.Combine(MC服务端3路径, "logs", "latest.log")
-                    Dim 判断结果 As Boolean = 检测文件是否被锁定(P)
-                    If 判断结果 Then 添加日志("[Warning]MC服务端3已启动或无权访问latest.log文件", Color.Orange)
-                    Return 判断结果
+                    Dim P As String = MC服务端3路径
+					Dim 判断结果 As Boolean = 检测日志文件是否被锁定(P)
+					If 判断结果 Then 添加日志("[Warning]MC服务端3已启动或无权访问latest.log文件", Color.Orange) Else 添加日志("[Info]MC服务端3未启动", Color.Black)
+					Return 判断结果
                 Case 4
-                    Dim P As String = Path.Combine(MC服务端4路径, "logs", "latest.log")
-                    Dim 判断结果 As Boolean = 检测文件是否被锁定(P)
-                    If 判断结果 Then 添加日志("[Warning]MC服务端4已启动或无权访问latest.log文件", Color.Orange)
-                    Return 判断结果
+                    Dim P As String = MC服务端4路径
+					Dim 判断结果 As Boolean = 检测日志文件是否被锁定(P)
+					If 判断结果 Then 添加日志("[Warning]MC服务端4已启动或无权访问latest.log文件", Color.Orange) Else 添加日志("[Info]MC服务端4未启动", Color.Black)
+					Return 判断结果
                 Case 5
-                    Dim P As String = Path.Combine(MC服务端5路径, "logs", "latest.log")
-                    Dim 判断结果 As Boolean = 检测文件是否被锁定(P)
-                    If 判断结果 Then 添加日志("[Warning]MC服务端5已启动或无权访问latest.log文件", Color.Orange)
-                    Return 判断结果
+                    Dim P As String = MC服务端5路径
+					Dim 判断结果 As Boolean = 检测日志文件是否被锁定(P)
+					If 判断结果 Then 添加日志("[Warning]MC服务端5已启动或无权访问latest.log文件", Color.Orange) Else 添加日志("[Info]MC服务端5未启动", Color.Black)
+					Return 判断结果
                 Case 6
-                    Dim P As String = Path.Combine(MC服务端6路径, "logs", "latest.log")
-                    Dim 判断结果 As Boolean = 检测文件是否被锁定(P)
-                    If 判断结果 Then 添加日志("[Warning]MC服务端6已启动或无权访问latest.log文件", Color.Orange)
-                    Return 判断结果
+                    Dim P As String = MC服务端6路径
+					Dim 判断结果 As Boolean = 检测日志文件是否被锁定(P)
+					If 判断结果 Then 添加日志("[Warning]MC服务端6已启动或无权访问latest.log文件", Color.Orange) Else 添加日志("[Info]MC服务端6未启动", Color.Black)
+					Return 判断结果
                 Case 7
-                    Dim P As String = Path.Combine(MC服务端7路径, "logs", "latest.log")
-                    Dim 判断结果 As Boolean = 检测文件是否被锁定(P)
-                    If 判断结果 Then 添加日志("[Warning]MC服务端7已启动或无权访问latest.log文件", Color.Orange)
-                    Return 判断结果
+                    Dim P As String = MC服务端7路径
+					Dim 判断结果 As Boolean = 检测日志文件是否被锁定(P)
+					If 判断结果 Then 添加日志("[Warning]MC服务端7已启动或无权访问latest.log文件", Color.Orange) Else 添加日志("[Info]MC服务端7未启动", Color.Black)
+					Return 判断结果
                 Case 8
-                    Dim P As String = Path.Combine(MC服务端8路径, "logs", "latest.log")
-                    Dim 判断结果 As Boolean = 检测文件是否被锁定(P)
-                    If 判断结果 Then 添加日志("[Warning]MC服务端8已启动或无权访问latest.log文件", Color.Orange)
-                    Return 判断结果
+                    Dim P As String = MC服务端8路径
+					Dim 判断结果 As Boolean = 检测日志文件是否被锁定(P)
+					If 判断结果 Then 添加日志("[Warning]MC服务端8已启动或无权访问latest.log文件", Color.Orange) Else 添加日志("[Info]MC服务端8未启动", Color.Black)
+					Return 判断结果
                 Case 9
-                    Dim P As String = Path.Combine(MC服务端9路径, "logs", "latest.log")
-                    Dim 判断结果 As Boolean = 检测文件是否被锁定(P)
-                    If 判断结果 Then 添加日志("[Warning]MC服务端9已启动或无权访问latest.log文件", Color.Orange)
-                    Return 判断结果
+                    Dim P As String = MC服务端9路径
+					Dim 判断结果 As Boolean = 检测日志文件是否被锁定(P)
+					If 判断结果 Then 添加日志("[Warning]MC服务端9已启动或无权访问latest.log文件", Color.Orange) Else 添加日志("[Info]MC服务端9未启动", Color.Black)
+					Return 判断结果
                 Case 10
-                    Dim P As String = Path.Combine(MC服务端10路径, "logs", "latest.log")
-                    Dim 判断结果 As Boolean = 检测文件是否被锁定(P)
-                    If 判断结果 Then 添加日志("[Warning]MC服务端10已启动或无权访问latest.log文件", Color.Orange)
-                    Return 判断结果
-                Case Else
+                    Dim P As String = MC服务端10路径
+					Dim 判断结果 As Boolean = 检测日志文件是否被锁定(P)
+					If 判断结果 Then 添加日志("[Warning]MC服务端10已启动或无权访问latest.log文件", Color.Orange) Else 添加日志("[Info]MC服务端10未启动", Color.Black)
+					Return 判断结果
+                Case Else '不可能执行到
                     Return False
             End Select
         End Function
-        Private Function 检测文件是否被锁定(文件路径 As String) As Boolean
-            If Not File.Exists(文件路径) Then
-                Return False
-            End If
-            Try
-                Using 文件流 As FileStream = File.Open(文件路径, FileMode.Open, FileAccess.Read, FileShare.None)
-                    Return False
-                End Using
-            Catch ex As IOException
-                Dim 错误代码 As Integer = Marshal.GetHRForException(ex) And &HFFFF
-                If 错误代码 = &H20 OrElse 错误代码 = &H21 Then
-                    Return True
-                End If
-                Return True
-            Catch ex As UnauthorizedAccessException
-                Return True
-            End Try
+        Private Function 检测日志文件是否被锁定(根目录 As String) As Boolean
+            Dim R = 执行日志文件搜索(根目录)
+			If R.能否定位到单个日志文件 Then
+				Try
+					Using 文件流 As FileStream = File.Open(R.日志文件路径, FileMode.Open, FileAccess.Read, FileShare.None)
+						Return False
+					End Using
+				Catch ex As IOException
+					Dim 错误代码 As Integer = Marshal.GetHRForException(ex) And &HFFFF
+					If 错误代码 = &H20 OrElse 错误代码 = &H21 Then
+						Return True
+					End If
+					Return True
+				Catch ex As UnauthorizedAccessException
+					Return True
+				End Try
+			End If
+			Return False
+		End Function
+        ''' <summary>
+        ''' 递归搜索指定目录下的 latest.log 文件
+        ''' </summary>
+        Public Function 查找最新日志文件(根目录 As String) As List(Of String)
+			Dim 日志文件列表 As New List(Of String)()
+			Try
+				' 添加当前目录中的目标文件
+				日志文件列表.AddRange(Directory.GetFiles(根目录, "latest.log", SearchOption.TopDirectoryOnly))
+				' 递归处理所有子目录
+				For Each 子目录 In Directory.GetDirectories(根目录)
+					日志文件列表.AddRange(查找最新日志文件(子目录))
+				Next
+			Catch ex As UnauthorizedAccessException
+				' 权限不足
+				添加日志($"[ERROR]无权限访问目录 [{根目录}]", Color.Red)
+			Catch ex As DirectoryNotFoundException
+				' 目录不存在
+				添加日志($"[ERROR]目录不存在 [{根目录}]", Color.Red)
+			Catch ex As IOException
+				' 文件系统错误
+				添加日志($"[ERROR]IO异常: {ex.Message} ({根目录})", Color.Red)
+			Catch ex As Exception
+				' 未知错误
+				添加日志($"[ERROR]未知错误: {ex.GetType().Name} ({根目录})", Color.Red)
+			End Try
+			Return 日志文件列表
+		End Function
+		Public Function 执行日志文件搜索(根目录路径 As String) As (能否定位到单个日志文件 As Boolean, 日志文件路径 As String)
+			添加日志($"[Info]开始搜索日志文件，根目录: {根目录路径}", Color.Cyan) ' 青色状态提示
+			Dim 找到的日志文件 As List(Of String) = 查找最新日志文件(根目录路径)
+			' 结果分类处理
+			Select Case 找到的日志文件.Count
+				Case 0
+					添加日志("[Warning]未找到任何日志文件", Color.Orange)
+					Return (False, "")
+				Case 1
+					添加日志($"[Success]成功定位日志文件: {找到的日志文件(0)}", Color.LimeGreen) ' 绿色成功提示
+					Return (True, 找到的日志文件(0))
+				Case Else
+					添加日志("[Warning]发现多个疑似日志文件，可能存在配置冲突！", Color.DarkRed)
+					For Each 文件路径 In 找到的日志文件
+						添加日志($"▸ {文件路径}", Color.Khaki) ' 卡其色列表项
+					Next
+                    Return (False, "")
+            End Select
+            Return (False, "")
         End Function
-    End Class
+	End Class
 End Module

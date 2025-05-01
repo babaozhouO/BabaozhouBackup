@@ -313,7 +313,7 @@ Public Module SevenZip
             Try
                 If 上次备份时间 > DateTime.MinValue Then
                     添加日志("[Info]找到上次备份时间，将执行增量备份", Color.Blue)
-                    Dim 增量文件临时存放目录 = 复制增量文件到临时存放目录并输出目录(输入目录, 上次备份时间)
+                    Dim 返回 = 复制增量文件到临时存放目录并输出目录(输入目录, 上次备份时间)
                     MainForm.分任务进度条.Value = 40
                     If 压缩级别 = 0 Then
                         If 压缩方法 = "GNU" Or 压缩方法 = "POSIX" Then 'tar
@@ -326,11 +326,16 @@ Public Module SevenZip
                     Else
                         附加参数 = $" -r -aoa -sdel -t{压缩格式} -mx{压缩级别} -m0={压缩方法}:d={字典大小.TrimEnd("B"c)}:fb={单词大小} -ms -mmt{线程数} -x!""cache"" -x!""tmp"" -x!""*.tmp"" -x!""Thumbs.db"" -x!""$RECYCLE.BIN"" {排除文件参数}"
                     End If
-                    If String.IsNullOrEmpty(增量文件临时存放目录) Then
-                        添加日志($"[ERROR]复制增量文件到临时存放目录失败或无更新文件,已终止操作", Color.Red)
+                    If String.IsNullOrEmpty(返回.目录) AndAlso 返回.返回码 = 2 Then
+                        添加日志($"[ERROR]复制增量文件到临时存放目录失败", Color.Red)
                         Return
                     End If
-                    Dim R As Integer = 压缩器.调用7Zip("a", 附加参数, 输出路径, 增量文件临时存放目录, MC服务端序号)
+                    If String.IsNullOrEmpty(返回.目录) AndAlso 返回.返回码 = 1 Then
+                        添加日志($"[Warning]备份目录无已更新文件", Color.Red)
+                        File.WriteAllText(时间文件, 备份时间.ToString("o")) '防止空压缩包被创建和上传/上次压缩包被上传
+                        Return
+                    End If
+                    Dim R As Integer = 压缩器.调用7Zip("a", 附加参数, 输出路径, 返回.目录, MC服务端序号)
                     If R = 0 Or R = 1 Then
                         File.WriteAllText(时间文件, 备份时间.ToString("o"))
                         添加日志($"[Success]备份完成：{输出路径}", Color.Green)
@@ -395,7 +400,7 @@ Public Module SevenZip
                 End If
             End Try
         End Sub
-        Private Shared Function 复制增量文件到临时存放目录并输出目录(源路径 As String, 上次备份时间 As DateTime) As String
+        Private Shared Function 复制增量文件到临时存放目录并输出目录(源路径 As String, 上次备份时间 As DateTime) As (目录 As String, 返回码 As Integer)
             Dim 原主任务 As String = MainForm.执行中的主任务.Text
             Dim 原主进度 As Integer = MainForm.主任务进度条.Value
             Dim 原分任务 As String = MainForm.执行中的分任务.Text
@@ -417,12 +422,12 @@ Public Module SevenZip
             Dim 临时路径 = Path.Combine(备份输出目录, "增量文件")
             Try
                 Dim 成功数量 = 复制器.复制修改时间后的文件(源路径, 临时路径, 上次备份时间)
+                If 成功数量 = 0 Then Return ("", 1)
                 添加日志($"[Debug]成功复制{成功数量}个文件到临时目录", Color.DarkGreen)
-                If 成功数量 = 0 Then Return ""
-                Return 临时路径
+                Return (临时路径, 0)
             Catch ex As Exception
                 添加日志($"[ERROR]执行复制增量文件时出错：{ex.Message}", Color.Red)
-                Return ""
+                Return ("", 2)
             Finally
                 MainForm.执行中的主任务.Text = 原主任务
                 MainForm.主任务进度条.Value = 原主进度
